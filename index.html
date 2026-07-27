@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghobikan Aravindan — Case Files</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+  :root {
+    --ink: #0B0D0C;
+    --paper: #E8E6DF;
+    --paper-dim: #DCD9CF;
+    --sage: #8A9A8E;
+    --sage-dim: #586459;
+    --rust: #A8442E;
+    --text-secondary: #4A5049;
+    --line: rgba(11,13,12,0.16);
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'Newsreader', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--rust); color: var(--paper); }
+
+  a { color: inherit; }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 32px; }
+
+  /* ===== HEADER STAMP ===== */
+  header {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 18px 0;
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 10;
+  }
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .case-num { color: var(--sage-dim); }
+  .header-nav { display: flex; gap: 28px; }
+  .header-nav a { text-decoration: none; opacity: 0.75; transition: opacity 0.15s; }
+  .header-nav a:hover { opacity: 1; color: var(--rust); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 100px 0 72px;
+    position: relative;
+  }
+  .stamp, .hero h1, .hero-field, .open-question {
+    opacity: 1;
+  }
+  .js-anim-ready .stamp,
+  .js-anim-ready .hero h1,
+  .js-anim-ready .hero-field,
+  .js-anim-ready .open-question {
+    opacity: 0;
+  }
+  .stamp {
+    display: inline-block;
+    border: 1.5px solid var(--rust);
+    color: var(--rust);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    padding: 5px 12px;
+    transform: rotate(-2deg);
+    margin-bottom: 28px;
+    font-weight: 600;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    max-width: 850px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--sage-dim);
+  }
+  .hero-sub {
+    display: flex;
+    gap: 48px;
+    margin-top: 48px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .hero-field { max-width: 240px; }
+  .hero-field .label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--sage-dim);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hero-field .val { font-size: 13.5px; }
+
+  .open-question {
+    margin-top: 44px;
+    padding: 20px 24px;
+    border-left: 2px solid var(--sage);
+    background: rgba(138,154,142,0.08);
+    max-width: 640px;
+  }
+  .open-question .label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--sage-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .open-question p { font-size: 13.5px; color: var(--text-secondary); }
+  .open-question .status {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--rust);
+    letter-spacing: 0.06em;
+  }
+  .open-question .status::before { content: "● "; }
+
+  /* ===== SECTION LABELS ===== */
+  .section { padding: 64px 0; border-top: 1px solid var(--line); }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .section-head .tag {
+    font-size: 11px;
+    color: var(--sage-dim);
+    letter-spacing: 0.1em;
+  }
+  .section-head h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 1.9rem;
+  }
+
+  /* ===== CASE FILES (projects) ===== */
+  .file {
+    border: 1px solid var(--line);
+    margin-bottom: 24px;
+    background: rgba(255,255,255,0.25);
+    transition: border-color 0.2s;
+  }
+  .file:hover { border-color: var(--ink); }
+
+  .file-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    cursor: pointer;
+    gap: 20px;
+    width: 100%;
+    background: none;
+    border: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+  }
+  .file-head:focus-visible { outline: 2px solid var(--rust); outline-offset: -2px; }
+  .file-head-left { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  .file-id { font-size: 11px; color: var(--sage-dim); letter-spacing: 0.06em; white-space: nowrap; }
+  .file-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 500; }
+  .file-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .file-tag {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .file-toggle {
+    font-size: 18px;
+    color: var(--sage-dim);
+    flex-shrink: 0;
+    transition: transform 0.25s;
+  }
+  .file.open .file-toggle { transform: rotate(45deg); }
+
+  .file-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .file.open .file-body { max-height: 900px; }
+  .file-body-inner {
+    padding: 0 24px 28px;
+    border-top: 1px solid var(--line);
+  }
+  .file-body-inner { padding-top: 22px; }
+
+  .evidence-log {
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+  .evidence-log .ts { color: var(--sage-dim); margin-right: 10px; }
+  .evidence-log .flag { color: var(--rust); font-weight: 600; }
+
+  .file-summary { font-size: 14px; margin-bottom: 18px; max-width: 620px; color: var(--ink); }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .metric .num { font-family: var(--serif); font-size: 1.5rem; color: var(--rust); }
+  .metric .lbl { font-size: 10px; color: var(--sage-dim); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
+
+  .file-links { display: flex; gap: 20px; font-size: 12px; }
+  .file-links a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .file-links a:hover { text-decoration-color: var(--rust); color: var(--rust); }
+
+  /* ===== ABOUT ===== */
+  .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; }
+  .about-text p { font-size: 14.5px; color: var(--text-secondary); margin-bottom: 16px; max-width: 520px; }
+  .about-text strong { color: var(--ink); }
+
+  .stack-list { font-size: 12px; }
+  .stack-cat { color: var(--sage-dim); letter-spacing: 0.06em; text-transform: uppercase; font-size: 10px; margin: 18px 0 8px; }
+  .stack-cat:first-child { margin-top: 0; }
+  .stack-items { color: var(--text-secondary); line-height: 1.8; }
+
+  /* ===== FOOTER / CONTACT ===== */
+  footer { padding: 56px 0 48px; border-top: 1.5px solid var(--ink); }
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  footer h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 500; margin-bottom: 8px; }
+  footer p { font-size: 13px; color: var(--text-secondary); }
+  .contact-links { display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+  .contact-links a {
+    font-size: 13px;
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 2px;
+  }
+  .contact-links a:hover { border-color: var(--rust); color: var(--rust); }
+
+  @media (max-width: 720px) {
+    .about-grid { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .hero { padding: 64px 0 48px; }
+    .footer-row { flex-direction: column; align-items: flex-start; }
+    .contact-links { align-items: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+
+  :focus-visible { outline: 2px solid var(--rust); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<div class="noise"></div>
+
+<header>
+  <div class="wrap header-row">
+    <div class="case-num">GHOBIKAN ARAVINDAN / APPLIED DATA SCIENCE</div>
+    <nav class="header-nav">
+      <a href="#projects">Projects</a>
+      <a href="#experimental">Experimental</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="stamp">OPEN INVESTIGATION</div>
+    <h1>I build data products that turn <em>messy signals</em> into defensible decisions.</h1>
+
+    <div class="hero-sub">
+      <div class="hero-field">
+        <div class="label">Role</div>
+        <div class="val">Applied Data Scientist</div>
+      </div>
+      <div class="hero-field">
+        <div class="label">Location</div>
+        <div class="val">London, UK</div>
+      </div>
+      <div class="hero-field">
+        <div class="label">Methods</div>
+        <div class="val">Python, SQL, forecasting, NLP, simulation, distributed ML</div>
+      </div>
+      <div class="hero-field">
+        <div class="label">Credentials</div>
+        <div class="val">MSc Data Science, City St George's</div>
+      </div>
+    </div>
+
+    <div class="open-question">
+      <div class="label">Working thesis</div>
+      <p>From behavioural demand signals to restaurant operations and privacy audits, I build reproducible systems that make uncertainty measurable — then ship them where real people depend on the result.</p>
+      <div class="status">STATUS: ACTIVE — five case files, one experimental lab</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">01 / CASE FILES</span>
+      <h2>Selected work</h2>
+    </div>
+
+    <!-- FILE 1: KH4 -->
+    <div class="file" id="file-kh4">
+      <button type="button" class="file-head" onclick="toggleFile('file-kh4')" aria-expanded="false" aria-controls="file-kh4-body" id="file-kh4-head">
+        <div class="file-head-left">
+          <span class="file-id">GA-KH-01</span>
+          <span class="file-title">Behavioural Demand Intelligence</span>
+          <div class="file-tags">
+            <span class="file-tag">NLP</span>
+            <span class="file-tag">Market Signal</span>
+          </div>
+        </div>
+        <span class="file-toggle" aria-hidden="true">+</span>
+      </button>
+      <div class="file-body" id="file-kh4-body">
+        <div class="file-body-inner">
+          <p class="file-summary">A Reddit and YouTube intelligence pipeline for a major game franchise, separating classification, calibrated probability estimation, actionable-signal ranking and heuristic decision support — built to test whether a trailer release measurably shifts pre-launch audience sentiment.</p>
+
+          <div class="metrics-row">
+            <div class="metric"><div class="num">4,831</div><div class="lbl">community signals</div></div>
+            <div class="metric"><div class="num">23</div><div class="lbl">isolated discussion groups</div></div>
+            <div class="metric"><div class="num">5</div><div class="lbl">repeated evaluation seeds</div></div>
+          </div>
+
+          <div class="evidence-log">
+            <div><span class="ts">[LOG 01]</span> Group-aware train/validation/test splits — no duplicate or discussion-group leakage between sets.</div>
+            <div><span class="ts">[LOG 02]</span> Thresholds calibrated on the validation split only (high_intent 0.55, nostalgia 0.65, new_customer 0.70), evaluated via PR-AUC, Brier score, ECE, macro-F1 and Lift@K.</div>
+            <div><span class="ts">[LOG 03]</span> Natural-experiment analysis run against a real trailer release date, with an active-learning review queue and live Streamlit dashboard for ongoing monitoring.</div>
+          </div>
+
+          <div class="file-links">
+            <a href="https://github.com/Ghobi-A/kh4-demand-intel">GitHub repo →</a>
+            <a href="https://kh4-demand-intel.streamlit.app/">View dashboard →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE 2: Distributed Image ML Pipeline -->
+    <div class="file" id="file-di">
+      <button type="button" class="file-head" onclick="toggleFile('file-di')" aria-expanded="false" aria-controls="file-di-body" id="file-di-head">
+        <div class="file-head-left">
+          <span class="file-id">GA-DI-02</span>
+          <span class="file-title">Distributed Image ML Pipeline</span>
+          <div class="file-tags">
+            <span class="file-tag">PySpark</span>
+            <span class="file-tag">TensorFlow</span>
+            <span class="file-tag">MLOps</span>
+          </div>
+        </div>
+        <span class="file-toggle" aria-hidden="true">+</span>
+      </button>
+      <div class="file-body" id="file-di-body">
+        <div class="file-body-inner">
+          <p class="file-summary">A reproducible ML-engineering benchmark comparing local and PySpark image preprocessing, raw JPEG and TFRecord input pipelines, and downstream TensorFlow training across 3,670 images.</p>
+
+          <div class="metrics-row">
+            <div class="metric"><div class="num">3,670</div><div class="lbl">images processed</div></div>
+            <div class="metric"><div class="num">2.28×</div><div class="lbl">faster PySpark preprocessing</div></div>
+            <div class="metric"><div class="num">4.58×</div><div class="lbl">TFRecord input throughput</div></div>
+          </div>
+
+          <div class="evidence-log">
+            <div><span class="ts">[LOG 01]</span> Built equivalent local and PySpark preprocessing paths using shared transformation logic, preventing implementation differences from contaminating the benchmark.</div>
+            <div><span class="ts">[LOG 02]</span> Measured repeated runs across multiple partition configurations, with persisted datasets, controlled training splits and automated reporting.</div>
+            <div><span class="ts">[LOG 03]</span> Added GitHub Actions coverage for linting, unit and integration tests, Spark execution, TFRecord round trips and TensorFlow training smoke tests.</div>
+          </div>
+
+          <div class="file-links">
+            <a href="https://github.com/Ghobi-A/Big-Data">GitHub repo →</a>
+            <a href="https://big-data-tfr.streamlit.app/">View dashboard →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE 3: Crestbound Duelists -->
+    <div class="file" id="file-cd">
+      <button type="button" class="file-head" onclick="toggleFile('file-cd')" aria-expanded="false" aria-controls="file-cd-body" id="file-cd-head">
+        <div class="file-head-left">
+          <span class="file-id">GA-CD-03</span>
+          <span class="file-title">Crestbound Duelists — RPG Balance Lab</span>
+          <div class="file-tags">
+            <span class="file-tag">Monte Carlo</span>
+            <span class="file-tag">Game AI</span>
+            <span class="file-tag">Decision Science</span>
+          </div>
+        </div>
+        <span class="file-toggle" aria-hidden="true">+</span>
+      </button>
+      <div class="file-body" id="file-cd-body">
+        <div class="file-body-inner">
+          <p class="file-summary">A data-driven RPG balancing system combining Monte Carlo simulation, AI decision policies, Nash and maximin analysis, validated game configuration and a playable Godot prototype.</p>
+
+          <div class="metrics-row">
+            <div class="metric"><div class="num">100k</div><div class="lbl">simulations per matchup</div></div>
+            <div class="metric"><div class="num">15</div><div class="lbl">class matchups evaluated</div></div>
+            <div class="metric"><div class="num">133</div><div class="lbl">regression tests</div></div>
+          </div>
+
+          <div class="evidence-log">
+            <div><span class="ts">[LOG 01]</span> Built a YAML-driven single source of truth for classes, moves, accuracy, cooldowns, status effects and encounter configuration.</div>
+            <div><span class="ts">[LOG 02]</span> Tested whether stochastic damage and probabilistic turn order create mixed-strategy optimal play across asymmetric matchups.</div>
+            <div><span class="ts">[LOG 03]</span> <span class="flag">FINDING:</span> execution randomness alone did not induce mixed single-turn equilibria — strategically meaningful randomness required multi-turn state such as cooldowns, buffs and status effects.</div>
+          </div>
+
+          <div class="file-links">
+            <a href="https://github.com/Ghobi-A/Crestbound-Duelists">GitHub repo →</a>
+            <a href="https://crestbound-duelists.streamlit.app/">View dashboard →</a>
+            <a href="https://ghobi-a.github.io/Crestbound-Duelists/">Play the prototype →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE 4: UK Asia Grill -->
+    <div class="file" id="file-uag">
+      <button type="button" class="file-head" onclick="toggleFile('file-uag')" aria-expanded="false" aria-controls="file-uag-body" id="file-uag-head">
+        <div class="file-head-left">
+          <span class="file-id">GA-UA-04</span>
+          <span class="file-title">Restaurant Ordering &amp; Kitchen Ops Platform</span>
+          <div class="file-tags">
+            <span class="file-tag">Production System</span>
+            <span class="file-tag">Full-Stack</span>
+          </div>
+        </div>
+        <span class="file-toggle" aria-hidden="true">+</span>
+      </button>
+      <div class="file-body" id="file-uag-body">
+        <div class="file-body-inner">
+          <p class="file-summary">A production ordering and kitchen-operations platform built for a live restaurant client. The server independently recalculates prices, validates fulfilment and confirms card payments through Stripe webhooks, while a realtime staff dashboard manages the complete order lifecycle.</p>
+
+          <div class="metrics-row">
+            <div class="metric"><div class="num">Live</div><div class="lbl">commercial client</div></div>
+            <div class="metric"><div class="num">Realtime</div><div class="lbl">kitchen operations</div></div>
+            <div class="metric"><div class="num">CI-gated</div><div class="lbl">production deployment</div></div>
+          </div>
+
+          <div class="evidence-log">
+            <div><span class="ts">[LOG 01]</span> Server-authoritative pricing with Stripe webhook payment verification — client-submitted prices are never trusted.</div>
+            <div><span class="ts">[LOG 02]</span> Deny-by-default Supabase RLS, idempotent order submission, durable rate limiting, and signed HttpOnly staff sessions.</div>
+            <div><span class="ts">[LOG 03]</span> Automated lint, test, typecheck and production-build CI gating every deploy; PrintNode auto-print integration pending physical hardware test.</div>
+          </div>
+
+          <div class="file-links">
+            <a href="https://www.ukasiagrill.co.uk/">View live site →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILE 5: dp-insurance -->
+    <div class="file" id="file-dp">
+      <button type="button" class="file-head" onclick="toggleFile('file-dp')" aria-expanded="false" aria-controls="file-dp-body" id="file-dp-head">
+        <div class="file-head-left">
+          <span class="file-id">GA-DP-05</span>
+          <span class="file-title">Privacy–Utility and Fairness Audit</span>
+          <div class="file-tags">
+            <span class="file-tag">Differential Privacy</span>
+            <span class="file-tag">Membership Inference</span>
+          </div>
+        </div>
+        <span class="file-toggle" aria-hidden="true">+</span>
+      </button>
+      <div class="file-body" id="file-dp-body">
+        <div class="file-body-inner">
+          <p class="file-summary">A multi-task privacy-preserving ML benchmark comparing conventional models and DP-SGD across an achieved privacy-budget grid. It combines repeated-seed uncertainty, fairness analysis and empirical membership-inference attacks to measure observed leakage alongside the formal privacy budget, rather than treating ε as the entire privacy story.</p>
+
+          <div class="metrics-row">
+            <div class="metric"><div class="num">ε≈0.49</div><div class="lbl">strongest privacy setting</div></div>
+            <div class="metric"><div class="num">0.933</div><div class="lbl">strongest attack ROC-AUC</div></div>
+            <div class="metric"><div class="num">98%</div><div class="lbl">non-private utility retained</div></div>
+          </div>
+
+          <div class="evidence-log">
+            <div><span class="ts">[LOG 01]</span> Identified that the original smoker-classification task was dominated by a proxy feature; rebuilt the benchmark around harder, leakage-resistant tasks.</div>
+            <div><span class="ts">[LOG 02]</span> Implemented formal RDP accounting, offline and online LiRA, loss-threshold attacks, membership canaries and group-fairness evaluation.</div>
+            <div><span class="ts">[LOG 03]</span> <span class="flag">FLAGGED:</span> an empirical privacy regression test detected a DP-SGD implementation that stepped an unwrapped optimiser and therefore added no privacy noise — corrected and guarded in CI.</div>
+          </div>
+
+          <div class="file-links">
+            <a href="https://github.com/Ghobi-A/dp-insurance/tree/main">GitHub repo →</a>
+            <a href="https://github.com/Ghobi-A/dp-insurance/blob/main/paper/Differential%20Privacy%20in%20Machine%20Learning.pdf">Read the dissertation →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="experimental">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">02 / EXPERIMENTAL WORK</span>
+      <h2>In progress</h2>
+    </div>
+
+    <div class="file" id="file-ca">
+      <button type="button" class="file-head" onclick="toggleFile('file-ca')" aria-expanded="false" aria-controls="file-ca-body" id="file-ca-head">
+        <div class="file-head-left">
+          <span class="file-id">GA-CA-06</span>
+          <span class="file-title">Creative Audio Lab</span>
+          <div class="file-tags">
+            <span class="file-tag">Symbolic Generation</span>
+            <span class="file-tag">MIDI</span>
+            <span class="file-tag">Generative Systems</span>
+          </div>
+        </div>
+        <span class="file-toggle" aria-hidden="true">+</span>
+      </button>
+      <div class="file-body" id="file-ca-body">
+        <div class="file-body-inner">
+          <p class="file-summary">A prompt-conditioned symbolic music system producing editable, DAW-ready arrangements and separate chord, melody, bass and drum stems — currently a deterministic symbolic generator with a small statistical n-gram component, not a trained neural text-to-MIDI model.</p>
+
+          <div class="evidence-log">
+            <div><span class="ts">[LOG 01]</span> Deterministic music-theory baseline with REMI-style symbolic tokenisation, motif detection and variation.</div>
+            <div><span class="ts">[LOG 02]</span> N-gram melody continuation with backoff, temperature and top-k sampling, evaluated on harmonic-fit, novelty, repetition and scale-adherence metrics.</div>
+            <div><span class="ts">[LOG 03]</span> Typed backend interface and dataset-provenance/licensing validation, ahead of training on a properly licensed external corpus.</div>
+          </div>
+
+          <div class="file-links">
+            <span aria-label="Project repository status">Repository forthcoming — research in progress.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="tag">03 / SUBJECT PROFILE</span>
+      <h2>Background</h2>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p><strong>MSc Data Science</strong> (City St George's, University of London), <strong>BEng Electrical &amp; Electronic Engineering.</strong> Previously a Data Analytics Consultant at iO-Sphere and Risk Analyst at SRS Storage &amp; Logistics, working across marketing attribution, risk modelling, and BigQuery-based diagnostics.</p>
+        <p>Interested in problems where the interesting part is verifying a claim, not just producing an output — whether that's auditing a privacy guarantee, testing whether a demand signal actually moved, or shipping a system that has to work under real load with a real client depending on it.</p>
+      </div>
+      <div class="stack-list">
+        <div class="stack-cat">Core</div>
+        <div class="stack-items">Python · SQL (BigQuery) · scikit-learn · TensorFlow · Power BI (DAX)</div>
+        <div class="stack-cat">Applied</div>
+        <div class="stack-items">DP-SGD / Opacus · NLP &amp; sentiment classification · Attribution, conversion &amp; RFM analysis</div>
+        <div class="stack-cat">Engineering</div>
+        <div class="stack-items">GCP · Docker · CI/CD (GitHub Actions) · Supabase · Vercel</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="wrap footer-row">
+    <div>
+      <h3>Open to roles, collaborations and difficult data problems.</h3>
+      <p>Get in touch to discuss a role, a collaboration, or the evidence itself.</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:ghobikan15@hotmail.co.uk">ghobikan15@hotmail.co.uk</a>
+      <a href="https://www.linkedin.com/in/ghobi/">LinkedIn →</a>
+      <a href="https://github.com/Ghobi-A">GitHub →</a>
+      <a href="Data_Science_CV.pdf" download>Download CV →</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Single orchestrated entrance, respects prefers-reduced-motion, degrades safely with no JS
+  if (window.gsap) {
+    document.documentElement.classList.add('js-anim-ready');
+    let mm = gsap.matchMedia();
+    mm.add({
+      reduceMotion: "(prefers-reduced-motion: reduce)"
+    }, (context) => {
+      const { reduceMotion } = context.conditions;
+      if (reduceMotion) {
+        gsap.set(['.stamp', '.hero h1', '.hero-field', '.open-question'], { opacity: 1 });
+        return;
+      }
+      const tl = gsap.timeline({ defaults: { ease: "power2.out" } });
+      tl.from('.stamp', { opacity: 0, y: -8, duration: 0.5 })
+        .from('.hero h1', { opacity: 0, y: 16, duration: 0.7 }, "-=0.25")
+        .from('.hero-field', { opacity: 0, y: 10, duration: 0.5, stagger: 0.08 }, "-=0.3")
+        .from('.open-question', { opacity: 0, y: 10, duration: 0.5 }, "-=0.2");
+    });
+  }
+
+  const CASE_HASH_MAP = {
+    'GA-KH-01': 'file-kh4',
+    'GA-DI-02': 'file-di',
+    'GA-CD-03': 'file-cd',
+    'GA-UA-04': 'file-uag',
+    'GA-DP-05': 'file-dp',
+    'GA-CA-06': 'file-ca'
+  };
+  const ID_TO_CASE_HASH = Object.fromEntries(
+    Object.entries(CASE_HASH_MAP).map(([caseTag, id]) => [id, caseTag])
+  );
+
+  function toggleFile(id, opts) {
+    opts = opts || {};
+    const el = document.getElementById(id);
+    if (!el) return;
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.file.open').forEach(f => {
+      f.classList.remove('open');
+      const head = document.getElementById(f.id + '-head');
+      if (head) head.setAttribute('aria-expanded', 'false');
+    });
+    if (!isOpen) {
+      el.classList.add('open');
+      document.getElementById(id + '-head').setAttribute('aria-expanded', 'true');
+      if (opts.updateHash !== false && ID_TO_CASE_HASH[id]) {
+        history.replaceState(null, '', '#' + ID_TO_CASE_HASH[id]);
+      }
+      if (opts.scroll !== false) {
+        // Scroll the opened case's header into view — helps most on mobile,
+        // where the accordion can push content well below the fold.
+        requestAnimationFrame(() => {
+          const head = document.getElementById(id + '-head');
+          if (head) head.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
+  }
+
+  // Support direct links like yoursite.com/#GA-DP-05 -> opens that case
+  function openFromHash() {
+    const hash = decodeURIComponent(window.location.hash.replace('#', '')).toUpperCase();
+    const targetId = CASE_HASH_MAP[hash];
+    if (targetId) {
+      toggleFile(targetId, { scroll: true });
+      return true;
+    }
+    return false;
+  }
+
+  window.addEventListener('hashchange', openFromHash);
+
+  // Open first file by default, unless a valid case hash is present in the URL
+  if (!openFromHash()) {
+    toggleFile('file-kh4', { scroll: false });
+  }
+</script>
+
+</body>
+</html>
