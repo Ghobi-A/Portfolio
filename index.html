@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Ghobikan Aravindan's applied data science portfolio: evaluated machine-learning systems, behavioural demand intelligence, privacy auditing and deployed data products.">
+<meta name="theme-color" content="#E8E6DF">
+<meta property="og:title" content="Ghobikan Aravindan — Applied Data Scientist">
+<meta property="og:description" content="Data products that turn messy signals into defensible decisions.">
+<meta property="og:type" content="website">
 <title>Ghobikan Aravindan — Case Files</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -175,6 +180,7 @@
     margin-bottom: 24px;
     background: rgba(255,255,255,0.25);
     transition: border-color 0.2s;
+    scroll-margin-top: 76px;
   }
   .file:hover { border-color: var(--ink); }
 
@@ -245,9 +251,10 @@
   .metric .num { font-family: var(--serif); font-size: 1.5rem; color: var(--rust); }
   .metric .lbl { font-size: 10px; color: var(--sage-dim); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
 
-  .file-links { display: flex; gap: 20px; font-size: 12px; }
+  .file-links { display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; }
   .file-links a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
   .file-links a:hover { text-decoration-color: var(--rust); color: var(--rust); }
+  .file-links span { color: var(--text-secondary); }
 
   /* ===== ABOUT ===== */
   .about-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; }
@@ -281,7 +288,8 @@
 
   @media (max-width: 720px) {
     .about-grid { grid-template-columns: 1fr; }
-    .header-nav { display: none; }
+    .header-row { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .header-nav { display: flex; gap: 16px; flex-wrap: wrap; }
     .hero { padding: 64px 0 48px; }
     .footer-row { flex-direction: column; align-items: flex-start; }
     .contact-links { align-items: flex-start; }
@@ -301,7 +309,7 @@
 <header>
   <div class="wrap header-row">
     <div class="case-num">GHOBIKAN ARAVINDAN / APPLIED DATA SCIENCE</div>
-    <nav class="header-nav">
+    <nav class="header-nav" aria-label="Primary navigation">
       <a href="#projects">Projects</a>
       <a href="#experimental">Experimental</a>
       <a href="#about">About</a>
@@ -612,10 +620,15 @@
       <a href="mailto:ghobikan15@hotmail.co.uk">ghobikan15@hotmail.co.uk</a>
       <a href="https://www.linkedin.com/in/ghobi/">LinkedIn →</a>
       <a href="https://github.com/Ghobi-A">GitHub →</a>
-      <a href="Data_Science_CV.pdf" download>Download CV →</a>
     </div>
   </div>
 </footer>
+
+<noscript>
+  <style>
+    .file-body { max-height: none; }
+  </style>
+</noscript>
 
 <script>
   // Single orchestrated entrance, respects prefers-reduced-motion, degrades safely with no JS
@@ -658,11 +671,15 @@
     document.querySelectorAll('.file.open').forEach(f => {
       f.classList.remove('open');
       const head = document.getElementById(f.id + '-head');
+      const body = document.getElementById(f.id + '-body');
       if (head) head.setAttribute('aria-expanded', 'false');
+      if (body) body.style.maxHeight = '0px';
     });
     if (!isOpen) {
       el.classList.add('open');
       document.getElementById(id + '-head').setAttribute('aria-expanded', 'true');
+      const body = document.getElementById(id + '-body');
+      if (body) body.style.maxHeight = body.scrollHeight + 'px';
       if (opts.updateHash !== false && ID_TO_CASE_HASH[id]) {
         history.replaceState(null, '', '#' + ID_TO_CASE_HASH[id]);
       }
@@ -689,6 +706,10 @@
   }
 
   window.addEventListener('hashchange', openFromHash);
+  window.addEventListener('resize', () => {
+    const openBody = document.querySelector('.file.open .file-body');
+    if (openBody) openBody.style.maxHeight = openBody.scrollHeight + 'px';
+  });
 
   // Open first file by default, unless a valid case hash is present in the URL
   if (!openFromHash()) {
