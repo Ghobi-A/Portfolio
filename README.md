@@ -13,10 +13,25 @@ Personal portfolio for an applied data scientist building evaluated machine-lear
 - Privacy–Utility and Fairness Audit
 - Creative Audio Lab (in progress)
 
-## Deployment
+## Build and deployment
 
-The site is a static HTML document deployed automatically to GitHub Pages whenever `main` changes. The deployment workflow lives in `.github/workflows/deploy-pages.yml`.
+The portfolio source is maintained in `index.html`. Before deployment, `scripts/build_site.py` creates a production-ready `_site` directory and adds:
+
+- Open Graph and Twitter/X social-preview metadata
+- a generated 1200×630 branded preview image
+- SVG favicon and Apple touch icon
+- canonical URL, JSON-LD structured data, robots and sitemap files
+- accessibility landmarks, a keyboard skip link and safer external links
+
+GitHub Pages deploys `_site` automatically whenever `main` changes. The workflow lives in `.github/workflows/deploy-pages.yml`.
 
 ## Local preview
 
-Open `index.html` directly in a browser, or serve the repository root with any static file server.
+Run:
+
+```bash
+python scripts/build_site.py
+python -m http.server 8000 --directory _site
+```
+
+Then open `http://localhost:8000`.
