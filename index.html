@@ -75,6 +75,7 @@
   .header-nav { display: flex; gap: 28px; }
   .header-nav a { text-decoration: none; opacity: 0.75; transition: opacity 0.15s; }
   .header-nav a:hover { opacity: 1; color: var(--rust); }
+  .header-nav .nav-cv { opacity: 1; color: var(--rust); font-weight: 600; }
 
   /* ===== HERO ===== */
   .hero {
@@ -155,6 +156,26 @@
   }
   .open-question .status::before { content: "● "; }
 
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .action-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 9px 15px;
+    border: 1.5px solid var(--ink);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .action-link.primary { background: var(--ink); color: var(--paper); }
+  .action-link:hover { background: var(--rust); color: var(--paper); border-color: var(--rust); }
+
   /* ===== SECTION LABELS ===== */
   .section { padding: 64px 0; border-top: 1px solid var(--line); }
   .section-head {
@@ -202,6 +223,12 @@
   .file-head-left { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
   .file-id { font-size: 11px; color: var(--sage-dim); letter-spacing: 0.06em; white-space: nowrap; }
   .file-title { font-family: var(--serif); font-size: 1.25rem; font-weight: 500; }
+  .file-outcome {
+    flex-basis: 100%;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
   .file-tags { display: flex; gap: 8px; flex-wrap: wrap; }
   .file-tag {
     font-size: 10px;
@@ -314,6 +341,7 @@
       <a href="#experimental">Experimental</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
+      <a class="nav-cv" href="assets/Ghobikan-Aravindan-CV.pdf" target="_blank" rel="noopener">CV ↗</a>
     </nav>
   </div>
 </header>
@@ -347,6 +375,11 @@
       <p>From behavioural demand signals to restaurant operations and privacy audits, I build reproducible systems that make uncertainty measurable — then ship them where real people depend on the result.</p>
       <div class="status">STATUS: ACTIVE — five case files, one experimental lab</div>
     </div>
+    <div class="hero-actions" aria-label="Portfolio actions">
+      <a class="action-link primary" href="#projects">View selected work</a>
+      <a class="action-link" href="assets/Ghobikan-Aravindan-CV.pdf" target="_blank" rel="noopener">View CV ↗</a>
+      <a class="action-link" href="mailto:ghobikan15@hotmail.co.uk">Contact me</a>
+    </div>
   </div>
 </section>
 
@@ -367,6 +400,7 @@
             <span class="file-tag">NLP</span>
             <span class="file-tag">Market Signal</span>
           </div>
+          <span class="file-outcome">4,831 community signals evaluated with leakage-safe, repeated-seed validation.</span>
         </div>
         <span class="file-toggle" aria-hidden="true">+</span>
       </button>
@@ -405,6 +439,7 @@
             <span class="file-tag">TensorFlow</span>
             <span class="file-tag">MLOps</span>
           </div>
+          <span class="file-outcome">2.28× faster preprocessing and 4.58× higher input throughput across 3,670 images.</span>
         </div>
         <span class="file-toggle" aria-hidden="true">+</span>
       </button>
@@ -443,6 +478,7 @@
             <span class="file-tag">Game AI</span>
             <span class="file-tag">Decision Science</span>
           </div>
+          <span class="file-outcome">100k simulations per matchup, translated into a tested playable prototype.</span>
         </div>
         <span class="file-toggle" aria-hidden="true">+</span>
       </button>
@@ -481,6 +517,7 @@
             <span class="file-tag">Production System</span>
             <span class="file-tag">Full-Stack</span>
           </div>
+          <span class="file-outcome">Live client platform with secure payments, realtime kitchen operations and CI-gated releases.</span>
         </div>
         <span class="file-toggle" aria-hidden="true">+</span>
       </button>
@@ -517,6 +554,7 @@
             <span class="file-tag">Differential Privacy</span>
             <span class="file-tag">Membership Inference</span>
           </div>
+          <span class="file-outcome">Formal privacy accounting paired with empirical leakage and fairness auditing.</span>
         </div>
         <span class="file-toggle" aria-hidden="true">+</span>
       </button>
@@ -564,6 +602,7 @@
             <span class="file-tag">MIDI</span>
             <span class="file-tag">Generative Systems</span>
           </div>
+          <span class="file-outcome">Editable MIDI generation with deterministic baselines and measurable musical constraints.</span>
         </div>
         <span class="file-toggle" aria-hidden="true">+</span>
       </button>
@@ -595,7 +634,7 @@
     </div>
     <div class="about-grid">
       <div class="about-text">
-        <p><strong>MSc Data Science</strong> (City St George's, University of London), <strong>BEng Electrical &amp; Electronic Engineering.</strong> Previously a Data Analytics Consultant at iO-Sphere and Risk Analyst at SRS Storage &amp; Logistics, working across marketing attribution, risk modelling, and BigQuery-based diagnostics.</p>
+        <p><strong>MSc Data Science</strong> (City St George's, University of London), <strong>BEng Electrical &amp; Electronic Engineering.</strong> Completed an intensive iO-Sphere data analytics consulting programme and previously worked as a Risk Analyst at SRS Storage &amp; Logistics, applying BigQuery diagnostics, attribution analysis and risk modelling to operational decisions.</p>
         <p>Interested in problems where the interesting part is verifying a claim, not just producing an output — whether that's auditing a privacy guarantee, testing whether a demand signal actually moved, or shipping a system that has to work under real load with a real client depending on it.</p>
       </div>
       <div class="stack-list">
@@ -620,6 +659,7 @@
       <a href="mailto:ghobikan15@hotmail.co.uk">ghobikan15@hotmail.co.uk</a>
       <a href="https://www.linkedin.com/in/ghobi/">LinkedIn →</a>
       <a href="https://github.com/Ghobi-A">GitHub →</a>
+      <a href="assets/Ghobikan-Aravindan-CV.pdf" target="_blank" rel="noopener">View CV →</a>
     </div>
   </div>
 </footer>
