@@ -307,6 +307,12 @@ def main() -> None:
     ASSETS.mkdir(parents=True)
 
     (OUT / "index.html").write_text(polished_html, encoding="utf-8")
+
+    cv_source = ROOT / "assets" / "Ghobikan-Aravindan-CV.pdf"
+    if not cv_source.is_file():
+        raise FileNotFoundError(f"Portfolio CV asset is missing: {cv_source}")
+    shutil.copy2(cv_source, ASSETS / cv_source.name)
+
     (ASSETS / "social-preview.png").write_bytes(make_social_preview())
     (ASSETS / "apple-touch-icon.png").write_bytes(make_touch_icon())
     (ASSETS / "favicon.svg").write_text(
