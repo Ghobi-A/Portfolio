@@ -325,6 +325,24 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    (OUT / "404.html").write_text(
+        """<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="refresh" content="0; url=index.html">
+  <title>Opening portfolio…</title>
+  <script>window.location.replace(new URL("index.html", window.location.href).href);</script>
+</head>
+<body>
+  <p>Opening <a href="index.html">Ghobikan Aravindan’s portfolio</a>…</p>
+</body>
+</html>
+""",
+        encoding="utf-8",
+    )
+
     (OUT / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}sitemap.xml\n",
         encoding="utf-8",
