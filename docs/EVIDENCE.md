@@ -27,7 +27,7 @@ README blob SHAs returned by GitHub during review (blob identity, not commit IDs
 
 Open PR heads at review:
 
-- KH4 #23: `b7d0c0932bf3b42c2312915e66ba91e7d7a8ffc2`
+- KH4 #23: `4b7ece77bc11e002cfaf949cc7862bfc953c44d8` (rechecked during the evidence/motion pass)
 - Crestbound #18: `a33076ece1a3e4fe78f4816ec04fe2345a6b92b0`
 - Crestbound draft #21: `14481c0147dfe3478c2791127a06d5f291413315`
 
@@ -40,6 +40,14 @@ Open PR heads at review:
 - Restaurant: documented order lifecycle; no fabricated screenshots, traffic, revenue, transaction counts, printer acceptance or exactly-once physical-print claim. No private operational identifiers are included.
 - Privacy: epsilon `.49`, `2`, `6` with mean AUC `.933`, `.944`, `.945`. Whiskers `.909–.957`, `.927–.960`, `.928–.961`; HGB reference `.953`. Five-seed 95% t intervals are not population uncertainty. `.933` is prediction AUC, **not attack AUC**. SVG axis has an explicitly disclosed truncated range. Accessible exact-value table is in the case study.
 - Audio: scope progression rather than invented piano-roll output or unmeasured real-corpus performance. The default is rules; synthetic-bootstrap n-grams are not neural generation.
+
+## Evidence / motion follow-up
+
+All five public README blob identities above were rechecked against GitHub main and remain unchanged. KH4 #23 remains open and now documents demo-only forecasting results on a class-stratified 304-row extract, with the naive forecast beating the Bayesian model and no model recommended. This does not establish volume-representative demand, full-dataset performance or release status. Crestbound #18 remains open and #21 remains draft. Restaurant diagrams use only the previously reviewed architecture; private source was not re-audited in this pass.
+
+Chart contract: the added partition plot asks how mean preprocessing throughput changes across the four tested partition categories. Eight measured rows, five runs per configuration, 3,670 images on one runner. Native SVG in the existing portfolio; ordered categorical x positions, zero-based 0–1,200 images/s y scale, rust solid Spark and sage dashed local baseline. Visible exact-value table provides a readable mobile/no-JS alternative. This shows local-mode partition scaling, never multi-worker scaling. Source: `Big-Data/reports/tables/benchmark_summary.csv`, blob `d4c12f145fee3b201ce3b966cc40cc74fd825a25`. Local means: 470.9964, 486.7626, 483.4392, 482.5676; Spark means: 446.8986, 806.8249, 1086.2015, 1109.5528. One decimal displayed; no significance claim. The source CSV retains standard deviations.
+
+The added training comparison uses a zero-based shared bar scale: 8.68 s JPEG and 8.54 s TFRecord, from the README. These are three-epoch means from one seeded run per format. No general training-speedup conclusion is added. Other new visuals explain evaluation boundaries, stateful combat, trust boundaries, distinct audit questions and MIDI stages; they do not encode invented experimental observations.
 
 ## Links
 

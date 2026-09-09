@@ -1,5 +1,18 @@
 # Intelligence dossier redesign
 
+## Follow-up evidence and motion pass — 9 September 2026
+
+Continues the merged redesign on `portfolio/evidence-motion-pass`, without changing the build or deployment architecture. The current main branch already has balanced figure markup; a strict explicit-tag nesting regression now guards against the previously reported stray closing tag.
+
+- New measured partition-scaling SVG and visible numeric table from the committed Big-Data CSV; local and Spark series differ by line style as well as colour.
+- New training-time comparison makes the gap between standalone input gain and epoch time explicit.
+- New group split, evaluation-boundary, stateful combat, trust-boundary, audit-question and MIDI pipeline diagrams. Architecture diagrams do not imply measured outcomes.
+- KH4 open PR scope updated from fresh GitHub metadata, preserving demo-only and non-representative sample caveats.
+- Dark-ink contact composition with a real email CTA, improved evidence-note legibility, always-visible privacy values, responsive single-column diagram layouts, focus-out mobile menu closure and one-shot staged graph/node motion.
+- No dependencies, raster images, backend, client data fetching or framework introduced. CV, metadata region, social asset generation, deployment workflows and legacy anchors retained unchanged.
+
+Validation: build, all 11 structural tests, both JavaScript syntax checks and `git diff --check` pass. The tests include explicit markup nesting, generated asset existence, CV identity, headings, anchors/ARIA references, metadata idempotence and external-link attributes. Source review confirms reduced-motion and no-JS fallbacks. Actual browser viewport/keyboard/console/animation and Lighthouse checks remain outstanding because the supported preview does not serve this plain-static checkout; no scores or browser pass are claimed. Keep the PR draft until that release gate is completed.
+
 ## Original audit
 
 The original tracked repository comprised `index.html`, the CV PDF, README, `scripts/build_site.py` and the Pages deployment workflow. The source embedded styling, GSAP choreography and accordion logic in one HTML file. Project content was primarily behind uniform collapsible rows; mobile relied on a 720px breakpoint. GSAP entrance motion, CSS transitions and a reduced-motion query existed. The build injected landmarks, a skip link, structured metadata and external-link safety using exact source-string replacements.

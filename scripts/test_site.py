@@ -16,10 +16,25 @@ class Page(HTMLParser):
     def __init__(self, html):
         super().__init__(convert_charrefs=True)
         self.tags = []
+        self.stack = []
+        self.nesting_errors = []
         self.feed(html)
 
     def handle_starttag(self, tag, attrs):
         self.tags.append((tag, dict(attrs)))
+        if tag not in {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr'}:
+            self.stack.append(tag)
+
+    def handle_startendtag(self, tag, attrs):
+        self.handle_starttag(tag, attrs)
+        if self.stack and self.stack[-1] == tag:
+            self.stack.pop()
+
+    def handle_endtag(self, tag):
+        if not self.stack or self.stack[-1] != tag:
+            self.nesting_errors.append((tag, self.stack[-1] if self.stack else None))
+        else:
+            self.stack.pop()
 
     def elements(self, name):
         return [attrs for tag, attrs in self.tags if tag == name]
@@ -35,7 +50,7 @@ class PortfolioTests(unittest.TestCase):
         cls.ids = [attrs['id'] for _, attrs in cls.page.tags if 'id' in attrs]
 
     def test_metadata_singletons_and_valid_jsonld(self):
-        self.assertEqual(len(self.page.elements('title')), 3)  # page + two SVG titles
+        self.assertEqual(len(self.page.elements('title')), 4)  # page + three SVG titles
         self.assertEqual(self.html.count('<title>Ghobikan'), 1)
         for key in ('description', 'twitter:card', 'twitter:image'):
             self.assertEqual(sum(m.get('name') == key for m in self.page.elements('meta')), 1)
@@ -49,6 +64,15 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual(len(projects), 6)
         for project in projects:
             self.assertIn(project['item']['url'].split('#')[1], self.ids)
+
+    def test_explicit_markup_is_balanced(self):
+        self.assertEqual(self.page.nesting_errors, [])
+        self.assertEqual(self.page.stack, [])
+
+    def test_evidence_pass(self):
+        for text in ('8.68 s', '8.54 s', '304-row extract', 'not volume-representative', 'RDP accounting', 'MIDI stems'):
+            self.assertIn(text, self.text)
+        self.assertEqual(len(self.page.elements('figure')), 7)
 
     def test_builder_is_idempotent_and_layout_independent(self):
         self.assertEqual(polish_html(self.html), self.html)

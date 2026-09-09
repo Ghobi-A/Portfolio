@@ -1097,6 +1097,67 @@ ul {
 .frontier-values {
   display: none;
 }
+/* Evidence pass: readable diagrams, purposeful motion, a resolved final frame. */
+.split-rail { display:flex; gap:4px; margin-top:14px; }
+.split-rail span { flex:var(--portion); min-width:0; padding:8px 3px; text-align:center; background:var(--sage); color:var(--panel); font:12px/1.5 var(--mono); }
+.split-rail span:last-child { background:var(--rust); }
+.diagram-note { font:13px/1.65 var(--body); color:var(--muted); margin-top:12px; }
+.partition-chart { border-top:1px solid var(--line); margin-top:28px; padding-top:24px; }
+.partition-local { stroke:var(--sage); stroke-width:2.5; stroke-dasharray:5 5; fill:none; }
+.chart-legend { display:flex; gap:16px; flex-wrap:wrap; font:13px/1.6 var(--mono); margin-top:12px; }
+.chart-legend span:first-child { color:var(--rust); }
+.chart-legend span:last-child { color:var(--sage); }
+.partition-chart .data-table { font-size:14px; }
+.evidence-strip { border-block:1px solid var(--line); padding:24px 0; margin:8px 0 32px; }
+.method-rail { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; list-style:none; padding:0; margin:20px 0 0; counter-reset:method; }
+.method-rail li { position:relative; border-top:2px solid var(--sage); padding-top:16px; counter-increment:method; }
+.method-rail li:before { content:"0" counter(method); display:block; color:var(--rust); font:12px/1.5 var(--mono); margin-bottom:10px; }
+.method-rail strong, .audit-grid strong { display:block; font:26px/1.15 var(--serif); }
+.method-rail span { display:block; margin-top:8px; color:var(--muted); font-size:15px; }
+.training-layout, .audit-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
+.training-layout .result-statement { margin:0 0 18px; }
+.training-layout p:not(.result-statement):not(.chart-label) { color:var(--muted); font-size:16px; }
+.audit-grid { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:24px; }
+.audit-grid > div { border-left:2px solid var(--sage); padding-left:16px; }
+.audit-grid p { margin-top:10px; font-size:15px; color:var(--muted); }
+.token-flow { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px; }
+.token-flow span { font:13px/1.5 var(--mono); padding:8px 10px; border:1px solid var(--line); }
+.token-flow span:not(:last-child):after { content:" →"; color:var(--rust); }
+.contact { background:var(--ink); color:var(--paper); padding-top:clamp(48px,7vw,100px); }
+.contact > .wrap > .eyebrow { color:#e4a18d; }
+.contact h2 { display:block; font-size:clamp(48px,8.5vw,120px); max-width:100%; }
+.contact h2 em { color:#e4a18d; }
+.contact-invitation { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-bottom:48px; }
+.contact-invitation p { color:#c8cbc2; font-size:17px; }
+.contact .button.primary { background:var(--paper); color:var(--ink); border-color:var(--paper); }
+.contact .button.primary:hover { background:#e4a18d; border-color:#e4a18d; }
+.contact-bottom, .contact .colophon { border-color:#565e52; }
+.contact .colophon { color:#c8cbc2; }
+.contact a:hover { color:#e4a18d; }
+.contact a:focus-visible { outline-color:#e4a18d; }
+.contact .button.primary:hover { color:var(--ink); }
+.project:focus-within .evidence-panel { border-color:var(--sage); }
+.case-study summary:focus-visible { outline-offset:0; }
+.evidence-panel figcaption a { min-height:44px; display:inline-flex; align-items:center; }
+.evidence-panel figcaption, .project-copy p.evidence-note { font-size:14px; }
+.hero-support { font-size:16px; }
+.frontier-values { display:grid; gap:8px; margin-top:16px; }
+.frontier-values > div { display:flex; justify-content:space-between; gap:12px; border-bottom:1px solid var(--line); padding-bottom:8px; }
+.frontier-values dt, .frontier-values dd { font:14px/1.5 var(--mono); margin:0; }
+.frontier-values small { font-size:13px; }
+@media (hover:hover) and (prefers-reduced-motion:no-preference) {
+  .hero-instrument { transition:transform .3s ease; }
+  .hero-instrument:hover { transform:translateY(-4px); }
+  .case-study summary:hover .case-symbol { transform:translateX(-4px); }
+  .case-study[open] summary:hover .case-symbol { transform:translateX(-4px) rotate(45deg); }
+}
+@media (max-width:760px) {
+  .training-layout, .audit-grid { grid-template-columns:1fr; gap:24px; }
+  .method-rail { grid-template-columns:1fr; gap:16px; }
+  .method-rail li { padding:0 0 0 18px; border-top:0; border-left:2px solid var(--sage); }
+  .method-rail li:before { margin-bottom:5px; }
+  .contact-invitation { align-items:flex-start; flex-direction:column; gap:24px; }
+}
 .hero-grid > *,
 .project-grid > *,
 .case-grid > *,
