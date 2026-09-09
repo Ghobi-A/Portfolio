@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import binascii
+import json
 import re
 import shutil
 import struct
@@ -72,30 +73,13 @@ FONT = {
 }
 
 
-def require_replace(text: str, old: str, new: str) -> str:
-    if old not in text:
-        raise RuntimeError(f"Expected source marker not found: {old[:80]!r}")
-    return text.replace(old, new, 1)
-
-
 def polish_html(source: str) -> str:
-    html = source
-    html = require_replace(html, '<html lang="en">', '<html lang="en-GB">')
+    """Replace the explicit metadata region; source layout is not a build API.
 
-    patterns = [
-        r'<meta name="description"[^>]*>\n?',
-        r'<meta name="theme-color"[^>]*>\n?',
-        r'<meta property="og:title"[^>]*>\n?',
-        r'<meta property="og:description"[^>]*>\n?',
-        r'<meta property="og:type"[^>]*>\n?',
-        r'<title>[^<]*</title>\n?',
-    ]
-    for pattern in patterns:
-        html, count = re.subn(pattern, "", html, count=1)
-        if count != 1:
-            raise RuntimeError(f"Expected one metadata element matching {pattern!r}, found {count}")
-
-    metadata = f"""<meta name="description" content="Ghobikan Aravindan's applied data science portfolio: evaluated machine-learning systems, behavioural demand intelligence, privacy auditing and deployed data products.">
+    Landmarks, focus styles and native disclosures belong in source HTML/CSS.
+    Keeping one named region removes the former exact-whitespace dependencies.
+    """
+    metadata = f"""<meta name="description" content="Ghobikan Aravindan, Applied Data Scientist in London. Python, SQL, machine learning, NLP and data engineering: evaluated models and usable systems.">
 <meta name="author" content="Ghobikan Aravindan">
 <meta name="robots" content="index, follow">
 <meta name="color-scheme" content="light">
@@ -123,13 +107,14 @@ def polish_html(source: str) -> str:
 <meta name="twitter:image" content="{SOCIAL_URL}">
 <meta name="twitter:image:alt" content="Ghobikan Aravindan, Applied Data Scientist — portfolio case file preview">
 
-<title>Ghobikan Aravindan — Applied Data Scientist</title>
+<title>Ghobikan Aravindan — Applied Data Scientist, London</title>
 <script type="application/ld+json">
 {{
   "@context": "https://schema.org",
   "@type": "Person",
   "name": "Ghobikan Aravindan",
   "jobTitle": "Applied Data Scientist",
+  "address": {{"@type": "PostalAddress", "addressLocality": "London", "addressCountry": "GB"}},
   "url": "{SITE_URL}",
   "email": "mailto:ghobikan15@hotmail.co.uk",
   "sameAs": [
@@ -154,45 +139,38 @@ def polish_html(source: str) -> str:
 }}
 </script>
 """
-    viewport = '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
-    html = require_replace(html, viewport, viewport + metadata)
-
-    css_polish = """
-  .skip-link {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    z-index: 100;
-    padding: 10px 14px;
-    background: var(--ink);
-    color: var(--paper);
-    text-decoration: none;
-    transform: translateY(-160%);
-    transition: transform 0.15s ease;
-  }
-  .skip-link:focus { transform: translateY(0); }
-  h1, h2, h3 { text-wrap: balance; }
-  p { text-wrap: pretty; }
-"""
-    html = require_replace(html, '  a { color: inherit; }\n', '  a { color: inherit; }\n' + css_polish)
-
-    html = require_replace(
-        html,
-        '<body>\n\n<div class="noise"></div>',
-        '<body>\n\n<a class="skip-link" href="#projects">Skip to selected work</a>\n<div class="noise" aria-hidden="true"></div>',
-    )
-    html = require_replace(html, '<section class="hero">', '<main>\n<section class="hero">')
-    html = require_replace(
-        html,
-        '</section>\n\n<footer id="contact">',
-        '</section>\n</main>\n\n<footer id="contact">',
-    )
+    projects = [
+        ('GA-KH-01', 'Behavioural Demand Intelligence'),
+        ('GA-DI-02', 'Distributed Image ML Pipeline'),
+        ('GA-CD-03', 'Crestbound Duelists — RPG Balance Lab'),
+        ('GA-UA-04', 'Restaurant Ordering and Kitchen Operations Platform'),
+        ('GA-DP-05', 'Privacy–Utility and Fairness Audit'),
+        ('GA-CA-06', 'Creative Audio Lab'),
+    ]
+    metadata += '<script type="application/ld+json">\n' + json.dumps({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        'name': 'Selected projects by Ghobikan Aravindan',
+        'itemListElement': [
+            {'@type': 'ListItem', 'position': position,
+             'item': {'@type': 'CreativeWork', 'name': name,
+                      'url': SITE_URL + '#' + identifier,
+                      'creator': {'@type': 'Person', 'name': 'Ghobikan Aravindan'}}}
+            for position, (identifier, name) in enumerate(projects, 1)
+        ],
+    }, ensure_ascii=False, indent=2) + '\n</script>\n'
+    start, end = '<!-- METADATA:START -->', '<!-- METADATA:END -->'
+    if source.count(start) != 1 or source.count(end) != 1:
+        raise RuntimeError('Exactly one METADATA region is required')
+    before, region = source.split(start, 1)
+    _, after = region.split(end, 1)
+    html = before + start + '\n' + metadata + end + after
 
     def external_link(match: re.Match[str]) -> str:
         tag = match.group(0)
-        if "target=" in tag:
-            return tag
-        return tag[:-1] + ' target="_blank" rel="noopener noreferrer">'
+        # Enforce safety even when an authored link already has target/rel.
+        tag = re.sub(r'\s+(?:target|rel)="[^"]*"', '', tag)
+        return tag[:-1].rstrip() + ' target="_blank" rel="noopener noreferrer">'
 
     html = re.sub(r'<a\b[^>]*\bhref="https?://[^"]+"[^>]*>', external_link, html)
     return html
@@ -312,6 +290,10 @@ def main() -> None:
     if not cv_source.is_file():
         raise FileNotFoundError(f"Portfolio CV asset is missing: {cv_source}")
     shutil.copy2(cv_source, ASSETS / cv_source.name)
+    for directory in ('css', 'js', 'visuals'):
+        source = ROOT / 'assets' / directory
+        if source.is_dir():
+            shutil.copytree(source, ASSETS / directory)
 
     (ASSETS / "social-preview.png").write_bytes(make_social_preview())
     (ASSETS / "apple-touch-icon.png").write_bytes(make_touch_icon())
@@ -331,12 +313,11 @@ def main() -> None:
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="noindex">
-  <meta http-equiv="refresh" content="0; url=index.html">
+  <meta http-equiv="refresh" content="0; url=/Portfolio/">
   <title>Opening portfolio…</title>
-  <script>window.location.replace(new URL("index.html", window.location.href).href);</script>
 </head>
 <body>
-  <p>Opening <a href="index.html">Ghobikan Aravindan’s portfolio</a>…</p>
+  <p>Opening <a href="/Portfolio/">Ghobikan Aravindan’s portfolio</a>…</p>
 </body>
 </html>
 """,
