@@ -102,6 +102,94 @@
     if (link && link.hash === location.hash) openHash();
   });
   openHash();
+  // Native content is the source for each inspector; enhancement never fetches data.
+  document.querySelectorAll('.method-rail, .audit-grid').forEach((rail, index) => {
+    const items = [...rail.children];
+    const controls = document.createElement('div');
+    controls.className = 'stage-controls';
+    controls.setAttribute('role', 'group');
+    controls.setAttribute('aria-label', 'Inspect diagram stages');
+    const output = document.createElement('p');
+    output.className = 'inspection-note';
+    output.id = `stage-inspection-${index}`;
+    output.setAttribute('aria-live', 'polite');
+    const buttons = items.map((item, i) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = item.querySelector('strong').textContent;
+      button.setAttribute('aria-controls', output.id);
+      button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('click', () => select(i));
+      controls.append(button);
+      return button;
+    });
+    function select(index) {
+      items.forEach((item, i) => item.classList.toggle('is-inspected', i === index));
+      buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+      output.textContent = items[index].querySelector('span, p').textContent;
+    }
+    rail.after(controls, output);
+    select(0);
+  });
+
+  // Inspect the measured partition chart using the already-visible source table.
+  const chart = document.querySelector('.partition-chart');
+  if (chart) {
+    const rows = [...chart.querySelectorAll('tbody tr')];
+    const controls = document.createElement('div');
+    controls.className = 'stage-controls';
+    controls.setAttribute('role', 'group');
+    controls.setAttribute('aria-label', 'Inspect partition benchmark');
+    const output = document.createElement('p');
+    output.className = 'inspection-note';
+    output.setAttribute('aria-live', 'polite');
+    const points = [...chart.querySelectorAll('.signal-point circle')];
+    const buttons = rows.map((row, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = `${row.cells[0].textContent} partitions`;
+      button.setAttribute('aria-pressed', 'false');
+      button.addEventListener('click', () => {
+        buttons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === index)));
+        rows.forEach((r, i) => r.classList.toggle('is-inspected', i === index));
+        points.forEach((p, i) => p.classList.toggle('is-inspected', i === index));
+        output.textContent = `Local: ${row.cells[1].textContent}; Spark: ${row.cells[2].textContent} images/s. Five runs on one runner.`;
+      });
+      controls.append(button);
+      return button;
+    });
+    chart.querySelector('svg').after(controls, output);
+    buttons[0].click();
+  }
+
+  const progress = document.createElement('div');
+  progress.className = 'dossier-progress';
+  progress.setAttribute('aria-hidden', 'true');
+  header.append(progress);
+  const investigationLinks = [...document.querySelectorAll('.hero-index a')];
+  const investigations = investigationLinks.map(link => document.querySelector(link.hash));
+  let frame = 0;
+  function updateReadingPosition() {
+    frame = 0;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.transform = `scaleX(${height > 0 ? Math.min(1, Math.max(0, window.scrollY / height)) : 0})`;
+    let current = null;
+    investigations.forEach((section, i) => {
+      if (section.getBoundingClientRect().top <= window.innerHeight * .4) current = i;
+    });
+    investigationLinks.forEach((link, i) => {
+      if (i === current) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  function scheduleReadingPosition() {
+    if (!frame) frame = requestAnimationFrame(updateReadingPosition);
+  }
+  window.addEventListener('scroll', scheduleReadingPosition, {passive:true});
+  window.addEventListener('resize', scheduleReadingPosition, {passive:true});
+  cases.forEach(details => details.addEventListener('toggle', scheduleReadingPosition));
+  document.fonts?.ready.then(scheduleReadingPosition);
+  scheduleReadingPosition();
   const cancelLayoutAnimations = () => {
     [...animations].forEach(([details, animation]) =>
       finish(details, animation.targetOpen),
