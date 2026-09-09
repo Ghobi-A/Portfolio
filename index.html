@@ -280,6 +280,10 @@
                 ><strong>Keep discussion groups together</strong
                 ><small>Train / validation / held-out test</small>
               </div>
+              <div class="split-rail" aria-label="Target split proportions: train 70 percent, validation 15 percent, test 15 percent. Actual group sizes can vary.">
+                <span style="--portion:70">Train</span><span style="--portion:15">Val</span><span style="--portion:15">Test</span>
+              </div>
+              <p class="diagram-note">70 / 15 / 15 target · whole groups stay together</p>
               <div class="flow-line" aria-hidden="true"></div>
               <div class="split-nodes">
                 <div class="system-node">
@@ -304,6 +308,11 @@
               ><span class="case-symbol" aria-hidden="true">+</span>
             </summary>
             <div class="case-content" id="kh-case">
+              <div class="evidence-strip">
+                <span class="eyebrow">Evaluation boundary</span>
+                <ol class="method-rail"><li><strong>Train</strong><span>Learn text features</span></li><li><strong>Validate</strong><span>Calibrate &amp; freeze thresholds</span></li><li><strong>Test</strong><span>Evaluate frozen decisions</span></li></ol>
+                <p class="diagram-note">Eight intent classes are defined; fatigue and expectation decay have no labelled examples yet.</p>
+              </div>
               <div class="case-grid">
                 <section>
                   <h4>The question</h4>
@@ -365,7 +374,10 @@
                   rolling-origin Bayesian forecasting, coverage monitoring and a
                   shared API/dashboard service. Synthetic marketing-mix
                   experiments remain separate from real audience data.
-                  Full-dataset evaluation is pending.
+                  The updated PR reports demo-only findings on a class-stratified
+                  304-row extract: the naive forecast beats the Bayesian model,
+                  and no model is recommended. This sample is not
+                  volume-representative. Full-dataset evaluation is pending.
                 </p>
               </aside>
               <a
@@ -457,11 +469,27 @@
                   </div>
                 </div>
               </div>
+              <div class="partition-chart">
+                <p class="chart-label">Preprocessing by partition count <span>images / second</span></p>
+                <svg viewBox="0 0 480 250" role="img" aria-labelledby="partition-title partition-desc">
+                  <title id="partition-title">Local and local-mode Spark throughput by partition count</title>
+                  <desc id="partition-desc">Five runs per configuration on one runner, 3,670 images. At 1, 2, 4 and 8 partitions, local means are 471.0, 486.8, 483.4 and 482.6 images per second; Spark means are 446.9, 806.8, 1086.2 and 1109.6. Equal horizontal spacing denotes partition categories, not a linear numeric scale.</desc>
+                  <g class="chart-grid"><path d="M54 30H450M54 85H450M54 140H450M54 195H450" /></g>
+                  <path class="axis" d="M54 20V195H450" />
+                  <g class="plot-label"><text x="0" y="34">1,200</text><text x="14" y="89">800</text><text x="14" y="144">400</text><text x="34" y="199">0</text><text x="66" y="218">1</text><text x="186" y="218">2</text><text x="306" y="218">4</text><text x="426" y="218">8</text><text x="170" y="242">PARTITIONS</text></g>
+                  <path class="partition-local draw-line" pathLength="1" d="M70 130.2L190 128.1L310 128.5L430 128.6" />
+                  <path class="trace draw-line" pathLength="1" d="M70 133.6L190 84.1L310 45.6L430 42.4" />
+                  <g class="signal-point"><circle cx="70" cy="133.6" r="4"/><circle cx="190" cy="84.1" r="4"/><circle cx="310" cy="45.6" r="4"/><circle cx="430" cy="42.4" r="4"/></g>
+                </svg>
+                <p class="chart-legend"><span>— Spark (local mode)</span><span>┄ Local baseline</span></p>
+                <table class="data-table"><caption>Means · five runs per configuration · images/s</caption><thead><tr><th scope="col">Partitions</th><th scope="col">Local</th><th scope="col">Spark</th></tr></thead><tbody><tr><th scope="row">1</th><td>471.0</td><td>446.9</td></tr><tr><th scope="row">2</th><td>486.8</td><td>806.8</td></tr><tr><th scope="row">4</th><td>483.4</td><td>1,086.2</td></tr><tr><th scope="row">8</th><td>482.6</td><td>1,109.6</td></tr></tbody></table>
+              </div>
               <figcaption>
                 Independent zero-based scales. Input results are means over five
                 repeats; preprocessing compares the best local baseline with
-                eight Spark partitions.
-                <a href="https://github.com/Ghobi-A/Big-Data#readme"
+                eight Spark partitions. The partition plot uses ordered categories;
+                it is not multi-worker scaling. Run-to-run variability is available in the CSV.
+                <a href="https://github.com/Ghobi-A/Big-Data/blob/main/reports/tables/benchmark_summary.csv"
                   >Source ↗</a
                 >
               </figcaption>
@@ -474,6 +502,17 @@
               ><span class="case-symbol" aria-hidden="true">+</span>
             </summary>
             <div class="case-content" id="di-case">
+              <figure class="evidence-panel training-check">
+                <div class="panel-title eyebrow">Fig. 02b / Follow the bottleneck</div>
+                <div class="training-layout">
+                  <div><p class="result-statement">4.58× faster input.<br /><em>Almost the same epoch.</em></p><p>Standalone input throughput and end-to-end training time answer different questions.</p></div>
+                  <div class="chart-group"><p class="chart-label">Mean CNN epoch <span>seconds · lower is faster</span></p>
+                    <div class="bar-row"><span>JPEG</span><b>8.68 s</b><div class="bar-track"><i style="--value:100%"></i></div></div>
+                    <div class="bar-row"><span>TFRecord</span><b>8.54 s</b><div class="bar-track"><i class="rust-bar" style="--value:98.39%"></i></div></div>
+                  </div>
+                </div>
+                <figcaption>Zero-based shared scale. Means over three epochs from one seeded run per format, not independent repeated training experiments. <a href="https://github.com/Ghobi-A/Big-Data#measured-results">Benchmark source ↗</a></figcaption>
+              </figure>
               <div class="case-grid">
                 <section>
                   <h4>The question</h4>
@@ -632,6 +671,11 @@
               ><span class="case-symbol" aria-hidden="true">+</span>
             </summary>
             <div class="case-content" id="cd-case">
+              <div class="evidence-strip">
+                <span class="eyebrow">Stateful v2.2 / explanatory sequence</span>
+                <ol class="method-rail"><li><strong>Choose</strong><span>Basic, Signature or Gambit</span></li><li><strong>Resolve</strong><span>Initiative, damage &amp; effects</span></li><li><strong>Carry state</strong><span>Cooldowns &amp; temporary modifiers</span></li></ol>
+                <p class="diagram-note">The next action depends on the resulting state. This is a system diagram, not a measured fight duration or win-rate chart.</p>
+              </div>
               <div class="case-grid">
                 <section>
                   <h4>The question</h4>
@@ -792,6 +836,11 @@
               ><span class="case-symbol" aria-hidden="true">+</span>
             </summary>
             <div class="case-content" id="uag-case">
+              <div class="evidence-strip trust-map">
+                <span class="eyebrow">Trust boundaries / architecture only</span>
+                <ol class="method-rail"><li><strong>Public browser</strong><span>Requests an order; cannot confirm payment</span></li><li><strong>Server boundary</strong><span>Validates pricing &amp; payment webhook</span></li><li><strong>Staff boundary</strong><span>Restricted kitchen operations</span></li></ol>
+                <p class="diagram-note">Printing remains proposed and hardware-unverified. No live payment acceptance result is implied.</p>
+              </div>
               <div class="case-grid">
                 <section>
                   <h4>The question</h4>
@@ -986,6 +1035,10 @@
               ><span class="case-symbol" aria-hidden="true">+</span>
             </summary>
             <div class="case-content" id="dp-case">
+              <div class="evidence-strip">
+                <span class="eyebrow">Three distinct audit questions</span>
+                <div class="audit-grid"><div><strong>Formal guarantee</strong><p>RDP accounting reports achieved ε at δ = 10⁻⁵.</p></div><div><strong>Empirical attack</strong><p>Loss and LiRA probes test exposure. A failed attack is not a proof.</p></div><div><strong>Group diagnostics</strong><p>TPR, FPR and disparity require subgroup counts and uncertainty.</p></div></div>
+              </div>
               <div class="case-grid">
                 <section>
                   <h4>The question</h4>
@@ -1170,6 +1223,7 @@
             >
           </div>
           <div class="audio-scope">
+            <div class="token-flow" aria-label="Deterministic generation path"><span>Prompt controls</span><span>Note events</span><span>MIDI stems</span></div>
             <p class="eyebrow">Current → intended scope</p>
             <ol>
               <li>
@@ -1285,7 +1339,8 @@
       <div class="wrap">
         <p class="eyebrow">05 / Open a conversation</p>
         <p class="contact-question">Have a problem hiding inside messy data?</p>
-        <h2>Let’s <em>investigate.</em><span aria-hidden="true">↗</span></h2>
+        <h2>Let’s <em>investigate.</em></h2>
+        <div class="contact-invitation"><p>Applied data science. Careful evaluation.<br />Systems people can use.</p><a class="button primary" href="mailto:ghobikan15@hotmail.co.uk">Start a conversation <span aria-hidden="true">↗</span></a></div>
         <div class="contact-bottom">
           <a class="email" href="mailto:ghobikan15@hotmail.co.uk"
             >ghobikan15@hotmail.co.uk</a

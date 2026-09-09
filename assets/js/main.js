@@ -32,6 +32,10 @@
     if (!header.contains(event.target)) setMenu(false);
   });
   mobile.addEventListener("change", () => setMenu(false));
+  // Do not leave an expanded mobile menu behind when keyboard focus leaves it.
+  header.addEventListener("focusout", (event) => {
+    if (event.relatedTarget && !header.contains(event.relatedTarget)) setMenu(false);
+  });
 
   const cases = [...document.querySelectorAll(".case-study")];
   const animations = new Map();
