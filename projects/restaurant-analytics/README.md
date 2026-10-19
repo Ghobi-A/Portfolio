@@ -1,12 +1,7 @@
-# Restaurant analytics demonstration
+# Restaurant analytics public case study
 
-All 240 orders are fictional. The generator never reads production.
+The active dashboard uses a curated observed aggregate snapshot from read-only PostgreSQL queries executed on 19 October 2026. Publication of these anonymised business aggregates was requested by the owner. No customer fields or original order identifiers are included. Mixed test/live provenance and all order states remain explicit.
 
-```sh
-python3 projects/restaurant-analytics/generate_demo.py
-python3 -m http.server 8000 --directory projects/restaurant-analytics/dashboard
-```
+`dashboard/observed-aggregates.json` is the downloadable source; `observed-data.js` is the same object bundled for offline browser use. `observed-dashboard.js` renders the four pages. The scale scenario uses volume × observed AOV and volume × observed cancellation rate. It is a fixed-mix estimate, not a validated forecast. Aggregates are not used to fabricate order records.
 
-Open localhost:8000. Import the four CSVs into Power BI as Orders, MenuItems, Notifications and ItemPairs; use model.json, date_dimension.dax, measures.dax and dashboard-layout.json. Power BI Desktop execution remains pending. SQL files are SELECT-only examples; running them on any real database requires separate authorised read-only access.
-
-Do not publish real order keys, timestamps, customer fields, notes or payment identifiers. No original production rows or private application code are included.
+Earlier `DEMO-` CSVs and `generate_demo.py` remain clearly synthetic Power BI practice inputs only; the active report no longer reads them. Historical screenshots depict the earlier synthetic prototype and are not used as current evidence. Native Power BI import, DAX engine and report validation remain pending.

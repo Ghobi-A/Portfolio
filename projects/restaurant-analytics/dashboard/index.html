@@ -21,8 +21,8 @@
           ><button data-page="3"><span>04</span> Payments & quality</button>
         </nav>
         <div class="asidefoot">
-          <span class="badge">SYNTHETIC DEMO</span>
-          <p>240 fictional orders.<br />No connection to the production database.</p>
+          <span class="badge">OBSERVED SNAPSHOT</span>
+          <p>53 recorded orders.<br />No connection to the production database.</p>
           <a href="../index.html">Project methodology ↗</a>
         </div>
       </aside>
@@ -32,40 +32,18 @@
             <p class="eyebrow">RESTAURANT REVENUE & OPERATIONS</p>
             <h1 id="page-title">Executive overview</h1>
           </div>
-          <button id="export" class="export">Export filtered orders ↓</button>
+          <button id="export" class="export">Download aggregate data ↓</button>
         </header>
         <div class="notice">
-          <strong>Portfolio demonstration.</strong> Mixed-status, synthetic dataset. Gross order
+          <strong>Portfolio demonstration.</strong> Operational records, aggregated as at 19 October 2026. Mixed test/live provenance. Gross order
           value includes cancelled and unpaid orders; it is not audited revenue.
         </div>
-        <section class="filters" aria-label="Report filters">
-          <label>From<input id="start" type="date" /></label
-          ><label>To<input id="end" type="date" /></label
-          ><label
-            >Fulfilment<select id="type">
-              <option value="">All fulfilment types</option>
-              <option>delivery</option>
-              <option>collection</option>
-            </select></label
-          ><label
-            >Order status<select id="status">
-              <option value="">All statuses</option>
-              <option>confirmed</option>
-              <option>cancelled</option>
-              <option>payment_failed</option>
-              <option>pending_payment</option>
-            </select></label
-          ><button id="reset">Reset</button>
-        </section>
         <p id="scope" class="scope" aria-live="polite"></p>
         <div id="content"></div>
         <details class="definitions">
           <summary>Metric definitions & source</summary>
           <p>
-            Source: deterministic fictional dataset, seed 20261019, generated without reading
-            production. Date, type and status filters intersect and apply to every measure, chart,
-            detail table and CSV export.
-          </p>
+            Source: SELECT-only PostgreSQL queries executed on 19 October 2026. Only aggregate observations are published. All-status denominators remain explicit. Monthly charts cover partial months. These aggregate tables do not support arbitrary joint date/type/status slicing; no order-level records are reconstructed.</p>
           <p>
             Confirmed card value: payment method card AND payment status paid, as recorded by the
             application; settlement, live/test mode and refunds are unverified. Offline order value:
@@ -99,8 +77,7 @@
         </footer>
       </main>
     </div>
-    <script src="demo-data.js"></script>
-    <script src="analytics.js"></script>
-    <script src="dashboard.js"></script>
+    <script src="observed-data.js"></script>
+    <script src="observed-dashboard.js"></script>
   </body>
 </html>

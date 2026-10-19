@@ -140,12 +140,12 @@ def polish_html(source: str) -> str:
 </script>
 """
     projects = [
-        ('GA-RA-07', 'UK Asia Grill — Restaurant Revenue & Operations Analytics'),
-        ('GA-KH-01', 'Behavioural Demand Intelligence'),
-        ('GA-DI-02', 'Distributed Image ML Pipeline'),
-        ('GA-CD-03', 'Crestbound Duelists — RPG Balance Lab'),
-        ('GA-UA-04', 'Restaurant Ordering and Kitchen Operations Platform'),
         ('GA-DP-05', 'Privacy–Utility and Fairness Audit'),
+        ('GA-KH-01', 'Behavioural Demand Intelligence'),
+        ('GA-RA-07', 'UK Asia Grill — Restaurant Revenue & Operations Analytics'),
+        ('GA-DI-02', 'Distributed Image ML Pipeline'),
+        ('GA-UA-04', 'Restaurant Ordering and Kitchen Operations Platform'),
+        ('GA-CD-03', 'Crestbound Duelists — RPG Balance Lab'),
         ('GA-CA-06', 'Creative Audio Lab'),
     ]
     metadata += '<script type="application/ld+json">\n' + json.dumps({

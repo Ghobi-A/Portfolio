@@ -187,14 +187,7 @@
             </figcaption>
           </figure>
         </div>
-        <div class="hero-index">
-          <span class="eyebrow">Inside the dossier</span
-          ><a href="#GA-RA-07">SQL &amp; dashboards</a><a href="#file-kh4">01 · Behaviour</a
-          ><a href="#file-di">02 · Scale</a
-          ><a href="#file-cd">03 · Simulation</a
-          ><a href="#file-uag">04 · Systems</a
-          ><a href="#file-dp">05 · Privacy</a>
-        </div>
+        <div class="hero-index"><span class="eyebrow">Inside the dossier</span><a href="#file-dp">01 · Privacy &amp; ML research</a><a href="#file-kh4">02 · Applied NLP</a><a href="#GA-RA-07">03 · SQL &amp; BI</a><a href="#file-di">04 · ML pipelines</a><a href="#file-uag">05 · Production systems</a><a href="#file-cd">06 · Simulation</a></div>
       </section>
       <section id="projects" class="section wrap" aria-labelledby="work-title">
         <div class="section-heading">
@@ -207,704 +200,6 @@
             around it.
           </p>
         </div>
-        <article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
-<div class="project-top eyebrow"><span>GA-RA-07 / Featured SQL &amp; BI case study</span><span class="badge">Synthetic public demo</span></div>
-<div class="project-grid"><div class="project-copy"><h3 id="ra-title">Restaurant Revenue<br /><em>&amp; Operations Analytics.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A read-only PostgreSQL analytical layer, Power BI model and DAX build kit, and four-page interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Fictional demo orders</dt><dd>240</dd></div></dl><p class="evidence-note">Validated against a private source. Public visuals are synthetic; Power BI Desktop execution remains pending. No revenue uplift or profitability claim.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>JSONB</li><li>BI modelling</li><li>DAX</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore synthetic dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Interactive operations dashboard</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the synthetic restaurant analytics dashboard"><img src="projects/restaurant-analytics/screenshots/executive.jpg" alt="Working restaurant dashboard with order metrics, trends and mixed-status payment definitions, using 240 fictional orders" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Browser capture of the working synthetic report. Four pages, shared filters and CSV export. Power BI Desktop validation remains pending.</figcaption></figure></div></article>
-<article
-          id="file-kh4"
-          class="project project-kh"
-          aria-labelledby="kh-title"
-        >
-          <div class="project-top eyebrow">
-            <span>GA-KH-01 / Behavioural intelligence</span
-            ><span class="badge">Evaluated baseline</span>
-          </div>
-          <div class="project-grid">
-            <div class="project-copy">
-              <h3 id="kh-title">
-                Behavioural Demand<br /><em>Intelligence.</em>
-              </h3>
-              <p class="problem">
-                Online enthusiasm is easy to count. Intent is harder to defend.
-              </p>
-              <p>
-                A leakage-aware NLP system that separates actionable audience
-                signals from general discussion around Kingdom Hearts IV.
-              </p>
-              <dl class="metrics">
-                <div>
-                  <dt>Processed signals</dt>
-                  <dd>4,831</dd>
-                </div>
-                <div>
-                  <dt>Discussion groups</dt>
-                  <dd>23</dd>
-                </div>
-                <div>
-                  <dt>Evaluation seeds</dt>
-                  <dd>5</dd>
-                </div>
-              </dl>
-              <p class="evidence-note">
-                A 200-row audited corpus supports preliminary evaluation—not a
-                market-demand or sales claim.
-              </p>
-              <ul class="tags" aria-label="Technologies">
-                <li>Python</li>
-                <li>scikit-learn</li>
-                <li>NLP</li>
-                <li>Streamlit</li>
-              </ul>
-              <div class="text-links">
-                <a href="https://kh4-demand-intel.streamlit.app/"
-                  >Live dashboard ↗</a
-                ><a href="https://github.com/Ghobi-A/kh4-demand-intel"
-                  >GitHub ↗</a
-                >
-              </div>
-            </div>
-            <figure class="evidence-panel signal-system">
-              <div class="panel-title eyebrow">
-                Fig. 01 / Classification, with guardrails
-              </div>
-              <div class="signal-input">
-                <span>Reddit</span><span>YouTube</span
-                ><span class="input-note">public discussion</span>
-              </div>
-              <div class="flow-line" aria-hidden="true"></div>
-              <div class="system-node">
-                <span class="eyebrow">01 / Audit</span
-                ><strong>Human-corrected intent labels</strong
-                ><small>200 examples · eight-class taxonomy</small>
-              </div>
-              <div class="flow-line" aria-hidden="true"></div>
-              <div class="system-node sage-node">
-                <span class="eyebrow">02 / Partition</span
-                ><strong>Keep discussion groups together</strong
-                ><small>Train / validation / held-out test</small>
-              </div>
-              <div class="split-rail" aria-label="Target split proportions: train 70 percent, validation 15 percent, test 15 percent. Actual group sizes can vary.">
-                <span style="--portion:70">Train</span><span style="--portion:15">Val</span><span style="--portion:15">Test</span>
-              </div>
-              <p class="diagram-note">70 / 15 / 15 target · whole groups stay together</p>
-              <div class="flow-line" aria-hidden="true"></div>
-              <div class="split-nodes">
-                <div class="system-node">
-                  <strong>Is it actionable?</strong
-                  ><small>Calibrated probability</small>
-                </div>
-                <div class="system-node">
-                  <strong>Which intent?</strong
-                  ><small>Conditional classification</small>
-                </div>
-              </div>
-              <figcaption>
-                Architecture from the repository. Group holdouts reduce thread
-                leakage; calibration and thresholds use validation data only.
-              </figcaption>
-            </figure>
-          </div>
-          <details class="case-study" id="GA-KH-01">
-            <summary aria-controls="kh-case">
-              View case study
-              <span class="sr-only">— Behavioural Demand Intelligence</span
-              ><span class="case-symbol" aria-hidden="true">+</span>
-            </summary>
-            <div class="case-content" id="kh-case">
-              <div class="evidence-strip">
-                <span class="eyebrow">Evaluation boundary</span>
-                <ol class="method-rail"><li><strong>Train</strong><span>Learn text features</span></li><li><strong>Validate</strong><span>Calibrate &amp; freeze thresholds</span></li><li><strong>Test</strong><span>Evaluate frozen decisions</span></li></ol>
-                <p class="diagram-note">Eight intent classes are defined; fatigue and expectation decay have no labelled examples yet.</p>
-              </div>
-              <div class="case-grid">
-                <section>
-                  <h4>The question</h4>
-                  <p>
-                    Can noisy fan discussion reveal actionable interest, rather
-                    than simply positive sentiment?
-                  </p>
-                </section>
-                <section>
-                  <h4>The system</h4>
-                  <p>
-                    A public-signal pipeline, manually audited intent taxonomy,
-                    rule baseline and TF-IDF linear classifiers, surfaced in a
-                    Streamlit exploration interface.
-                  </p>
-                </section>
-                <section>
-                  <h4>Method</h4>
-                  <p>
-                    Compare rules, logistic regression and SVM variants.
-                    Separate actionable detection from intent classification;
-                    calibrate with Platt scaling and choose thresholds on
-                    validation data.
-                  </p>
-                </section>
-                <section>
-                  <h4>Evaluation</h4>
-                  <p>
-                    Group-aware 70/15/15 splits over five seeds. Inspect
-                    macro-F1, actionable PR-AUC, calibration, ranking and
-                    errors. Two intent classes have no labelled examples; 197 of
-                    200 labels come from YouTube.
-                  </p>
-                </section>
-                <section>
-                  <h4>Result</h4>
-                  <p>
-                    Rules lead end-to-end macro-F1 on this small corpus; SVM
-                    leads actionable ranking. High split variance makes this
-                    preliminary evidence, not a final model ranking.
-                  </p>
-                </section>
-                <section>
-                  <h4>Technical insight</h4>
-                  <p>
-                    A stronger ranking model need not be the best multiclass
-                    classifier. The metric must match the decision the system
-                    supports.
-                  </p>
-                </section>
-              </div>
-              <aside class="scope-note">
-                <span class="badge">Implemented / demo-only forecasts</span>
-                <p>
-                  <a href="https://github.com/Ghobi-A/kh4-demand-intel/pull/23"
-                    >Merged PR #23</a
-                  >
-                  adds timestamp-correct weekly demand signals,
-                  rolling-origin Bayesian forecasting, coverage monitoring and a
-                  shared API/dashboard service. Synthetic marketing-mix
-                  experiments remain separate from real audience data.
-                  The committed report contains demo-only findings on a class-stratified
-                  304-row extract: the naive forecast beats the Bayesian model,
-                  and no model is recommended. This sample is not
-                  volume-representative. Full-dataset evaluation is pending.
-                </p>
-              </aside>
-              <a
-                class="source-link"
-                href="https://github.com/Ghobi-A/kh4-demand-intel#readme"
-                >Read methods, limitations and evidence ↗</a
-              >
-            </div>
-          </details>
-        </article>
-        <article
-          id="file-di"
-          class="project project-data"
-          aria-labelledby="di-title"
-        >
-          <div class="project-top eyebrow">
-            <span>GA-DI-02 / Distributed ML engineering</span
-            ><span class="badge">Measured benchmark</span>
-          </div>
-          <div class="project-grid">
-            <div class="project-copy">
-              <h3 id="di-title">
-                Faster inputs.<br /><em>Honest benchmarks.</em>
-              </h3>
-              <p class="problem">
-                Where does an image-learning pipeline actually spend its time?
-              </p>
-              <p>
-                A controlled comparison of local and Spark preprocessing, then
-                raw JPEG and TFRecord input for TensorFlow.
-              </p>
-              <dl class="metrics">
-                <div>
-                  <dt>Preprocessing speedup</dt>
-                  <dd>2.28<span>×</span></dd>
-                </div>
-                <div>
-                  <dt>TFRecord input gain</dt>
-                  <dd>4.58<span>×</span></dd>
-                </div>
-              </dl>
-              <p class="evidence-note">
-                3,670 images · one GitHub Actions runner. Spark ran in local
-                mode; these are not multi-worker scaling results.
-              </p>
-              <ul class="tags" aria-label="Technologies">
-                <li>PySpark</li>
-                <li>TensorFlow</li>
-                <li>GCP</li>
-                <li>Python</li>
-              </ul>
-              <div class="text-links">
-                <a href="https://big-data-tfr.streamlit.app/"
-                  >Benchmark dashboard ↗</a
-                ><a href="https://github.com/Ghobi-A/Big-Data">GitHub ↗</a>
-              </div>
-            </div>
-            <figure class="evidence-panel benchmark">
-              <div class="panel-title eyebrow">
-                Fig. 02 / Throughput, not training accuracy
-              </div>
-              <div class="chart-group">
-                <p class="chart-label">
-                  Preprocessing <span>images / second</span>
-                </p>
-                <div class="bar-row">
-                  <span>Local baseline</span><b>486.8</b>
-                  <div class="bar-track"><i style="--value: 43.87%"></i></div>
-                </div>
-                <div class="bar-row">
-                  <span>Spark · 8 partitions</span><b>1,109.6</b>
-                  <div class="bar-track">
-                    <i class="rust-bar" style="--value: 100%"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="chart-group">
-                <p class="chart-label">
-                  TensorFlow input <span>samples / second</span>
-                </p>
-                <div class="bar-row">
-                  <span>Raw JPEG</span><b>2,179.1</b>
-                  <div class="bar-track"><i style="--value: 21.84%"></i></div>
-                </div>
-                <div class="bar-row">
-                  <span>TFRecord</span><b>9,978.1</b>
-                  <div class="bar-track">
-                    <i class="rust-bar" style="--value: 100%"></i>
-                  </div>
-                </div>
-              </div>
-              <div class="partition-chart">
-                <p class="chart-label">Preprocessing by partition count <span>images / second</span></p>
-                <svg viewBox="0 0 480 250" role="img" aria-labelledby="partition-title partition-desc">
-                  <title id="partition-title">Local and local-mode Spark throughput by partition count</title>
-                  <desc id="partition-desc">Five runs per configuration on one runner, 3,670 images. At 1, 2, 4 and 8 partitions, local means are 471.0, 486.8, 483.4 and 482.6 images per second; Spark means are 446.9, 806.8, 1086.2 and 1109.6. Equal horizontal spacing denotes partition categories, not a linear numeric scale.</desc>
-                  <g class="chart-grid"><path d="M54 30H450M54 85H450M54 140H450M54 195H450" /></g>
-                  <path class="axis" d="M54 20V195H450" />
-                  <g class="plot-label"><text x="0" y="34">1,200</text><text x="14" y="89">800</text><text x="14" y="144">400</text><text x="34" y="199">0</text><text x="66" y="218">1</text><text x="186" y="218">2</text><text x="306" y="218">4</text><text x="426" y="218">8</text><text x="170" y="242">PARTITIONS</text></g>
-                  <path class="partition-local draw-line" pathLength="1" d="M70 130.2L190 128.1L310 128.5L430 128.6" />
-                  <path class="trace draw-line" pathLength="1" d="M70 133.6L190 84.1L310 45.6L430 42.4" />
-                  <g class="signal-point"><circle cx="70" cy="133.6" r="4"/><circle cx="190" cy="84.1" r="4"/><circle cx="310" cy="45.6" r="4"/><circle cx="430" cy="42.4" r="4"/></g>
-                </svg>
-                <p class="chart-legend"><span>— Spark (local mode)</span><span>┄ Local baseline</span></p>
-                <table class="data-table"><caption>Means · five runs per configuration · images/s</caption><thead><tr><th scope="col">Partitions</th><th scope="col">Local</th><th scope="col">Spark</th></tr></thead><tbody><tr><th scope="row">1</th><td>471.0</td><td>446.9</td></tr><tr><th scope="row">2</th><td>486.8</td><td>806.8</td></tr><tr><th scope="row">4</th><td>483.4</td><td>1,086.2</td></tr><tr><th scope="row">8</th><td>482.6</td><td>1,109.6</td></tr></tbody></table>
-              </div>
-              <figcaption>
-                Independent zero-based scales. Input results are means over five
-                repeats; preprocessing compares the best local baseline with
-                eight Spark partitions. The partition plot uses ordered categories;
-                it is not multi-worker scaling. Run-to-run variability is available in the CSV.
-                <a href="https://github.com/Ghobi-A/Big-Data/blob/main/reports/tables/benchmark_summary.csv"
-                  >Source ↗</a
-                >
-              </figcaption>
-            </figure>
-          </div>
-          <details class="case-study" id="GA-DI-02">
-            <summary aria-controls="di-case">
-              View case study
-              <span class="sr-only">— Distributed Image ML Pipeline</span
-              ><span class="case-symbol" aria-hidden="true">+</span>
-            </summary>
-            <div class="case-content" id="di-case">
-              <figure class="evidence-panel training-check">
-                <div class="panel-title eyebrow">Fig. 02b / Follow the bottleneck</div>
-                <div class="training-layout">
-                  <div><p class="result-statement">4.58× faster input.<br /><em>Almost the same epoch.</em></p><p>Standalone input throughput and end-to-end training time answer different questions.</p></div>
-                  <div class="chart-group"><p class="chart-label">Mean CNN epoch <span>seconds · lower is faster</span></p>
-                    <div class="bar-row"><span>JPEG</span><b>8.68 s</b><div class="bar-track"><i style="--value:100%"></i></div></div>
-                    <div class="bar-row"><span>TFRecord</span><b>8.54 s</b><div class="bar-track"><i class="rust-bar" style="--value:98.39%"></i></div></div>
-                  </div>
-                </div>
-                <figcaption>Zero-based shared scale. Means over three epochs from one seeded run per format, not independent repeated training experiments. <a href="https://github.com/Ghobi-A/Big-Data#measured-results">Benchmark source ↗</a></figcaption>
-              </figure>
-              <div class="case-grid">
-                <section>
-                  <h4>The question</h4>
-                  <p>
-                    Do parallel preprocessing and a different storage format
-                    improve the bottleneck—or just one isolated benchmark?
-                  </p>
-                </section>
-                <section>
-                  <h4>The system</h4>
-                  <p>
-                    A reproducible flower-image pipeline: Pillow transforms →
-                    local/Spark execution → TFRecord shards → TensorFlow CNN →
-                    exported benchmark tables.
-                  </p>
-                </section>
-                <section>
-                  <h4>Method</h4>
-                  <p>
-                    Keep resize, centre-crop and recompression consistent across
-                    execution paths. Separate preprocessing, input throughput
-                    and model training measurements.
-                  </p>
-                </section>
-                <section>
-                  <h4>Evaluation</h4>
-                  <p>
-                    3,670 JPEGs across five classes, zero failed files. Repeat
-                    input benchmarks five times; report variability rather than
-                    only the fastest run.
-                  </p>
-                </section>
-                <section>
-                  <h4>Result</h4>
-                  <p>
-                    Input throughput improved 4.58×. Mean CNN epoch time barely
-                    changed: 8.68 s for JPEG versus 8.54 s for TFRecord, from
-                    one seeded three-epoch run per format.
-                  </p>
-                </section>
-                <section>
-                  <h4>Technical insight</h4>
-                  <p>
-                    A faster input reader does not imply equivalent end-to-end
-                    acceleration when model compute becomes the bottleneck.
-                  </p>
-                </section>
-              </div>
-              <aside class="scope-note">
-                <span class="badge"
-                  >Infrastructure merged / evidence pending</span
-                >
-                <p>
-                  Recent Dataproc updates add runtime setup, interpreter
-                  selection and cluster-lifecycle fixes. Multi-worker
-                  experiments are the intended next scope; the reported speedups
-                  above are still single-runner measurements.
-                </p>
-              </aside>
-              <a
-                class="source-link"
-                href="https://github.com/Ghobi-A/Big-Data/tree/main/reports"
-                >Inspect benchmark reports ↗</a
-              >
-            </div>
-          </details>
-        </article>
-        <article
-          id="file-cd"
-          class="project project-game"
-          aria-labelledby="cd-title"
-        >
-          <div class="project-top eyebrow">
-            <span>GA-CD-03 / Simulation &amp; creative systems</span
-            ><span class="badge">Playable prototype</span>
-          </div>
-          <div class="project-grid">
-            <div class="project-copy">
-              <h3 id="cd-title">Crestbound<br /><em>Duelists.</em></h3>
-              <p class="problem">
-                Game balance is a hypothesis. Make it testable.
-              </p>
-              <p>
-                A Python balance laboratory and original Godot RPG prototype,
-                connected by shared, validated combat data.
-              </p>
-              <dl class="metrics">
-                <div>
-                  <dt>Playable classes</dt>
-                  <dd>6</dd>
-                </div>
-                <div>
-                  <dt>Simulations / matchup</dt>
-                  <dd>100<span>k</span></dd>
-                </div>
-              </dl>
-              <ul class="tags" aria-label="Technologies">
-                <li>Python</li>
-                <li>Monte Carlo</li>
-                <li>Godot 4</li>
-                <li>YAML</li>
-              </ul>
-              <div class="text-links">
-                <a href="https://ghobi-a.github.io/Crestbound-Duelists/"
-                  >Play prototype ↗</a
-                ><a href="https://crestbound-balance-lab.streamlit.app/"
-                  >Balance lab ↗</a
-                ><a href="https://github.com/Ghobi-A/Crestbound-Duelists"
-                  >GitHub ↗</a
-                >
-              </div>
-            </div>
-            <figure class="evidence-panel simulation">
-              <div class="panel-title eyebrow">
-                Fig. 03 / One combat model, two consumers
-              </div>
-              <div class="system-node shared-node">
-                <span class="eyebrow">Source of truth</span
-                ><strong>Validated YAML combat definitions</strong
-                ><small>Classes · actions · status rules</small>
-              </div>
-              <div class="branch-connector" aria-hidden="true"></div>
-              <div class="simulation-branches">
-                <div>
-                  <span class="eyebrow">Analysis</span
-                  ><strong>Python simulator</strong>
-                  <div class="mini-grid" aria-hidden="true">
-                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i
-                    ><i></i>
-                  </div>
-                  <p>
-                    Seeded matchups<br />Stateful lookahead<br />Balance reports
-                  </p>
-                </div>
-                <div>
-                  <span class="eyebrow">Experience</span
-                  ><strong>Godot prototype</strong>
-                  <div class="game-mark" aria-hidden="true">
-                    C<span>↗</span>D
-                  </div>
-                  <p>
-                    JSON exports<br />Tactical combat<br />Playable encounters
-                  </p>
-                </div>
-              </div>
-              <figcaption>
-                Architecture diagram. The grid represents matchup coverage, not
-                measured win rates. Shared exports connect simulation
-                assumptions to game behaviour.
-              </figcaption>
-            </figure>
-          </div>
-          <details class="case-study" id="GA-CD-03">
-            <summary aria-controls="cd-case">
-              View case study <span class="sr-only">— Crestbound Duelists</span
-              ><span class="case-symbol" aria-hidden="true">+</span>
-            </summary>
-            <div class="case-content" id="cd-case">
-              <div class="evidence-strip">
-                <span class="eyebrow">Stateful v2.2 / explanatory sequence</span>
-                <ol class="method-rail"><li><strong>Choose</strong><span>Basic, Signature or Gambit</span></li><li><strong>Resolve</strong><span>Initiative, damage &amp; effects</span></li><li><strong>Carry state</strong><span>Cooldowns &amp; temporary modifiers</span></li></ol>
-                <p class="diagram-note">The next action depends on the resulting state. This is a system diagram, not a measured fight duration or win-rate chart.</p>
-              </div>
-              <div class="case-grid">
-                <section>
-                  <h4>The question</h4>
-                  <p>
-                    Can the combat rules support meaningful tactical decisions
-                    while staying testable outside the game engine?
-                  </p>
-                </section>
-                <section>
-                  <h4>The system</h4>
-                  <p>
-                    A data-driven balance lab, Streamlit analysis surface and
-                    playable Godot game, with validated exports instead of
-                    separately maintained stat tables.
-                  </p>
-                </section>
-                <section>
-                  <h4>Method</h4>
-                  <p>
-                    Monte Carlo matchups and seeded, three-round stateful action
-                    evaluation in v2.2. Evaluate future state, not just
-                    immediate damage.
-                  </p>
-                </section>
-                <section>
-                  <h4>Evaluation</h4>
-                  <p>
-                    Use simulation reports to investigate matchups and
-                    strategies; test combat structure and export consistency.
-                    Playtesting remains a separate check on the experience.
-                  </p>
-                </section>
-                <section>
-                  <h4>Result</h4>
-                  <p>
-                    The repository connects repeatable combat analysis to an
-                    interactive prototype. Recent merged work includes visual
-                    QA, combat fixes, canon cleanup and walk cycles.
-                  </p>
-                </section>
-                <section>
-                  <h4>Technical insight</h4>
-                  <p>
-                    Conclusions depend on the payoff model: results from the old
-                    separable immediate-payoff evaluator do not generalise to
-                    stateful multi-round combat.
-                  </p>
-                </section>
-              </div>
-              <aside class="scope-note">
-                <span class="badge">Open PRs / targets, not results</span>
-                <p>
-                  <a
-                    href="https://github.com/Ghobi-A/Crestbound-Duelists/pull/18"
-                    >PR #18</a
-                  >
-                  targets a 6–8-round balance cadence.
-                  <a
-                    href="https://github.com/Ghobi-A/Crestbound-Duelists/pull/21"
-                    >Draft #21</a
-                  >
-                  expands Greymere and its interiors, transitions and HUD;
-                  visual cohesion work remains in progress.
-                </p>
-              </aside>
-              <a
-                class="source-link"
-                href="https://github.com/Ghobi-A/Crestbound-Duelists#readme"
-                >Inspect the combat lab ↗</a
-              >
-            </div>
-          </details>
-        </article>
-        <article
-          id="file-uag"
-          class="project project-ops"
-          aria-labelledby="uag-title"
-        >
-          <div class="project-top eyebrow">
-            <span>GA-UA-04 / Product &amp; operations engineering</span
-            ><span class="badge">Deployed website · private source</span>
-          </div>
-          <div class="project-grid">
-            <div class="project-copy">
-              <h3 id="uag-title">
-                An order is more<br />than <em>a checkout.</em>
-              </h3>
-              <p class="problem">
-                Keep the customer, payment provider and kitchen in agreement.
-              </p>
-              <p>
-                A restaurant ordering and kitchen-operations platform for UK
-                Asia Grill, with server-owned pricing and a webhook-confirmed
-                payment flow.
-              </p>
-              <div class="result-statement">
-                One order lifecycle.<br /><em>Explicit trust boundaries.</em>
-              </div>
-              <ul class="tags" aria-label="Technologies">
-                <li>TypeScript</li>
-                <li>TanStack Start</li>
-                <li>Supabase</li>
-                <li>Stripe</li>
-              </ul>
-              <div class="text-links">
-                <a href="https://www.ukasiagrill.co.uk/"
-                  >Visit restaurant site ↗</a
-                ><span class="private-label">Repository private</span>
-              </div>
-            </div>
-            <figure class="evidence-panel operations">
-              <div class="panel-title eyebrow">
-                Fig. 04 / Payment-to-kitchen lifecycle
-              </div>
-              <ol class="order-flow">
-                <li>
-                  <span>01</span>
-                  <div>
-                    <strong>Validate the order</strong
-                    ><small
-                      >Server pricing · opening hours · delivery area</small
-                    >
-                  </div>
-                </li>
-                <li>
-                  <span>02</span>
-                  <div>
-                    <strong>Take payment</strong
-                    ><small>Stripe checkout · idempotent requests</small>
-                  </div>
-                </li>
-                <li class="critical">
-                  <span>03</span>
-                  <div>
-                    <strong>Confirm by webhook</strong
-                    ><small>The browser is not proof of payment</small>
-                  </div>
-                </li>
-                <li>
-                  <span>04</span>
-                  <div>
-                    <strong>Synchronise the kitchen</strong
-                    ><small>Realtime updates · staff-only access</small>
-                  </div>
-                </li>
-              </ol>
-              <figcaption>
-                Verified implementation architecture, not a transaction-volume
-                claim. Physical printer and live-payment acceptance tests are
-                not evidenced here.
-              </figcaption>
-            </figure>
-          </div>
-          <details class="case-study" id="GA-UA-04">
-            <summary aria-controls="uag-case">
-              View case study
-              <span class="sr-only">— Restaurant Ordering Platform</span
-              ><span class="case-symbol" aria-hidden="true">+</span>
-            </summary>
-            <div class="case-content" id="uag-case">
-              <div class="evidence-strip trust-map">
-                <span class="eyebrow">Trust boundaries / architecture only</span>
-                <ol class="method-rail"><li><strong>Public browser</strong><span>Requests an order; cannot confirm payment</span></li><li><strong>Server boundary</strong><span>Validates pricing &amp; payment webhook</span></li><li><strong>Staff boundary</strong><span>Restricted kitchen operations</span></li></ol>
-                <p class="diagram-note">Printing remains proposed and hardware-unverified. No live payment acceptance result is implied.</p>
-              </div>
-              <div class="case-grid">
-                <section>
-                  <h4>The question</h4>
-                  <p>
-                    How can a guest order move safely from a public storefront
-                    to restricted kitchen operations?
-                  </p>
-                </section>
-                <section>
-                  <h4>The system</h4>
-                  <p>
-                    A server-rendered TanStack Start application, Supabase
-                    database/realtime layer and Stripe integration, with Vercel
-                    deployment configuration.
-                  </p>
-                </section>
-                <section>
-                  <h4>Method</h4>
-                  <p>
-                    Use server-authoritative validation, signed staff sessions,
-                    deny-by-default row-level security, rate limits and
-                    idempotent request handling.
-                  </p>
-                </section>
-                <section>
-                  <h4>Evaluation</h4>
-                  <p>
-                    Automated tests and CI cover application behaviour. Payment,
-                    access-control and operational go-live checks are documented
-                    separately; code presence alone does not verify live
-                    acceptance.
-                  </p>
-                </section>
-                <section>
-                  <h4>Result</h4>
-                  <p>
-                    A deployed public site backed by an implemented ordering
-                    architecture. Guest history is device-local, not a
-                    customer-account system.
-                  </p>
-                </section>
-                <section>
-                  <h4>Technical insight</h4>
-                  <p>
-                    Payment confirmation belongs at a verified server boundary.
-                    Repeated events and partially completed flows are normal
-                    system states, not exceptional cases.
-                  </p>
-                </section>
-              </div>
-              <aside class="scope-note">
-                <span class="badge">Open PR / hardware validation pending</span>
-                <p>
-                  Automatic PrintNode kitchen printing is proposed in private PR
-                  #59. It is not presented as shipped or physically verified.
-                  Loyalty redemption is disabled.
-                </p>
-              </aside>
-            </div>
-          </details>
-        </article>
         <article
           id="file-dp"
           class="project project-privacy"
@@ -1133,7 +428,705 @@
             </div>
           </details>
         </article>
-      </section>
+<article
+          id="file-kh4"
+          class="project project-kh"
+          aria-labelledby="kh-title"
+        >
+          <div class="project-top eyebrow">
+            <span>GA-KH-01 / Behavioural intelligence</span
+            ><span class="badge">Evaluated baseline</span>
+          </div>
+          <div class="project-grid">
+            <div class="project-copy">
+              <h3 id="kh-title">
+                Behavioural Demand<br /><em>Intelligence.</em>
+              </h3>
+              <p class="problem">
+                Online enthusiasm is easy to count. Intent is harder to defend.
+              </p>
+              <p>
+                A leakage-aware NLP system that separates actionable audience
+                signals from general discussion around Kingdom Hearts IV.
+              </p>
+              <dl class="metrics">
+                <div>
+                  <dt>Processed signals</dt>
+                  <dd>4,831</dd>
+                </div>
+                <div>
+                  <dt>Discussion groups</dt>
+                  <dd>23</dd>
+                </div>
+                <div>
+                  <dt>Evaluation seeds</dt>
+                  <dd>5</dd>
+                </div>
+              </dl>
+              <p class="evidence-note">
+                A 200-row audited corpus supports preliminary evaluation—not a
+                market-demand or sales claim.
+              </p>
+              <ul class="tags" aria-label="Technologies">
+                <li>Python</li>
+                <li>scikit-learn</li>
+                <li>NLP</li>
+                <li>Streamlit</li>
+              </ul>
+              <div class="text-links">
+                <a href="https://kh4-demand-intel.streamlit.app/"
+                  >Live dashboard ↗</a
+                ><a href="https://github.com/Ghobi-A/kh4-demand-intel"
+                  >GitHub ↗</a
+                >
+              </div>
+            </div>
+            <figure class="evidence-panel signal-system">
+              <div class="panel-title eyebrow">
+                Fig. 01 / Classification, with guardrails
+              </div>
+              <div class="signal-input">
+                <span>Reddit</span><span>YouTube</span
+                ><span class="input-note">public discussion</span>
+              </div>
+              <div class="flow-line" aria-hidden="true"></div>
+              <div class="system-node">
+                <span class="eyebrow">01 / Audit</span
+                ><strong>Human-corrected intent labels</strong
+                ><small>200 examples · eight-class taxonomy</small>
+              </div>
+              <div class="flow-line" aria-hidden="true"></div>
+              <div class="system-node sage-node">
+                <span class="eyebrow">02 / Partition</span
+                ><strong>Keep discussion groups together</strong
+                ><small>Train / validation / held-out test</small>
+              </div>
+              <div class="split-rail" aria-label="Target split proportions: train 70 percent, validation 15 percent, test 15 percent. Actual group sizes can vary.">
+                <span style="--portion:70">Train</span><span style="--portion:15">Val</span><span style="--portion:15">Test</span>
+              </div>
+              <p class="diagram-note">70 / 15 / 15 target · whole groups stay together</p>
+              <div class="flow-line" aria-hidden="true"></div>
+              <div class="split-nodes">
+                <div class="system-node">
+                  <strong>Is it actionable?</strong
+                  ><small>Calibrated probability</small>
+                </div>
+                <div class="system-node">
+                  <strong>Which intent?</strong
+                  ><small>Conditional classification</small>
+                </div>
+              </div>
+              <figcaption>
+                Architecture from the repository. Group holdouts reduce thread
+                leakage; calibration and thresholds use validation data only.
+              </figcaption>
+            </figure>
+          </div>
+          <details class="case-study" id="GA-KH-01">
+            <summary aria-controls="kh-case">
+              View case study
+              <span class="sr-only">— Behavioural Demand Intelligence</span
+              ><span class="case-symbol" aria-hidden="true">+</span>
+            </summary>
+            <div class="case-content" id="kh-case">
+              <div class="evidence-strip">
+                <span class="eyebrow">Evaluation boundary</span>
+                <ol class="method-rail"><li><strong>Train</strong><span>Learn text features</span></li><li><strong>Validate</strong><span>Calibrate &amp; freeze thresholds</span></li><li><strong>Test</strong><span>Evaluate frozen decisions</span></li></ol>
+                <p class="diagram-note">Eight intent classes are defined; fatigue and expectation decay have no labelled examples yet.</p>
+              </div>
+              <div class="case-grid">
+                <section>
+                  <h4>The question</h4>
+                  <p>
+                    Can noisy fan discussion reveal actionable interest, rather
+                    than simply positive sentiment?
+                  </p>
+                </section>
+                <section>
+                  <h4>The system</h4>
+                  <p>
+                    A public-signal pipeline, manually audited intent taxonomy,
+                    rule baseline and TF-IDF linear classifiers, surfaced in a
+                    Streamlit exploration interface.
+                  </p>
+                </section>
+                <section>
+                  <h4>Method</h4>
+                  <p>
+                    Compare rules, logistic regression and SVM variants.
+                    Separate actionable detection from intent classification;
+                    calibrate with Platt scaling and choose thresholds on
+                    validation data.
+                  </p>
+                </section>
+                <section>
+                  <h4>Evaluation</h4>
+                  <p>
+                    Group-aware 70/15/15 splits over five seeds. Inspect
+                    macro-F1, actionable PR-AUC, calibration, ranking and
+                    errors. Two intent classes have no labelled examples; 197 of
+                    200 labels come from YouTube.
+                  </p>
+                </section>
+                <section>
+                  <h4>Result</h4>
+                  <p>
+                    Rules lead end-to-end macro-F1 on this small corpus; SVM
+                    leads actionable ranking. High split variance makes this
+                    preliminary evidence, not a final model ranking.
+                  </p>
+                </section>
+                <section>
+                  <h4>Technical insight</h4>
+                  <p>
+                    A stronger ranking model need not be the best multiclass
+                    classifier. The metric must match the decision the system
+                    supports.
+                  </p>
+                </section>
+              </div>
+              <aside class="scope-note">
+                <span class="badge">Implemented / demo-only forecasts</span>
+                <p>
+                  <a href="https://github.com/Ghobi-A/kh4-demand-intel/pull/23"
+                    >Merged PR #23</a
+                  >
+                  adds timestamp-correct weekly demand signals,
+                  rolling-origin Bayesian forecasting, coverage monitoring and a
+                  shared API/dashboard service. Synthetic marketing-mix
+                  experiments remain separate from real audience data.
+                  The committed report contains demo-only findings on a class-stratified
+                  304-row extract: the naive forecast beats the Bayesian model,
+                  and no model is recommended. This sample is not
+                  volume-representative. Full-dataset evaluation is pending.
+                </p>
+              </aside>
+              <a
+                class="source-link"
+                href="https://github.com/Ghobi-A/kh4-demand-intel#readme"
+                >Read methods, limitations and evidence ↗</a
+              >
+            </div>
+          </details>
+        </article>
+<article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
+<div class="project-top eyebrow"><span>GA-RA-07 / Featured SQL &amp; BI case study</span><span class="badge">Synthetic public demo</span></div>
+<div class="project-grid"><div class="project-copy"><h3 id="ra-title">Restaurant Revenue<br /><em>&amp; Operations Analytics.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A read-only PostgreSQL analytical layer, Power BI model and DAX build kit, and four-page interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. Power BI Desktop execution remains pending; scale scenarios are labelled estimates.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>JSONB</li><li>BI modelling</li><li>DAX</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore four dashboard pages and a clearly labelled scale scenario. Power BI Desktop validation remains pending.</figcaption></figure></div></article>
+<article
+          id="file-di"
+          class="project project-data"
+          aria-labelledby="di-title"
+        >
+          <div class="project-top eyebrow">
+            <span>GA-DI-02 / Distributed ML engineering</span
+            ><span class="badge">Measured benchmark</span>
+          </div>
+          <div class="project-grid">
+            <div class="project-copy">
+              <h3 id="di-title">
+                Faster inputs.<br /><em>Honest benchmarks.</em>
+              </h3>
+              <p class="problem">
+                Where does an image-learning pipeline actually spend its time?
+              </p>
+              <p>
+                A controlled comparison of local and Spark preprocessing, then
+                raw JPEG and TFRecord input for TensorFlow.
+              </p>
+              <dl class="metrics">
+                <div>
+                  <dt>Preprocessing speedup</dt>
+                  <dd>2.28<span>×</span></dd>
+                </div>
+                <div>
+                  <dt>TFRecord input gain</dt>
+                  <dd>4.58<span>×</span></dd>
+                </div>
+              </dl>
+              <p class="evidence-note">
+                3,670 images · one GitHub Actions runner. Spark ran in local
+                mode; these are not multi-worker scaling results.
+              </p>
+              <ul class="tags" aria-label="Technologies">
+                <li>PySpark</li>
+                <li>TensorFlow</li>
+                <li>GCP</li>
+                <li>Python</li>
+              </ul>
+              <div class="text-links">
+                <a href="https://big-data-tfr.streamlit.app/"
+                  >Benchmark dashboard ↗</a
+                ><a href="https://github.com/Ghobi-A/Big-Data">GitHub ↗</a>
+              </div>
+            </div>
+            <figure class="evidence-panel benchmark">
+              <div class="panel-title eyebrow">
+                Fig. 02 / Throughput, not training accuracy
+              </div>
+              <div class="chart-group">
+                <p class="chart-label">
+                  Preprocessing <span>images / second</span>
+                </p>
+                <div class="bar-row">
+                  <span>Local baseline</span><b>486.8</b>
+                  <div class="bar-track"><i style="--value: 43.87%"></i></div>
+                </div>
+                <div class="bar-row">
+                  <span>Spark · 8 partitions</span><b>1,109.6</b>
+                  <div class="bar-track">
+                    <i class="rust-bar" style="--value: 100%"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-group">
+                <p class="chart-label">
+                  TensorFlow input <span>samples / second</span>
+                </p>
+                <div class="bar-row">
+                  <span>Raw JPEG</span><b>2,179.1</b>
+                  <div class="bar-track"><i style="--value: 21.84%"></i></div>
+                </div>
+                <div class="bar-row">
+                  <span>TFRecord</span><b>9,978.1</b>
+                  <div class="bar-track">
+                    <i class="rust-bar" style="--value: 100%"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="partition-chart">
+                <p class="chart-label">Preprocessing by partition count <span>images / second</span></p>
+                <svg viewBox="0 0 480 250" role="img" aria-labelledby="partition-title partition-desc">
+                  <title id="partition-title">Local and local-mode Spark throughput by partition count</title>
+                  <desc id="partition-desc">Five runs per configuration on one runner, 3,670 images. At 1, 2, 4 and 8 partitions, local means are 471.0, 486.8, 483.4 and 482.6 images per second; Spark means are 446.9, 806.8, 1086.2 and 1109.6. Equal horizontal spacing denotes partition categories, not a linear numeric scale.</desc>
+                  <g class="chart-grid"><path d="M54 30H450M54 85H450M54 140H450M54 195H450" /></g>
+                  <path class="axis" d="M54 20V195H450" />
+                  <g class="plot-label"><text x="0" y="34">1,200</text><text x="14" y="89">800</text><text x="14" y="144">400</text><text x="34" y="199">0</text><text x="66" y="218">1</text><text x="186" y="218">2</text><text x="306" y="218">4</text><text x="426" y="218">8</text><text x="170" y="242">PARTITIONS</text></g>
+                  <path class="partition-local draw-line" pathLength="1" d="M70 130.2L190 128.1L310 128.5L430 128.6" />
+                  <path class="trace draw-line" pathLength="1" d="M70 133.6L190 84.1L310 45.6L430 42.4" />
+                  <g class="signal-point"><circle cx="70" cy="133.6" r="4"/><circle cx="190" cy="84.1" r="4"/><circle cx="310" cy="45.6" r="4"/><circle cx="430" cy="42.4" r="4"/></g>
+                </svg>
+                <p class="chart-legend"><span>— Spark (local mode)</span><span>┄ Local baseline</span></p>
+                <table class="data-table"><caption>Means · five runs per configuration · images/s</caption><thead><tr><th scope="col">Partitions</th><th scope="col">Local</th><th scope="col">Spark</th></tr></thead><tbody><tr><th scope="row">1</th><td>471.0</td><td>446.9</td></tr><tr><th scope="row">2</th><td>486.8</td><td>806.8</td></tr><tr><th scope="row">4</th><td>483.4</td><td>1,086.2</td></tr><tr><th scope="row">8</th><td>482.6</td><td>1,109.6</td></tr></tbody></table>
+              </div>
+              <figcaption>
+                Independent zero-based scales. Input results are means over five
+                repeats; preprocessing compares the best local baseline with
+                eight Spark partitions. The partition plot uses ordered categories;
+                it is not multi-worker scaling. Run-to-run variability is available in the CSV.
+                <a href="https://github.com/Ghobi-A/Big-Data/blob/main/reports/tables/benchmark_summary.csv"
+                  >Source ↗</a
+                >
+              </figcaption>
+            </figure>
+          </div>
+          <details class="case-study" id="GA-DI-02">
+            <summary aria-controls="di-case">
+              View case study
+              <span class="sr-only">— Distributed Image ML Pipeline</span
+              ><span class="case-symbol" aria-hidden="true">+</span>
+            </summary>
+            <div class="case-content" id="di-case">
+              <figure class="evidence-panel training-check">
+                <div class="panel-title eyebrow">Fig. 02b / Follow the bottleneck</div>
+                <div class="training-layout">
+                  <div><p class="result-statement">4.58× faster input.<br /><em>Almost the same epoch.</em></p><p>Standalone input throughput and end-to-end training time answer different questions.</p></div>
+                  <div class="chart-group"><p class="chart-label">Mean CNN epoch <span>seconds · lower is faster</span></p>
+                    <div class="bar-row"><span>JPEG</span><b>8.68 s</b><div class="bar-track"><i style="--value:100%"></i></div></div>
+                    <div class="bar-row"><span>TFRecord</span><b>8.54 s</b><div class="bar-track"><i class="rust-bar" style="--value:98.39%"></i></div></div>
+                  </div>
+                </div>
+                <figcaption>Zero-based shared scale. Means over three epochs from one seeded run per format, not independent repeated training experiments. <a href="https://github.com/Ghobi-A/Big-Data#measured-results">Benchmark source ↗</a></figcaption>
+              </figure>
+              <div class="case-grid">
+                <section>
+                  <h4>The question</h4>
+                  <p>
+                    Do parallel preprocessing and a different storage format
+                    improve the bottleneck—or just one isolated benchmark?
+                  </p>
+                </section>
+                <section>
+                  <h4>The system</h4>
+                  <p>
+                    A reproducible flower-image pipeline: Pillow transforms →
+                    local/Spark execution → TFRecord shards → TensorFlow CNN →
+                    exported benchmark tables.
+                  </p>
+                </section>
+                <section>
+                  <h4>Method</h4>
+                  <p>
+                    Keep resize, centre-crop and recompression consistent across
+                    execution paths. Separate preprocessing, input throughput
+                    and model training measurements.
+                  </p>
+                </section>
+                <section>
+                  <h4>Evaluation</h4>
+                  <p>
+                    3,670 JPEGs across five classes, zero failed files. Repeat
+                    input benchmarks five times; report variability rather than
+                    only the fastest run.
+                  </p>
+                </section>
+                <section>
+                  <h4>Result</h4>
+                  <p>
+                    Input throughput improved 4.58×. Mean CNN epoch time barely
+                    changed: 8.68 s for JPEG versus 8.54 s for TFRecord, from
+                    one seeded three-epoch run per format.
+                  </p>
+                </section>
+                <section>
+                  <h4>Technical insight</h4>
+                  <p>
+                    A faster input reader does not imply equivalent end-to-end
+                    acceleration when model compute becomes the bottleneck.
+                  </p>
+                </section>
+              </div>
+              <aside class="scope-note">
+                <span class="badge"
+                  >Infrastructure merged / evidence pending</span
+                >
+                <p>
+                  Recent Dataproc updates add runtime setup, interpreter
+                  selection and cluster-lifecycle fixes. Multi-worker
+                  experiments are the intended next scope; the reported speedups
+                  above are still single-runner measurements.
+                </p>
+              </aside>
+              <a
+                class="source-link"
+                href="https://github.com/Ghobi-A/Big-Data/tree/main/reports"
+                >Inspect benchmark reports ↗</a
+              >
+            </div>
+          </details>
+        </article>
+<article
+          id="file-uag"
+          class="project project-ops"
+          aria-labelledby="uag-title"
+        >
+          <div class="project-top eyebrow">
+            <span>GA-UA-04 / Product &amp; operations engineering</span
+            ><span class="badge">Deployed website · private source</span>
+          </div>
+          <div class="project-grid">
+            <div class="project-copy">
+              <h3 id="uag-title">
+                An order is more<br />than <em>a checkout.</em>
+              </h3>
+              <p class="problem">
+                Keep the customer, payment provider and kitchen in agreement.
+              </p>
+              <p>
+                A restaurant ordering and kitchen-operations platform for UK
+                Asia Grill, with server-owned pricing and a webhook-confirmed
+                payment flow.
+              </p>
+              <div class="result-statement">
+                One order lifecycle.<br /><em>Explicit trust boundaries.</em>
+              </div>
+              <ul class="tags" aria-label="Technologies">
+                <li>TypeScript</li>
+                <li>TanStack Start</li>
+                <li>Supabase</li>
+                <li>Stripe</li>
+              </ul>
+              <div class="text-links">
+                <a href="https://www.ukasiagrill.co.uk/"
+                  >Visit restaurant site ↗</a
+                ><span class="private-label">Repository private</span>
+              </div>
+            </div>
+            <figure class="evidence-panel operations">
+              <div class="panel-title eyebrow">
+                Fig. 04 / Payment-to-kitchen lifecycle
+              </div>
+              <ol class="order-flow">
+                <li>
+                  <span>01</span>
+                  <div>
+                    <strong>Validate the order</strong
+                    ><small
+                      >Server pricing · opening hours · delivery area</small
+                    >
+                  </div>
+                </li>
+                <li>
+                  <span>02</span>
+                  <div>
+                    <strong>Take payment</strong
+                    ><small>Stripe checkout · idempotent requests</small>
+                  </div>
+                </li>
+                <li class="critical">
+                  <span>03</span>
+                  <div>
+                    <strong>Confirm by webhook</strong
+                    ><small>The browser is not proof of payment</small>
+                  </div>
+                </li>
+                <li>
+                  <span>04</span>
+                  <div>
+                    <strong>Synchronise the kitchen</strong
+                    ><small>Realtime updates · staff-only access</small>
+                  </div>
+                </li>
+              </ol>
+              <figcaption>
+                Verified implementation architecture, not a transaction-volume
+                claim. Physical printer and live-payment acceptance tests are
+                not evidenced here.
+              </figcaption>
+            </figure>
+          </div>
+          <details class="case-study" id="GA-UA-04">
+            <summary aria-controls="uag-case">
+              View case study
+              <span class="sr-only">— Restaurant Ordering Platform</span
+              ><span class="case-symbol" aria-hidden="true">+</span>
+            </summary>
+            <div class="case-content" id="uag-case">
+              <div class="evidence-strip trust-map">
+                <span class="eyebrow">Trust boundaries / architecture only</span>
+                <ol class="method-rail"><li><strong>Public browser</strong><span>Requests an order; cannot confirm payment</span></li><li><strong>Server boundary</strong><span>Validates pricing &amp; payment webhook</span></li><li><strong>Staff boundary</strong><span>Restricted kitchen operations</span></li></ol>
+                <p class="diagram-note">Printing remains proposed and hardware-unverified. No live payment acceptance result is implied.</p>
+              </div>
+              <div class="case-grid">
+                <section>
+                  <h4>The question</h4>
+                  <p>
+                    How can a guest order move safely from a public storefront
+                    to restricted kitchen operations?
+                  </p>
+                </section>
+                <section>
+                  <h4>The system</h4>
+                  <p>
+                    A server-rendered TanStack Start application, Supabase
+                    database/realtime layer and Stripe integration, with Vercel
+                    deployment configuration.
+                  </p>
+                </section>
+                <section>
+                  <h4>Method</h4>
+                  <p>
+                    Use server-authoritative validation, signed staff sessions,
+                    deny-by-default row-level security, rate limits and
+                    idempotent request handling.
+                  </p>
+                </section>
+                <section>
+                  <h4>Evaluation</h4>
+                  <p>
+                    Automated tests and CI cover application behaviour. Payment,
+                    access-control and operational go-live checks are documented
+                    separately; code presence alone does not verify live
+                    acceptance.
+                  </p>
+                </section>
+                <section>
+                  <h4>Result</h4>
+                  <p>
+                    A deployed public site backed by an implemented ordering
+                    architecture. Guest history is device-local, not a
+                    customer-account system.
+                  </p>
+                </section>
+                <section>
+                  <h4>Technical insight</h4>
+                  <p>
+                    Payment confirmation belongs at a verified server boundary.
+                    Repeated events and partially completed flows are normal
+                    system states, not exceptional cases.
+                  </p>
+                </section>
+              </div>
+              <aside class="scope-note">
+                <span class="badge">Open PR / hardware validation pending</span>
+                <p>
+                  Automatic PrintNode kitchen printing is proposed in private PR
+                  #59. It is not presented as shipped or physically verified.
+                  Loyalty redemption is disabled.
+                </p>
+              </aside>
+            </div>
+          </details>
+        </article>
+<article
+          id="file-cd"
+          class="project project-game"
+          aria-labelledby="cd-title"
+        >
+          <div class="project-top eyebrow">
+            <span>GA-CD-03 / Simulation &amp; creative systems</span
+            ><span class="badge">Playable prototype</span>
+          </div>
+          <div class="project-grid">
+            <div class="project-copy">
+              <h3 id="cd-title">Crestbound<br /><em>Duelists.</em></h3>
+              <p class="problem">
+                Game balance is a hypothesis. Make it testable.
+              </p>
+              <p>
+                A Python balance laboratory and original Godot RPG prototype,
+                connected by shared, validated combat data.
+              </p>
+              <dl class="metrics">
+                <div>
+                  <dt>Playable classes</dt>
+                  <dd>6</dd>
+                </div>
+                <div>
+                  <dt>Simulations / matchup</dt>
+                  <dd>100<span>k</span></dd>
+                </div>
+              </dl>
+              <ul class="tags" aria-label="Technologies">
+                <li>Python</li>
+                <li>Monte Carlo</li>
+                <li>Godot 4</li>
+                <li>YAML</li>
+              </ul>
+              <div class="text-links">
+                <a href="https://ghobi-a.github.io/Crestbound-Duelists/"
+                  >Play prototype ↗</a
+                ><a href="https://crestbound-balance-lab.streamlit.app/"
+                  >Balance lab ↗</a
+                ><a href="https://github.com/Ghobi-A/Crestbound-Duelists"
+                  >GitHub ↗</a
+                >
+              </div>
+            </div>
+            <figure class="evidence-panel simulation">
+              <div class="panel-title eyebrow">
+                Fig. 03 / One combat model, two consumers
+              </div>
+              <div class="system-node shared-node">
+                <span class="eyebrow">Source of truth</span
+                ><strong>Validated YAML combat definitions</strong
+                ><small>Classes · actions · status rules</small>
+              </div>
+              <div class="branch-connector" aria-hidden="true"></div>
+              <div class="simulation-branches">
+                <div>
+                  <span class="eyebrow">Analysis</span
+                  ><strong>Python simulator</strong>
+                  <div class="mini-grid" aria-hidden="true">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i
+                    ><i></i>
+                  </div>
+                  <p>
+                    Seeded matchups<br />Stateful lookahead<br />Balance reports
+                  </p>
+                </div>
+                <div>
+                  <span class="eyebrow">Experience</span
+                  ><strong>Godot prototype</strong>
+                  <div class="game-mark" aria-hidden="true">
+                    C<span>↗</span>D
+                  </div>
+                  <p>
+                    JSON exports<br />Tactical combat<br />Playable encounters
+                  </p>
+                </div>
+              </div>
+              <figcaption>
+                Architecture diagram. The grid represents matchup coverage, not
+                measured win rates. Shared exports connect simulation
+                assumptions to game behaviour.
+              </figcaption>
+            </figure>
+          </div>
+          <details class="case-study" id="GA-CD-03">
+            <summary aria-controls="cd-case">
+              View case study <span class="sr-only">— Crestbound Duelists</span
+              ><span class="case-symbol" aria-hidden="true">+</span>
+            </summary>
+            <div class="case-content" id="cd-case">
+              <div class="evidence-strip">
+                <span class="eyebrow">Stateful v2.2 / explanatory sequence</span>
+                <ol class="method-rail"><li><strong>Choose</strong><span>Basic, Signature or Gambit</span></li><li><strong>Resolve</strong><span>Initiative, damage &amp; effects</span></li><li><strong>Carry state</strong><span>Cooldowns &amp; temporary modifiers</span></li></ol>
+                <p class="diagram-note">The next action depends on the resulting state. This is a system diagram, not a measured fight duration or win-rate chart.</p>
+              </div>
+              <div class="case-grid">
+                <section>
+                  <h4>The question</h4>
+                  <p>
+                    Can the combat rules support meaningful tactical decisions
+                    while staying testable outside the game engine?
+                  </p>
+                </section>
+                <section>
+                  <h4>The system</h4>
+                  <p>
+                    A data-driven balance lab, Streamlit analysis surface and
+                    playable Godot game, with validated exports instead of
+                    separately maintained stat tables.
+                  </p>
+                </section>
+                <section>
+                  <h4>Method</h4>
+                  <p>
+                    Monte Carlo matchups and seeded, three-round stateful action
+                    evaluation in v2.2. Evaluate future state, not just
+                    immediate damage.
+                  </p>
+                </section>
+                <section>
+                  <h4>Evaluation</h4>
+                  <p>
+                    Use simulation reports to investigate matchups and
+                    strategies; test combat structure and export consistency.
+                    Playtesting remains a separate check on the experience.
+                  </p>
+                </section>
+                <section>
+                  <h4>Result</h4>
+                  <p>
+                    The repository connects repeatable combat analysis to an
+                    interactive prototype. Recent merged work includes visual
+                    QA, combat fixes, canon cleanup and walk cycles.
+                  </p>
+                </section>
+                <section>
+                  <h4>Technical insight</h4>
+                  <p>
+                    Conclusions depend on the payoff model: results from the old
+                    separable immediate-payoff evaluator do not generalise to
+                    stateful multi-round combat.
+                  </p>
+                </section>
+              </div>
+              <aside class="scope-note">
+                <span class="badge">Open PRs / targets, not results</span>
+                <p>
+                  <a
+                    href="https://github.com/Ghobi-A/Crestbound-Duelists/pull/18"
+                    >PR #18</a
+                  >
+                  targets a 6–8-round balance cadence.
+                  <a
+                    href="https://github.com/Ghobi-A/Crestbound-Duelists/pull/21"
+                    >Draft #21</a
+                  >
+                  expands Greymere and its interiors, transitions and HUD;
+                  visual cohesion work remains in progress.
+                </p>
+              </aside>
+              <a
+                class="source-link"
+                href="https://github.com/Ghobi-A/Crestbound-Duelists#readme"
+                >Inspect the combat lab ↗</a
+              >
+            </div>
+          </details>
+        </article>
+</section>
       <section
         id="capabilities"
         class="section capabilities"

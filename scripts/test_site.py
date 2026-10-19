@@ -55,7 +55,7 @@ class PortfolioTests(unittest.TestCase):
         page = Page(html)
         self.assertEqual(page.nesting_errors, [])
         self.assertEqual(page.stack, [])
-        self.assertIn('synthetic', html.lower())
+        self.assertIn('Real operational aggregates', html)
         self.assertIn('Power BI Desktop', html)
         for _, attrs in page.tags:
             for attr in ('src', 'href'):
@@ -70,6 +70,25 @@ class PortfolioTests(unittest.TestCase):
                 self.assertNotIn(denied, text)
         for forbidden in ('production-aggregates.json', 'private-eda.svg'):
             self.assertFalse(list(folder.rglob(forbidden)))
+
+    def test_observed_aggregate_reconciliation_and_project_order(self):
+        folder = OUT / 'projects/restaurant-analytics/dashboard'
+        data = json.loads((folder / 'observed-aggregates.json').read_text())
+        self.assertEqual(data['executive']['total_orders'], 53)
+        self.assertEqual(sum(x['orders'] for x in data['payments']), 53)
+        self.assertEqual(sum(x['orders'] for x in data['fulfilment']), 53)
+        self.assertEqual(sum(x['orders'] for x in data['monthly']), 53)
+        self.assertAlmostEqual(sum(x['gross_value'] for x in data['payments']), 1031.74)
+        self.assertEqual(sum(x['units'] for x in data['products']), 121)
+        bundled = (folder / 'observed-data.js').read_text()
+        self.assertEqual(json.loads(bundled.split(' = ', 1)[1].rstrip(';\n')), data)
+        for denied in ('customer_name', 'customer_phone', 'customer_address', 'order_id', 'stripe_payment_id'):
+            self.assertNotIn(denied, json.dumps(data))
+        self.assertLess(self.html.index('id="file-dp"'), self.html.index('id="file-kh4"'))
+        self.assertLess(self.html.index('id="file-kh4"'), self.html.index('id="GA-RA-07"'))
+        active = (folder / 'index.html').read_text()
+        self.assertIn('observed-data.js', active)
+        self.assertNotIn('demo-data.js', active)
 
     def test_metadata_singletons_and_valid_jsonld(self):
         self.assertEqual(len(self.page.elements('title')), 4)  # page + three SVG titles
