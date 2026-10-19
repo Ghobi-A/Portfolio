@@ -1,0 +1,46 @@
+{
+  "mode": "Import",
+  "currency": "GBP",
+  "timezone": "Europe/London",
+  "tables": {
+    "Orders": "one row per recorded order",
+    "MenuItems": "one row per JSON array element",
+    "Notifications": "one row per order including zero-event orders",
+    "Products": "one row per normalized product_key",
+    "Date": "continuous local calendar",
+    "ItemPairs": "one row per order and distinct unordered pair"
+  },
+  "relationships": [
+    { "from": "Date.Date", "to": "Orders.order_date", "cardinality": "1:*", "direction": "single" },
+    {
+      "from": "Orders.order_id",
+      "to": "MenuItems.order_id",
+      "cardinality": "1:*",
+      "direction": "single"
+    },
+    {
+      "from": "Orders.order_id",
+      "to": "Notifications.order_id",
+      "cardinality": "1:*",
+      "direction": "single"
+    },
+    {
+      "from": "Products.product_key",
+      "to": "MenuItems.product_key",
+      "cardinality": "1:*",
+      "direction": "single"
+    },
+    {
+      "from": "Orders.order_id",
+      "to": "ItemPairs.order_id",
+      "cardinality": "1:*",
+      "direction": "single"
+    }
+  ],
+  "notes": [
+    "Notifications is unique by order; configure 1:* to retain Orders-to-Notifications filtering, not bidirectional 1:1.",
+    "No additional Date-to-lines relationship: avoid ambiguous paths.",
+    "Product filters intentionally affect menu measures only; do not make order totals appear product revenue.",
+    "Pairs use name_a/name_b from ItemPairs as visual axes; product slicers do not filter pairs."
+  ]
+}

@@ -1,0 +1,19 @@
+// New calculated column in Orders; use this on the preparation distribution axis.
+Prep Duration Band =
+VAR M = 'Orders'[raw_preparation_minutes]
+RETURN SWITCH(TRUE(),
+    ISBLANK(M), "Missing pair",
+    M < 0, "Invalid negative",
+    M <= 5, "0–5 min",
+    M <= 15, "5–15 min",
+    M <= 30, "15–30 min",
+    M <= 60, "30–60 min",
+    M <= 120, "60–120 min",
+    M <= 1440, "120–1440 min",
+    "Over 24 hours"
+)
+// New calculated column in Orders; sort Prep Duration Band by this column.
+Prep Band Sort =
+VAR M = 'Orders'[raw_preparation_minutes]
+RETURN SWITCH(TRUE(), ISBLANK(M), 0, M < 0, 1, M <= 5, 2, M <= 15, 3,
+    M <= 30, 4, M <= 60, 5, M <= 120, 6, M <= 1440, 7, 8)

@@ -189,7 +189,7 @@
         </div>
         <div class="hero-index">
           <span class="eyebrow">Inside the dossier</span
-          ><a href="#file-kh4">01 · Behaviour</a
+          ><a href="#GA-RA-07">SQL &amp; dashboards</a><a href="#file-kh4">01 · Behaviour</a
           ><a href="#file-di">02 · Scale</a
           ><a href="#file-cd">03 · Simulation</a
           ><a href="#file-uag">04 · Systems</a
@@ -203,11 +203,14 @@
             <h2 id="work-title">Questions, made tangible.</h2>
           </div>
           <p>
-            Five investigations.<br />From a model’s assumptions to the system
+            Seven projects.<br />From a model’s assumptions to the system
             around it.
           </p>
         </div>
-        <article
+        <article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
+<div class="project-top eyebrow"><span>GA-RA-07 / Featured SQL &amp; BI case study</span><span class="badge">Synthetic public demo</span></div>
+<div class="project-grid"><div class="project-copy"><h3 id="ra-title">Restaurant Revenue<br /><em>&amp; Operations Analytics.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A read-only PostgreSQL analytical layer, Power BI model and DAX build kit, and four-page interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Fictional demo orders</dt><dd>240</dd></div></dl><p class="evidence-note">Validated against a private source. Public visuals are synthetic; Power BI Desktop execution remains pending. No revenue uplift or profitability claim.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>JSONB</li><li>BI modelling</li><li>DAX</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore synthetic dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Interactive operations dashboard</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the synthetic restaurant analytics dashboard"><img src="projects/restaurant-analytics/screenshots/executive.jpg" alt="Working restaurant dashboard with order metrics, trends and mixed-status payment definitions, using 240 fictional orders" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Browser capture of the working synthetic report. Four pages, shared filters and CSV export. Power BI Desktop validation remains pending.</figcaption></figure></div></article>
+<article
           id="file-kh4"
           class="project project-kh"
           aria-labelledby="kh-title"
@@ -365,16 +368,16 @@
                 </section>
               </div>
               <aside class="scope-note">
-                <span class="badge">Open PR / not released</span>
+                <span class="badge">Implemented / demo-only forecasts</span>
                 <p>
                   <a href="https://github.com/Ghobi-A/kh4-demand-intel/pull/23"
-                    >PR #23</a
+                    >Merged PR #23</a
                   >
-                  extends the scope to timestamp-correct weekly demand signals,
+                  adds timestamp-correct weekly demand signals,
                   rolling-origin Bayesian forecasting, coverage monitoring and a
                   shared API/dashboard service. Synthetic marketing-mix
                   experiments remain separate from real audience data.
-                  The updated PR reports demo-only findings on a class-stratified
+                  The committed report contains demo-only findings on a class-stratified
                   304-row extract: the naive forecast beats the Bayesian model,
                   and no model is recommended. This sample is not
                   volume-representative. Full-dataset evaluation is pending.
@@ -921,9 +924,7 @@
                 constraint?
               </p>
               <p>
-                A DP-SGD insurance benchmark combining privacy accounting,
-                repeated-seed evaluation, empirical attacks and subgroup
-                diagnostics.
+                A DP-SGD benchmark and decision audit combining prepared-record privacy accounting, repeated-seed evaluation, empirical attacks, ACS replication and calibration diagnostics.
               </p>
               <dl class="metrics">
                 <div>
@@ -936,7 +937,7 @@
                 </div>
               </dl>
               <p class="evidence-note">
-                High-cost prediction · δ = 10⁻⁵ · five seeds. ROC-AUC is
+                High-cost prediction · δ = 10⁻⁵ · five seeds. The privacy budget covers prepared records; preprocessing and research releases are not jointly accounted. ROC-AUC is
                 predictive utility, not membership-inference attack performance.
               </p>
               <ul class="tags" aria-label="Technologies">
@@ -950,8 +951,8 @@
                   >Research repository ↗</a
                 >
                 <a
-                  href="https://github.com/Ghobi-A/dp-insurance/blob/main/paper/Differential%20Privacy%20in%20Machine%20Learning.pdf"
-                  >Original dissertation ↗</a
+                  href="https://github.com/Ghobi-A/dp-insurance/blob/main/docs/PUBLICATION_STATUS.md"
+                  >Current findings &amp; research status ↗</a
                 >
               </div>
             </div>
@@ -1090,7 +1091,7 @@
                   </p>
                 </section>
               </div>
-              <table class="data-table">
+              <aside class="scope-note"><span class="badge">Expanded replication / descriptive decision audit</span><p>The independent ACS and representation-sensitivity extension adds 840 model fits; a supplementary AUTO-S and calibration follow-up adds 400. These are model fits, not independent populations. Source-only joint selection matches shift-aware successful yield in the original ACS comparison, so a general superiority claim is unsupported.</p><p>Fresh rare-label calibration reaches only 86.9% coverage for the examined sandwich rule; the conservative sensitivity abstains on every ACS case. The paper remains a research draft, not submitted or under review. Historical subgroup disparity verdicts are superseded; empirical non-detection does not establish privacy or equality.</p><div class="text-links"><a href="https://github.com/Ghobi-A/dp-insurance/blob/main/reports/configuration_selection/FOLLOWUP_FINDINGS.md">Replication &amp; calibration evidence ↗</a><a href="https://github.com/Ghobi-A/dp-insurance/blob/main/docs/SUBMISSION_REVIEW.md">Claim-to-evidence register ↗</a></div></aside><table class="data-table">
                 <caption>
                   High-cost prediction · mean and 95% repeated-seed t interval
                 </caption>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>UK Asia Grill — Restaurant Revenue & Operations Analytics</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="workspace">
+      <aside>
+        <a class="brand" href="#"
+          ><span class="brandmark">UKA</span
+          ><span>UK Asia Grill<small>Analytics workspace</small></span></a
+        >
+        <p class="navlabel">REPORT PAGES</p>
+        <nav aria-label="Dashboard pages">
+          <button data-page="0" aria-current="page"><span>01</span> Executive overview</button
+          ><button data-page="1"><span>02</span> Menu & demand</button
+          ><button data-page="2"><span>03</span> Kitchen operations</button
+          ><button data-page="3"><span>04</span> Payments & quality</button>
+        </nav>
+        <div class="asidefoot">
+          <span class="badge">SYNTHETIC DEMO</span>
+          <p>240 fictional orders.<br />No connection to the production database.</p>
+          <a href="../index.html">Project methodology ↗</a>
+        </div>
+      </aside>
+      <main>
+        <header>
+          <div>
+            <p class="eyebrow">RESTAURANT REVENUE & OPERATIONS</p>
+            <h1 id="page-title">Executive overview</h1>
+          </div>
+          <button id="export" class="export">Export filtered orders ↓</button>
+        </header>
+        <div class="notice">
+          <strong>Portfolio demonstration.</strong> Mixed-status, synthetic dataset. Gross order
+          value includes cancelled and unpaid orders; it is not audited revenue.
+        </div>
+        <section class="filters" aria-label="Report filters">
+          <label>From<input id="start" type="date" /></label
+          ><label>To<input id="end" type="date" /></label
+          ><label
+            >Fulfilment<select id="type">
+              <option value="">All fulfilment types</option>
+              <option>delivery</option>
+              <option>collection</option>
+            </select></label
+          ><label
+            >Order status<select id="status">
+              <option value="">All statuses</option>
+              <option>confirmed</option>
+              <option>cancelled</option>
+              <option>payment_failed</option>
+              <option>pending_payment</option>
+            </select></label
+          ><button id="reset">Reset</button>
+        </section>
+        <p id="scope" class="scope" aria-live="polite"></p>
+        <div id="content"></div>
+        <details class="definitions">
+          <summary>Metric definitions & source</summary>
+          <p>
+            Source: deterministic fictional dataset, seed 20261019, generated without reading
+            production. Date, type and status filters intersect and apply to every measure, chart,
+            detail table and CSV export.
+          </p>
+          <p>
+            Confirmed card value: payment method card AND payment status paid, as recorded by the
+            application; settlement, live/test mode and refunds are unverified. Offline order value:
+            all cash-on-delivery and pay-at-shop order totals, including cancelled orders. Neither
+            is audited revenue. Unverified value = gross order value minus confirmed card value.
+          </p>
+          <p>
+            Cancellation rate = cancelled orders / all filtered orders. Payment failure rate =
+            failed payment orders / all filtered orders. Card failure rate uses filtered card orders
+            only. Menu value is quantity × listed unit price, without delivery fees or separately
+            allocated adjustments. Pair counts deduplicate each product within an order.
+          </p>
+          <p>
+            Preparation = ready minus preparing, minutes. Null/negative pairs are excluded from
+            duration statistics and retained in quality warnings. Median and P90 use linear
+            interpolation, matching PostgreSQL PERCENTILE_CONT and DAX PERCENTILEX.INC. The
+            120-minute review threshold is an analyst heuristic, not an agreed service target.
+            Durations use UTC instants; calendar grouping uses Europe/London.
+          </p>
+          <p>
+            Notification rates use outbox events, not orders or customer delivery guarantees.
+            Attempts are cumulative snapshots; retries = max(attempts − 1, 0) per event. Missing
+            records do not prove a notification was required or failed. Fee reconciliation compares
+            totals with subtotal + delivery + the current £0.50 service-charge model; this is an
+            assumption to revisit if pricing changes.
+          </p>
+        </details>
+        <footer>
+          SQL → validated facts → semantic measures → decisions
+          <span>GBP · Europe/London · All statuses retained</span>
+        </footer>
+      </main>
+    </div>
+    <script src="demo-data.js"></script>
+    <script src="analytics.js"></script>
+    <script src="dashboard.js"></script>
+  </body>
+</html>

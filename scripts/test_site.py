@@ -49,6 +49,28 @@ class PortfolioTests(unittest.TestCase):
         cls.text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', cls.html))
         cls.ids = [attrs['id'] for _, attrs in cls.page.tags if 'id' in attrs]
 
+    def test_restaurant_case_study_assets_and_privacy(self):
+        folder = OUT / 'projects/restaurant-analytics'
+        html = (folder / 'index.html').read_text()
+        page = Page(html)
+        self.assertEqual(page.nesting_errors, [])
+        self.assertEqual(page.stack, [])
+        self.assertIn('synthetic', html.lower())
+        self.assertIn('Power BI Desktop', html)
+        for _, attrs in page.tags:
+            for attr in ('src', 'href'):
+                value = attrs.get(attr, '')
+                parsed = urlparse(value)
+                if value and not parsed.scheme and not value.startswith('#'):
+                    self.assertTrue((folder / unquote(parsed.path)).is_file(), value)
+        for name in ('orders.csv', 'menu_items.csv', 'notifications.csv', 'item_pairs.csv'):
+            text = (folder / 'dashboard' / name).read_text()
+            self.assertIn('DEMO-', text)
+            for denied in ('customer_phone', 'customer_address', 'stripe_payment_id', 'delivered_endpoint_digests'):
+                self.assertNotIn(denied, text)
+        for forbidden in ('production-aggregates.json', 'private-eda.svg'):
+            self.assertFalse(list(folder.rglob(forbidden)))
+
     def test_metadata_singletons_and_valid_jsonld(self):
         self.assertEqual(len(self.page.elements('title')), 4)  # page + three SVG titles
         self.assertEqual(self.html.count('<title>Ghobikan'), 1)
@@ -61,7 +83,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual(person['name'], 'Ghobikan Aravindan')
         self.assertEqual(person['address']['addressLocality'], 'London')
         projects = json.loads(scripts[1])['itemListElement']
-        self.assertEqual(len(projects), 6)
+        self.assertEqual(len(projects), 7)
         for project in projects:
             self.assertIn(project['item']['url'].split('#')[1], self.ids)
 
@@ -72,7 +94,7 @@ class PortfolioTests(unittest.TestCase):
     def test_evidence_pass(self):
         for text in ('8.68 s', '8.54 s', '304-row extract', 'not volume-representative', 'RDP accounting', 'MIDI stems'):
             self.assertIn(text, self.text)
-        self.assertEqual(len(self.page.elements('figure')), 7)
+        self.assertEqual(len(self.page.elements('figure')), 8)
 
     def test_builder_is_idempotent_and_layout_independent(self):
         self.assertEqual(polish_html(self.html), self.html)
@@ -100,7 +122,7 @@ class PortfolioTests(unittest.TestCase):
             for attr in ('aria-controls', 'aria-labelledby', 'aria-describedby'):
                 for reference in attrs.get(attr, '').split():
                     self.assertIn(reference, self.ids)
-        for case in ('GA-KH-01', 'GA-DI-02', 'GA-CD-03', 'GA-UA-04', 'GA-DP-05', 'GA-CA-06'):
+        for case in ('GA-RA-07', 'GA-KH-01', 'GA-DI-02', 'GA-CD-03', 'GA-UA-04', 'GA-DP-05', 'GA-CA-06'):
             self.assertIn(case, self.ids)
 
     def test_no_js_disclosures_and_semantic_visuals(self):
@@ -145,7 +167,7 @@ class PortfolioTests(unittest.TestCase):
     def test_content_guardrails_and_motion_fallback(self):
         self.assertNotIn('Blackhorse', self.html)
         self.assertNotIn('crestbound-duelists.streamlit.app', self.html)
-        for text in ('single-runner measurements', 'Open PR / not released', 'synthetic bootstrap', 'not membership-inference'):
+        for text in ('single-runner measurements', 'Implemented / demo-only forecasts', 'synthetic bootstrap', 'not membership-inference'):
             self.assertIn(text, self.text)
         css = (OUT / 'assets/css/site.css').read_text()
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
