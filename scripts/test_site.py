@@ -167,7 +167,7 @@ class PortfolioTests(unittest.TestCase):
     def test_content_guardrails_and_motion_fallback(self):
         self.assertNotIn('Blackhorse', self.html)
         self.assertNotIn('crestbound-duelists.streamlit.app', self.html)
-        for text in ('single-runner measurements', 'Open PR / not released', 'synthetic bootstrap', 'not membership-inference'):
+        for text in ('single-runner measurements', 'Implemented / demo-only forecasts', 'synthetic bootstrap', 'not membership-inference'):
             self.assertIn(text, self.text)
         css = (OUT / 'assets/css/site.css').read_text()
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
