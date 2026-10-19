@@ -140,6 +140,7 @@ def polish_html(source: str) -> str:
 </script>
 """
     projects = [
+        ('GA-RA-07', 'UK Asia Grill — Restaurant Revenue & Operations Analytics'),
         ('GA-KH-01', 'Behavioural Demand Intelligence'),
         ('GA-DI-02', 'Distributed Image ML Pipeline'),
         ('GA-CD-03', 'Crestbound Duelists — RPG Balance Lab'),
@@ -295,6 +296,9 @@ def main() -> None:
         if source.is_dir():
             shutil.copytree(source, ASSETS / directory)
 
+    if (ROOT / 'projects').is_dir():
+        shutil.copytree(ROOT / 'projects', OUT / 'projects')
+
     (ASSETS / "social-preview.png").write_bytes(make_social_preview())
     (ASSETS / "apple-touch-icon.png").write_bytes(make_touch_icon())
     (ASSETS / "favicon.svg").write_text(
@@ -337,6 +341,7 @@ def main() -> None:
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
+<url><loc>{SITE_URL}projects/restaurant-analytics/index.html</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>
 """,
         encoding="utf-8",

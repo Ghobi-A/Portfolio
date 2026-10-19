@@ -1,0 +1,132 @@
+{
+  "canvas": { "width": 1440, "height": 1000, "font": "Segoe UI", "background": "#f3f5f2" },
+  "global_slicers": ["Date.Date (between)", "Orders.order_type", "Orders.order_status"],
+  "disclaimer": "Mixed-status portfolio dataset, not audited revenue. Public demonstration uses synthetic data.",
+  "pages": [
+    {
+      "name": "Executive overview",
+      "cards": [
+        "Total Orders",
+        "Gross Order Value",
+        "Average Order Value",
+        "Confirmed Card Value",
+        "Cancellation Rate",
+        "Payment Failure Rate"
+      ],
+      "visuals": [
+        { "type": "line", "axis": "Date.Date", "value": "Total Orders", "zero_fill": true },
+        { "type": "column", "axis": "Date.YearMonth", "value": "Total Orders" },
+        { "type": "bar", "axis": "Orders.order_type", "value": "Total Orders" },
+        { "type": "bar", "axis": "Orders.order_status", "value": "Total Orders" }
+      ]
+    },
+    {
+      "name": "Menu & customer demand",
+      "visuals": [
+        { "type": "bar", "axis": "Products.product_name", "value": "Menu Units", "top_n": 10 },
+        {
+          "type": "table",
+          "columns": [
+            "Products.product_name",
+            "Product Popularity Rank",
+            "Menu Units",
+            "Orders Containing Product",
+            "Menu Line Value"
+          ]
+        },
+        { "type": "bar", "axis": "Orders.order_hour", "value": "Total Orders" },
+        {
+          "type": "matrix",
+          "rows": "Products.product_name",
+          "columns": "Date.YearMonth",
+          "value": "Menu Units"
+        },
+        {
+          "type": "table",
+          "columns": ["ItemPairs.name_a", "ItemPairs.name_b", "Pair Orders", "Pair Support"]
+        },
+        { "type": "bar", "axis": "Orders.order_type", "value": "Menu Units" }
+      ]
+    },
+    {
+      "name": "Kitchen operations",
+      "cards": [
+        "Median Prep Minutes",
+        "P90 Prep Minutes",
+        "Prep Over 120 Min",
+        "Median Acknowledgement Minutes",
+        "Failed Notification Events",
+        "Retry Attempts"
+      ],
+      "visuals": [
+        {
+          "type": "column",
+          "axis": "Orders.Prep Duration Band",
+          "value": "Total Orders"
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Orders.order_type",
+            "Orders With Prep Timing",
+            "Median Prep Minutes",
+            "P90 Prep Minutes"
+          ]
+        },
+        {
+          "type": "table",
+          "columns": ["Orders.order_hour", "Orders With Prep Timing", "Median Prep Minutes"]
+        },
+        {
+          "type": "table",
+          "columns": [
+            "Orders.order_id",
+            "Orders.raw_preparation_minutes",
+            "Orders.is_overnight_prep",
+            "Orders.invalid_timestamp_sequence"
+          ],
+          "filter": "outlier OR invalid sequence"
+        }
+      ]
+    },
+    {
+      "name": "Payments & data quality",
+      "cards": [
+        "Confirmed Card Value",
+        "Unverified Order Value",
+        "Offline Order Value",
+        "Failed Payment Orders",
+        "Card Payment Failure Rate",
+        "Payment Inconsistency Orders"
+      ],
+      "visuals": [
+        { "type": "bar", "axis": "Orders.payment_method", "value": "Total Orders" },
+        {
+          "type": "table",
+          "columns": [
+            "Orders.payment_method",
+            "Orders.payment_status",
+            "Orders.order_status",
+            "Total Orders",
+            "Gross Order Value"
+          ]
+        },
+        {
+          "type": "table",
+          "values": [
+            "Missing Preparing Orders",
+            "Missing Ready Orders",
+            "Missing Completed Orders",
+            "Missing Acknowledgement Orders",
+            "Invalid Timestamp Orders",
+            "Invalid Items Orders",
+            "Invalid Item Lines",
+            "Monetary Warning Orders",
+            "Item Subtotal Mismatch Orders",
+            "Order Total Mismatch Orders"
+          ]
+        }
+      ]
+    }
+  ]
+}

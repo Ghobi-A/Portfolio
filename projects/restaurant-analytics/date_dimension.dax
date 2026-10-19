@@ -1,0 +1,15 @@
+// New table; mark Date[Date] as the date table; disable Auto date/time.
+Date =
+VAR StartDate = MINX('Orders', 'Orders'[order_date])
+VAR EndDate = MAXX('Orders', 'Orders'[order_date])
+RETURN
+ADDCOLUMNS(
+    CALENDAR(COALESCE(StartDate, DATE(2026,1,1)), COALESCE(EndDate, DATE(2026,12,31))),
+    "Year", YEAR([Date]),
+    "MonthNumber", MONTH([Date]),
+    "Month", FORMAT([Date], "MMM"),
+    "YearMonth", FORMAT([Date], "yyyy-MM"),
+    "WeekStart", [Date] - WEEKDAY([Date],2) + 1,
+    "DayOfWeek", WEEKDAY([Date],2),
+    "DayName", FORMAT([Date], "ddd")
+)
