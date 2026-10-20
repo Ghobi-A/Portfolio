@@ -1,5 +1,15 @@
 # Project evidence ledger
 
+## Portfolio presentation update — 20 October 2026
+
+The interactive privacy chart retains the three source observations: ε 0.49 / 2 / 6, mean prediction ROC-AUC .933 / .944 / .945 and their five-seed 95% t intervals. The smooth curve is monotone cubic interpolation between the measured means; it is a visual guide, not a new fitted predictive model. The pink envelope joins the displayed interval boundaries and does not establish uncertainty at unmeasured settings. The exact-value fallback remains available without JavaScript; a full 0–1 AUC axis can be selected.
+
+Crestbound uses the user-provided 1701×925 Hollow Court battle image, received 20 October 2026 and converted to WebP without creative alteration. It is not independently verified as an engine capture and does not establish gameplay performance or acceptance-test outcomes. The decorative text clipping is generated visual material and asserts no source-document or experimental provenance. Asset provenance is retained beside the files.
+
+Semantic Drift is sourced from the public repository README and draft protocol at `https://github.com/Ghobi-A/Semantic-Drift`. Its six-generation chains, three conditions, four editing edges and two human-only washout edges describe the protocol, not observations. No participants, outcome data, demonstrated effect or completed preregistration is claimed. Ethics, pilot and recruitment remain pending.
+
+No public audio/MIDI demo file was found in the inspected Midi tree; the Audio Lab links the existing generation notebook and repository rather than claiming an audio sample. Existing project evidence and publication-status caveats below remain in force; this presentation work did not rerun the experiments.
+
 Reviewed 9 September 2026. Sources are repository documentation and current PR metadata, not independently rerun project experiments. Only Portfolio was changed. Blackhorse Barber is deliberately excluded.
 
 ## Publication rule

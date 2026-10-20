@@ -16,6 +16,7 @@ jobs:
           python scripts/test_site.py
           node --check assets/js/main.js
           node --check assets/js/motion.js
+          node --check assets/js/privacy-chart.js
       - name: Retain reviewable build
         uses: actions/upload-artifact@v4
         with:

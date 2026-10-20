@@ -11,20 +11,12 @@
     />
     <meta name="theme-color" content="#E8E6DF" />
     <!-- METADATA:END -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/site.css" />
-    <script defer src="assets/js/main.js"></script>
-    <script
-      defer
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script defer src="assets/js/motion.js"></script>
+    <link rel="preload" href="assets/fonts/source-serif-4-regular-subset.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="assets/css/site.css?v=20261020-interactive" />
+    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261020-final" />
+    <script defer src="assets/js/privacy-chart.js?v=20261020-final"></script>
+    <script defer src="assets/js/main.js?v=20261020-interactive"></script>
+    <script defer src="assets/js/motion.js?v=20261020-interactive"></script>
   </head>
   <body>
     <a class="skip-link" href="#projects">Skip to selected work</a>
@@ -34,8 +26,7 @@
           class="brand"
           href="#top"
           aria-label="Ghobikan Aravindan, back to top"
-          ><span>G.A<span class="rust">/</span></span
-          ><span class="brand-caption">Applied Data Science</span></a
+          ><span class="brand-wordmark">Ghobikan Aravindan<span class="brand-dot" aria-hidden="true"></span></span><span class="brand-caption">Applied Data Scientist</span></a
         >
         <button
           class="menu-button"
@@ -47,218 +38,83 @@
           Menu <span aria-hidden="true">+</span>
         </button>
         <nav id="primary-nav" aria-label="Primary navigation">
-          <a href="#projects">Work</a><a href="#experimental">Research</a
+          <a href="#projects">Work</a><a href="#GA-DP-05">Research</a
           ><a href="#about">About</a
           ><a href="assets/Ghobikan-Aravindan-CV.pdf">CV ↗</a
-          ><a href="#contact">Contact ↗</a>
+          ><a href="#contact">Contact</a>
         </nav>
       </div>
     </header>
+    <script>
+      /* Settle navigation before parsing main: no late mobile-layout collapse. */
+      (() => {
+        const menu = document.querySelector('.menu-button');
+        const nav = document.querySelector('#primary-nav');
+        const header = document.querySelector('.header');
+        const setMenu = open => {
+          menu.setAttribute('aria-expanded', String(open));
+          nav.classList.toggle('is-open', open);
+          menu.querySelector('span').textContent = open ? '−' : '+';
+        };
+        menu.addEventListener('click', () => setMenu(menu.getAttribute('aria-expanded') !== 'true'));
+        nav.addEventListener('click', event => { if (event.target.closest('a')) setMenu(false); });
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') {
+            setMenu(false); menu.focus();
+          }
+        });
+        document.addEventListener('click', event => { if (!header.contains(event.target)) setMenu(false); });
+        header.addEventListener('focusout', event => {
+          if (event.relatedTarget && !header.contains(event.relatedTarget)) setMenu(false);
+        });
+        matchMedia('(max-width: 760px)').addEventListener('change', () => setMenu(false));
+        menu.hidden = false;
+        document.documentElement.classList.add('nav-enhanced');
+      })();
+    </script>
     <main id="top">
       <section class="hero wrap" aria-labelledby="identity">
-        <div class="hero-top eyebrow">
-          <span>Portfolio / GA — 2026</span
-          ><span
-            ><i class="status-dot" aria-hidden="true"></i> London, UK · Open to
-            opportunities</span
-          >
-        </div>
-        <div class="hero-grid">
-          <div class="hero-copy">
-            <p class="eyebrow hero-role">Applied Data Scientist</p>
-            <h1 id="identity">
-              Ghobikan<br />Aravindan<span class="rust">.</span>
-            </h1>
-            <p class="hero-statement">
-              I turn <em>messy signals</em><br class="desktop-break" />
-              into defensible decisions.
-            </p>
-            <p class="hero-support">
-              From behavioural intelligence to production systems.<br />Built
-              with engineering discipline. Tested with scientific care.
-            </p>
-            <div class="actions">
-              <a class="button primary" href="#projects"
-                >Explore work <span aria-hidden="true">↓</span></a
-              ><a class="button" href="assets/Ghobikan-Aravindan-CV.pdf"
-                >View CV <span aria-hidden="true">↗</span></a
-              >
-            </div>
-            <div class="text-links hero-links">
-              <a href="https://github.com/Ghobi-A">GitHub ↗</a
-              ><a href="https://www.linkedin.com/in/ghobi/">LinkedIn ↗</a
-              ><a href="mailto:ghobikan15@hotmail.co.uk">Contact ↗</a>
-            </div>
-          </div>
-          <figure class="hero-instrument">
-            <div class="instrument-head eyebrow">
-              <span>Fig. 00 / Working principle</span
-              ><span>Signal → Evidence</span>
-            </div>
-            <svg
-              class="signal-plot"
-              viewBox="0 0 480 410"
-              role="img"
-              aria-labelledby="signal-title signal-desc"
-            >
-              <title id="signal-title">
-                From noisy observations to an evaluated signal
-              </title>
-              <desc id="signal-desc">
-                Conceptual diagram, not project measurements. Scattered
-                observations surround a fitted trace. A held-out region marks
-                the need to evaluate beyond training data.
-              </desc>
-              <defs>
-                <pattern
-                  id="hero-grid"
-                  width="40"
-                  height="40"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <path
-                    d="M40 0H0V40"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-opacity=".12"
-                  />
-                </pattern>
-              </defs>
-              <rect
-                x="20"
-                y="30"
-                width="440"
-                height="320"
-                fill="url(#hero-grid)"
-              />
-              <path d="M20 350H460M20 30V350" class="axis" />
-              <rect x="330" y="30" width="130" height="320" class="holdout" />
-              <path d="M330 30V350" class="dashed" />
-              <g class="observations">
-                <circle cx="35" cy="270" r="3" />
-                <circle cx="48" cy="302" r="3" />
-                <circle cx="64" cy="240" r="3" />
-                <circle cx="80" cy="280" r="3" />
-                <circle cx="96" cy="232" r="3" />
-                <circle cx="112" cy="287" r="3" />
-                <circle cx="130" cy="220" r="3" />
-                <circle cx="146" cy="267" r="3" />
-                <circle cx="161" cy="222" r="3" />
-                <circle cx="178" cy="250" r="3" />
-                <circle cx="194" cy="189" r="3" />
-                <circle cx="210" cy="236" r="3" />
-                <circle cx="224" cy="185" r="3" />
-                <circle cx="243" cy="208" r="3" />
-                <circle cx="258" cy="141" r="3" />
-                <circle cx="274" cy="180" r="3" />
-                <circle cx="291" cy="120" r="3" />
-                <circle cx="309" cy="149" r="3" />
-                <circle cx="345" cy="100" r="3" />
-                <circle cx="369" cy="139" r="3" />
-                <circle cx="395" cy="87" r="3" />
-                <circle cx="422" cy="113" r="3" />
-                <circle cx="445" cy="78" r="3" />
-              </g>
-              <path
-                d="M30 280C90 230 135 272 190 225S270 136 330 126S408 108 453 90"
-                class="trace draw-line"
-                pathLength="1"
-              />
-              <g class="plot-label">
-                <text x="28" y="20">OBSERVATIONS</text>
-                <text x="341" y="53">HELD OUT</text>
-                <text x="20" y="377">01 / COLLECT</text>
-                <text x="186" y="377">02 / MODEL</text>
-                <text x="348" y="377">03 / TEST</text>
-              </g>
-              <circle cx="330" cy="126" r="7" class="signal-point" />
-              <path d="M250 73H295L324 119" class="axis" />
-              <text x="187" y="66" class="plot-label">
-                EVIDENCE, NOT ASSUMPTION
-              </text>
-            </svg>
-            <figcaption>
-              <span class="eyebrow">The method</span>
-              <p>
-                Make the signal interpretable.<br />Make the result
-                reproducible.<br />Make the system usable.
-              </p>
-              <small>Conceptual illustration · not experimental data</small>
-            </figcaption>
-          </figure>
-        </div>
-        <div class="hero-index"><span class="eyebrow">Inside the dossier</span><a href="#file-dp">01 · Privacy &amp; ML research</a><a href="#file-kh4">02 · Applied NLP</a><a href="#GA-RA-07">03 · SQL, BI &amp; production</a><a href="#file-di">04 · ML pipelines</a><a href="#file-cd">05 · Simulation</a></div>
+        <h1 id="identity" class="sr-only">Ghobikan Aravindan — Applied Data Scientist</h1>
+        <nav class="collection-index" aria-label="Project collection">
+          <a href="#file-dp" aria-current="location">Privacy Audit</a>
+          <a href="#file-kh4">Demand Intelligence</a>
+          <a href="#file-di">Image ML</a>
+          <a href="#file-cd">Crestbound</a>
+          <a href="#GA-RA-07">Restaurant Operations</a>
+          <a href="#experimental">Audio Lab</a>
+        </nav>
       </section>
       <section id="projects" class="section wrap" aria-labelledby="work-title">
-        <div class="section-heading">
-          <div>
-            <p class="eyebrow">01 / Selected work</p>
-            <h2 id="work-title">Questions, made tangible.</h2>
-          </div>
-          <p>
-            Six projects.<br />From a model’s assumptions to the system
-            around it.
-          </p>
-        </div>
+        <h2 id="work-title" class="sr-only">Selected work and research</h2>
         <article
           id="file-dp"
           class="project project-privacy"
           aria-labelledby="dp-title"
         >
-          <div class="project-top eyebrow">
-            <span>GA-DP-05 / Privacy, utility &amp; fairness</span
-            ><span class="badge">Reproducible research</span>
-          </div>
-          <div class="project-grid">
+          <div class="project-grid privacy-chart" data-privacy-chart>
             <div class="project-copy">
-              <h3 id="dp-title">
-                Privacy has a cost.<br /><em>Measure it.</em>
-              </h3>
+              <h3 id="dp-title"><span class="headline-line">Privacy–Utility</span><br /><span class="headline-line">and Fairness Audit</span></h3>
               <p class="problem">
                 How much predictive utility survives a formal privacy
                 constraint?
               </p>
-              <p>
-                A DP-SGD benchmark and decision audit combining prepared-record privacy accounting, repeated-seed evaluation, empirical attacks, ACS replication and calibration diagnostics.
-              </p>
-              <dl class="metrics">
-                <div>
-                  <dt>Prediction ROC-AUC</dt>
-                  <dd>0.933</dd>
-                </div>
-                <div>
-                  <dt>Achieved privacy ε</dt>
-                  <dd>0.49</dd>
-                </div>
-              </dl>
-              <p class="evidence-note">
-                High-cost prediction · δ = 10⁻⁵ · five seeds. The privacy budget covers prepared records; preprocessing and research releases are not jointly accounted. ROC-AUC is
-                predictive utility, not membership-inference attack performance.
-              </p>
-              <ul class="tags" aria-label="Technologies">
-                <li>Python</li>
-                <li>DP-SGD</li>
-                <li>Calibration</li>
-                <li>Privacy auditing</li>
-              </ul>
-              <div class="text-links">
-                <a href="https://github.com/Ghobi-A/dp-insurance"
-                  >Research repository ↗</a
-                >
-                <a
-                  href="https://github.com/Ghobi-A/dp-insurance/blob/main/docs/PUBLICATION_STATUS.md"
-                  >Current findings &amp; research status ↗</a
-                >
+              <p>I build and audit private learning systems, measuring prediction quality, privacy cost and subgroup behaviour. This benchmark makes the evidence and its limits available for inspection.</p>
+
+
+
+              <div class="actions">
+                <a class="button primary" href="#GA-DP-05">Open study <span aria-hidden="true">→</span></a>
+                <a class="button" href="https://github.com/Ghobi-A/dp-insurance">View code <svg viewBox="0 0 24 24" aria-hidden="true" class="github-icon"><path fill="currentColor" d="M12 .8a11.3 11.3 0 0 0-3.57 22.02c.56.1.77-.24.77-.54v-2.1c-3.15.68-3.82-1.34-3.82-1.34-.51-1.3-1.25-1.64-1.25-1.64-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.65 1.24 3.3.95.1-.74.4-1.25.72-1.54-2.52-.29-5.17-1.26-5.17-5.61 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .96-.3 3.11 1.16a10.8 10.8 0 0 1 5.67 0c2.16-1.46 3.11-1.16 3.11-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.36-2.66 5.32-5.19 5.6.41.36.77 1.04.77 2.1v3.11c0 .3.2.65.78.54A11.3 11.3 0 0 0 12 .8Z"/></svg></a>
               </div>
+              <p class="study-context">Independent research · London, UK</p>
             </div>
             <figure class="evidence-panel frontier">
-              <div class="panel-title eyebrow">
-                Fig. 05 / Privacy–utility trade-off
-              </div>
+              <h4 class="panel-title">Privacy vs utility</h4><p class="chart-subtitle">Three measured settings. Select a point to inspect the result.</p>
               <svg
                 viewBox="0 0 480 300"
                 role="img"
                 aria-labelledby="dp-chart-title dp-chart-desc"
+                data-privacy-plot
               >
                 <title id="dp-chart-title">
                   Mean prediction ROC-AUC at three privacy budgets
@@ -301,6 +157,14 @@
                   <circle cx="432" cy="103" r="5" />
                 </g>
               </svg>
+              <div class="privacy-controls" role="group" aria-label="Select measured privacy budget" hidden>
+                <button type="button" data-privacy-select aria-pressed="true">ε 0.49</button>
+                <button type="button" data-privacy-select aria-pressed="false">ε 2</button>
+                <button type="button" data-privacy-select aria-pressed="false">ε 6</button>
+              </div>
+              <label class="privacy-scale" hidden><input type="checkbox" data-privacy-full-scale> Show full AUC axis (0–1)</label>
+
+              <p class="privacy-status" data-privacy-status role="status" aria-live="polite" aria-atomic="true"></p>
               <dl class="frontier-values">
                 <div>
                   <dt>ε 0.49</dt>
@@ -317,12 +181,30 @@
               </dl>
               <figcaption>
                 1,338 public teaching records. Whiskers: 95% t intervals across
-                five seeds. Axis is truncated to show variation.
+                five seeds. The curve is a smooth guide between measured means; the pink envelope follows their displayed intervals, not uncertainty at unmeasured settings. <span data-privacy-axis-note>AUC axis truncated to 0.90–0.97 to show variation.</span>
                 <a href="https://github.com/Ghobi-A/dp-insurance#readme"
                   >Source ↗</a
                 >
               </figcaption>
             </figure>
+            <aside class="research-sidebar" aria-label="Research question and technical result">
+              <h4>Research question</h4>
+              <p class="research-question">How much privacy can we provide while maintaining utility and fairness?</p>
+              <p class="research-explanation">The chart measures predictive utility. Subgroup fairness and empirical attacks are assessed separately; prediction AUC is not membership-inference attack performance.</p>
+              <div class="privacy-selection">
+                <strong>AUC <span data-privacy-auc>0.933</span> at ε <span data-privacy-epsilon>0.49</span></strong>
+                <p>95% t interval <span data-privacy-interval>[0.909, 0.957]</span><br />Five random seeds.</p>
+              </div>
+              <dl class="research-facts">
+                <div><dt>Method</dt><dd>DP-SGD · RDP accounting</dd></div>
+                <div><dt>Privacy δ</dt><dd>10⁻⁵</dd></div>
+                <div><dt>Records</dt><dd>1,338 public teaching records</dd></div>
+                <div><dt>HGB gap</dt><dd><span data-privacy-gap>0.020</span> AUC below reference</dd></div>
+                <div><dt>Guarantee</dt><dd>Prepared records only</dd></div>
+              </dl>
+              <p class="research-caveat">Intervals capture seed variation, not population uncertainty. Preprocessing and research releases are not jointly accounted.</p>
+              <a class="source-link" href="https://github.com/Ghobi-A/dp-insurance/blob/main/docs/PUBLICATION_STATUS.md">Current findings &amp; limitations <span aria-hidden="true">↗</span></a>
+            </aside>
           </div>
           <details class="case-study" id="GA-DP-05">
             <summary aria-controls="dp-case">
@@ -442,8 +324,9 @@
               <h3 id="kh-title">
                 Behavioural Demand<br /><em>Intelligence.</em>
               </h3>
+              <div class="paper-study" aria-hidden="true"><img src="assets/images/text-study.webp" alt="" width="1536" height="1024" loading="lazy" /></div>
               <p class="problem">
-                Online enthusiasm is easy to count. Intent is harder to defend.
+                Separating actionable interest from general fan discussion.
               </p>
               <p>
                 A leakage-aware NLP system that separates actionable audience
@@ -476,9 +359,7 @@
               <div class="text-links">
                 <a href="https://kh4-demand-intel.streamlit.app/"
                   >Live dashboard ↗</a
-                ><a href="https://github.com/Ghobi-A/kh4-demand-intel"
-                  >GitHub ↗</a
-                >
+                ><a href="https://github.com/Ghobi-A/kh4-demand-intel">View code <svg viewBox="0 0 24 24" aria-hidden="true" class="github-icon"><path fill="currentColor" d="M12 .8a11.3 11.3 0 0 0-3.57 22.02c.56.1.77-.24.77-.54v-2.1c-3.15.68-3.82-1.34-3.82-1.34-.51-1.3-1.25-1.64-1.25-1.64-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.65 1.24 3.3.95.1-.74.4-1.25.72-1.54-2.52-.29-5.17-1.26-5.17-5.61 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .96-.3 3.11 1.16a10.8 10.8 0 0 1 5.67 0c2.16-1.46 3.11-1.16 3.11-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.36-2.66 5.32-5.19 5.6.41.36.77 1.04.77 2.1v3.11c0 .3.2.65.78.54A11.3 11.3 0 0 0 12 .8Z"/></svg></a>
               </div>
             </div>
             <figure class="evidence-panel signal-system">
@@ -490,28 +371,28 @@
                 ><span class="input-note">public discussion</span>
               </div>
               <div class="flow-line" aria-hidden="true"></div>
-              <div class="system-node">
+              <div class="system-node" data-inspect-label="Audit labels">
                 <span class="eyebrow">01 / Audit</span
                 ><strong>Human-corrected intent labels</strong
                 ><small>200 examples · eight-class taxonomy</small>
               </div>
               <div class="flow-line" aria-hidden="true"></div>
-              <div class="system-node sage-node">
+              <div class="system-node sage-node" data-inspect-label="Group split">
                 <span class="eyebrow">02 / Partition</span
                 ><strong>Keep discussion groups together</strong
                 ><small>Train / validation / held-out test</small>
               </div>
-              <div class="split-rail" aria-label="Target split proportions: train 70 percent, validation 15 percent, test 15 percent. Actual group sizes can vary.">
+              <div class="split-rail" role="group" aria-label="Target split proportions: train 70 percent, validation 15 percent, test 15 percent. Actual group sizes can vary.">
                 <span style="--portion:70">Train</span><span style="--portion:15">Val</span><span style="--portion:15">Test</span>
               </div>
               <p class="diagram-note">70 / 15 / 15 target · whole groups stay together</p>
               <div class="flow-line" aria-hidden="true"></div>
               <div class="split-nodes">
-                <div class="system-node">
+                <div class="system-node" data-inspect-label="Actionability">
                   <strong>Is it actionable?</strong
                   ><small>Calibrated probability</small>
                 </div>
-                <div class="system-node">
+                <div class="system-node" data-inspect-label="Intent classes">
                   <strong>Which intent?</strong
                   ><small>Conditional classification</small>
                 </div>
@@ -610,7 +491,7 @@
           </details>
         </article>
 <article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
-<div class="project-top eyebrow"><span>GA-RA-07 / End-to-end product, SQL &amp; BI</span><span class="badge">Synthetic public demo</span></div>
+<div class="project-top eyebrow"><span>GA-RA-07 / End-to-end product, SQL &amp; BI</span><span class="badge">Operational aggregates</span></div>
 <div class="project-grid"><div class="project-copy"><h3 id="ra-title">UK Asia Grill<br /><em>Data &amp; Operations Platform.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A deployed restaurant ordering and kitchen-operations platform, complemented by a read-only PostgreSQL analytical layer, four-page Power BI report with DAX measures, and a separate interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. A real-data PBIX has been supplied and structurally inspected (four pages, 55 visuals); Desktop rendering and KPI reconciliation remain pending. Scale scenarios are estimates.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>SQL &amp; BI</li><li>Power BI / DAX</li><li>TypeScript</li><li>Supabase</li><li>Stripe</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore the separate browser dashboard and clearly labelled scale scenario. The native PBIX is structurally inspected but not engine-validated.</figcaption></figure></div><div id="file-uag" class="restaurant-engineering"><h4>Production ordering &amp; kitchen operations</h4><div class="project-grid">
             <div class="project-copy">
               <h3 id="uag-title">
@@ -766,9 +647,7 @@
           </div>
           <div class="project-grid">
             <div class="project-copy">
-              <h3 id="di-title">
-                Faster inputs.<br /><em>Honest benchmarks.</em>
-              </h3>
+              <h3 id="di-title">Distributed<br /><em>Image ML Pipeline.</em></h3>
               <p class="problem">
                 Where does an image-learning pipeline actually spend its time?
               </p>
@@ -799,7 +678,7 @@
               <div class="text-links">
                 <a href="https://big-data-tfr.streamlit.app/"
                   >Benchmark dashboard ↗</a
-                ><a href="https://github.com/Ghobi-A/Big-Data">GitHub ↗</a>
+                ><a href="https://github.com/Ghobi-A/Big-Data">View code <svg viewBox="0 0 24 24" aria-hidden="true" class="github-icon"><path fill="currentColor" d="M12 .8a11.3 11.3 0 0 0-3.57 22.02c.56.1.77-.24.77-.54v-2.1c-3.15.68-3.82-1.34-3.82-1.34-.51-1.3-1.25-1.64-1.25-1.64-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.65 1.24 3.3.95.1-.74.4-1.25.72-1.54-2.52-.29-5.17-1.26-5.17-5.61 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .96-.3 3.11 1.16a10.8 10.8 0 0 1 5.67 0c2.16-1.46 3.11-1.16 3.11-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.36-2.66 5.32-5.19 5.6.41.36.77 1.04.77 2.1v3.11c0 .3.2.65.78.54A11.3 11.3 0 0 0 12 .8Z"/></svg></a>
               </div>
             </div>
             <figure class="evidence-panel benchmark">
@@ -836,7 +715,7 @@
                   </div>
                 </div>
               </div>
-              <div class="partition-chart">
+              <div class="partition-chart" id="partition-benchmark">
                 <p class="chart-label">Preprocessing by partition count <span>images / second</span></p>
                 <svg viewBox="0 0 480 250" role="img" aria-labelledby="partition-title partition-desc">
                   <title id="partition-title">Local and local-mode Spark throughput by partition count</title>
@@ -961,7 +840,7 @@
             <div class="project-copy">
               <h3 id="cd-title">Crestbound<br /><em>Duelists.</em></h3>
               <p class="problem">
-                Game balance is a hypothesis. Make it testable.
+                Testing combat balance before making design decisions.
               </p>
               <p>
                 A Python balance laboratory and original Godot RPG prototype,
@@ -988,15 +867,16 @@
                   >Play prototype ↗</a
                 ><a href="https://crestbound-balance-lab.streamlit.app/"
                   >Balance lab ↗</a
-                ><a href="https://github.com/Ghobi-A/Crestbound-Duelists"
-                  >GitHub ↗</a
-                >
+                ><a href="https://github.com/Ghobi-A/Crestbound-Duelists">View code <svg viewBox="0 0 24 24" aria-hidden="true" class="github-icon"><path fill="currentColor" d="M12 .8a11.3 11.3 0 0 0-3.57 22.02c.56.1.77-.24.77-.54v-2.1c-3.15.68-3.82-1.34-3.82-1.34-.51-1.3-1.25-1.64-1.25-1.64-1.03-.7.08-.69.08-.69 1.14.08 1.74 1.17 1.74 1.17 1.01 1.74 2.65 1.24 3.3.95.1-.74.4-1.25.72-1.54-2.52-.29-5.17-1.26-5.17-5.61 0-1.24.44-2.25 1.17-3.04-.12-.29-.51-1.44.11-3 0 0 .96-.3 3.11 1.16a10.8 10.8 0 0 1 5.67 0c2.16-1.46 3.11-1.16 3.11-1.16.62 1.56.23 2.71.11 3 .73.79 1.17 1.8 1.17 3.04 0 4.36-2.66 5.32-5.19 5.6.41.36.77 1.04.77 2.1v3.11c0 .3.2.65.78.54A11.3 11.3 0 0 0 12 .8Z"/></svg></a>
               </div>
             </div>
             <figure class="evidence-panel simulation">
               <div class="panel-title eyebrow">
                 Fig. 03 / One combat model, two consumers
               </div>
+              <a class="gameplay-shot" href="https://ghobi-a.github.io/Crestbound-Duelists/" aria-label="Play the Crestbound Duelists prototype">
+                <img src="assets/images/crestbound-battle.webp" width="1701" height="925" alt="Crestbound Duelists: Kai, Almyra and Liora Sen face their opponents in Hollow Court" loading="lazy" />
+              </a>
               <div class="system-node shared-node">
                 <span class="eyebrow">Source of truth</span
                 ><strong>Validated YAML combat definitions</strong
@@ -1007,10 +887,6 @@
                 <div>
                   <span class="eyebrow">Analysis</span
                   ><strong>Python simulator</strong>
-                  <div class="mini-grid" aria-hidden="true">
-                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i
-                    ><i></i>
-                  </div>
                   <p>
                     Seeded matchups<br />Stateful lookahead<br />Balance reports
                   </p>
@@ -1018,18 +894,14 @@
                 <div>
                   <span class="eyebrow">Experience</span
                   ><strong>Godot prototype</strong>
-                  <div class="game-mark" aria-hidden="true">
-                    C<span>↗</span>D
-                  </div>
                   <p>
                     JSON exports<br />Tactical combat<br />Playable encounters
                   </p>
                 </div>
               </div>
               <figcaption>
-                Architecture diagram. The grid represents matchup coverage, not
-                measured win rates. Shared exports connect simulation
-                assumptions to game behaviour.
+                Crestbound Duelists — Hollow Court. Shared combat definitions
+                connect the Python simulator to the playable prototype.
               </figcaption>
             </figure>
           </div>
@@ -1126,8 +998,8 @@
         <div class="wrap">
           <div class="section-heading">
             <div>
-              <p class="eyebrow">02 / Technical capabilities</p>
-              <h2 id="cap-title">The tools have a job.</h2>
+
+              <h2 id="cap-title">Methods, connected to the work.</h2>
             </div>
             <p>
               Methods tied to projects.<br />A trail of implementation
@@ -1178,8 +1050,8 @@
       >
         <div class="section-heading">
           <div>
-            <p class="eyebrow">03 / Experimental &amp; research</p>
-            <h2 id="research-title">Room for the unresolved.</h2>
+
+            <h2 id="research-title">Audio &amp; language experiments.</h2>
           </div>
           <p>Creative systems.<br />Explicit baselines. Open questions.</p>
         </div>
@@ -1190,7 +1062,7 @@
             </p>
             <h3>Creative Audio Lab<span class="rust">.</span></h3>
             <p class="problem">
-              Generate an editable musical sketch—not an opaque waveform.
+              Editable musical sketches, delivered as MIDI stems.
             </p>
             <p>
               Prompt-conditioned MIDI arrangements built from deterministic
@@ -1206,9 +1078,10 @@
             <a class="source-link" href="https://github.com/Ghobi-A/Midi"
               >Explore the lab ↗</a
             >
+            <a class="source-link" href="https://github.com/Ghobi-A/Midi/blob/main/examples/demo_pipeline.ipynb">Run the generation notebook ↗</a>
           </div>
           <div class="audio-scope">
-            <div class="token-flow" aria-label="Deterministic generation path"><span>Prompt controls</span><span>Note events</span><span>MIDI stems</span></div>
+            <div class="token-flow" role="group" aria-label="Deterministic generation path"><span>Prompt controls</span><span>Note events</span><span>MIDI stems</span></div>
             <p class="eyebrow">Current → intended scope</p>
             <ol>
               <li>
@@ -1282,15 +1155,42 @@
           </details>
         </article>
       </section>
+      <section class="section wrap semantic-lab" id="file-sd" aria-labelledby="semantic-title">
+        <div class="audio-lab">
+          <div>
+            <h2 id="semantic-title">Semantic Drift<span class="rust">.</span></h2>
+            <p class="problem">Can repeated rewriting change how a new word feels?</p>
+            <p>Research infrastructure for testing model-mediated connotational drift: whether a language model changes a novel word’s emotional associations while its meaning stays approximately intact—and whether that change survives after the model leaves the chain.</p>
+            <p class="protocol-status"><span class="badge">Protocol draft</span> No participants recruited. No outcome data or demonstrated effect.</p>
+            <ul class="tags" aria-label="Technologies"><li>Python</li><li>Transmission chains</li><li>Reproducible assignment</li><li>Provenance</li></ul>
+            <a class="source-link" href="https://github.com/Ghobi-A/Semantic-Drift/blob/main/docs/study_protocol.md">Read the protocol ↗</a>
+            <a class="source-link" href="https://github.com/Ghobi-A/Semantic-Drift">View code ↗</a>
+          </div>
+          <div class="semantic-design">
+            <h3>Three conditions. One shared test.</h3>
+            <dl class="semantic-conditions"><div><dt>Human only</dt><dd>Unedited human-to-human transmission.</dd></div><div><dt>Human editor</dt><dd>Clarity rewrites: the active control.</dd></div><div><dt>LLM mediated</dt><dd>The same rewriting instruction, delivered by a model.</dd></div></dl>
+            <h4>Follow the word through six generations</h4>
+            <ol class="semantic-chain" aria-label="Four edited transmission edges followed by two human-only washout edges"><li>G1</li><li>G2</li><li>G3</li><li>G4</li><li>G5</li><li>G6</li></ol>
+            <div class="semantic-legend"><span>G1–G4: editor phase in the two editing arms</span><span>G5–G6: human-only washout in every arm</span></div>
+            <p>Planned comparisons separate rewriting from model mediation, then test persistence after editing stops.</p>
+          </div>
+          <details class="case-study" id="GA-SD-08"><summary aria-controls="sd-case">Read the study design <span class="case-symbol" aria-hidden="true">+</span></summary><div class="case-content" id="sd-case"><div class="case-grid">
+            <section><h4>The question</h4><p>Can affective associations change while denotation is preserved? A human-editor active control separates model mediation from editing in general.</p></section>
+            <section><h4>The protocol</h4><p>Immutable six-generation chains, balanced randomisation, counterbalanced novel-word forms and a pinned instruction shared by both editing arms. Four edited edges precede two unedited human transmissions.</p></section>
+            <section><h4>Planned evaluation</h4><p>Human valence ratings and blinded denotation checks; chain-level replication. Draft contrasts compare editing arms at generation four and persistence at generation six. Embeddings are supplementary.</p></section>
+            <section><h4>Current status</h4><p>Protocol invariants, provenance and reproducible assignment are implemented. Ethics approval, participant interface, pilot, preregistration and recruitment remain ahead. Synthetic dry runs test the software, not the research hypothesis.</p></section>
+          </div></div></details>
+        </div>
+      </section>
       <section
         id="about"
         class="section wrap about"
         aria-labelledby="about-title"
       >
         <div>
-          <p class="eyebrow">04 / Background</p>
+
           <h2 id="about-title">
-            An engineer’s structure.<br /><em>A researcher’s doubt.</em>
+            Research-minded.<br /><em>Built to be used.</em>
           </h2>
         </div>
         <div class="about-copy">
@@ -1322,10 +1222,10 @@
     </main>
     <footer id="contact" class="contact">
       <div class="wrap">
-        <p class="eyebrow">05 / Open a conversation</p>
-        <p class="contact-question">Have a problem hiding inside messy data?</p>
-        <h2>Let’s <em>investigate.</em></h2>
-        <div class="contact-invitation"><p>Applied data science. Careful evaluation.<br />Systems people can use.</p><a class="button primary" href="mailto:ghobikan15@hotmail.co.uk">Start a conversation <span aria-hidden="true">↗</span></a></div>
+
+        <p class="contact-question">Have a project, research question or role in mind?</p>
+        <h2>Let’s <em>talk.</em></h2>
+        <div class="contact-invitation"><p>Applied data science. Careful evaluation.<br />Systems people can use.</p><a class="button primary" href="mailto:ghobikan15@hotmail.co.uk">Email Ghobikan <span aria-hidden="true">↗</span></a></div>
         <div class="contact-bottom">
           <a class="email" href="mailto:ghobikan15@hotmail.co.uk"
             >ghobikan15@hotmail.co.uk</a

@@ -1,0 +1,37 @@
+.privacy-chart { --chart-ink:#102449; --chart-pink:#bd005f; --chart-line:#dfe4ec; color:var(--chart-ink); }
+.privacy-chart svg { display:block; width:100%; height:auto; overflow:visible; }
+.privacy-chart svg.github-icon { display:inline-block; width:21px; height:21px; max-width:21px; flex:none; }
+.privacy-chart svg text { fill:var(--chart-ink); font-family:Georgia,serif; }
+.privacy-chart .privacy-tick { font-size:17px; font-variant-numeric:tabular-nums; }
+.privacy-chart .privacy-axis-label { font-size:19px; }
+.privacy-chart .privacy-axis-note { font-size:16px; font-style:italic; }
+.privacy-chart .privacy-axis { fill:none; stroke:var(--chart-ink); stroke-width:1.5; }
+.privacy-chart .privacy-gridline { stroke:var(--chart-line); stroke-width:1; stroke-dasharray:2 3; }
+.privacy-chart .privacy-reference { stroke:#52617d; stroke-width:1; stroke-dasharray:5 5; }
+.privacy-chart .privacy-reference-label { font-size:14px; fill:#465574; }
+.privacy-chart .privacy-whisker { fill:none; stroke:var(--chart-pink); stroke-width:2; }
+.privacy-chart .privacy-interval-wash { fill:#ff007f; opacity:.065; }
+.privacy-chart .privacy-bloom { fill:#ed007b; fill-opacity:.13; stroke:none; pointer-events:none; }
+.privacy-chart .privacy-fit { fill:none; stroke:var(--chart-ink); stroke-width:2; pointer-events:none; }
+.privacy-chart .privacy-selection-guide { stroke:#bd005f; stroke-width:1; stroke-dasharray:5 5; opacity:.65; pointer-events:none; }
+.privacy-chart .privacy-dot { fill:var(--chart-ink); stroke:var(--chart-ink); stroke-width:2; }
+.privacy-chart .is-selected .privacy-dot { fill:#ffd137; }
+.privacy-chart .is-selected .privacy-whisker { stroke-width:3; }
+.privacy-chart .privacy-point-label { font-size:17px; font-weight:bold; }
+.privacy-chart .privacy-hit { fill:transparent; stroke:none; pointer-events:all; }
+.privacy-chart .privacy-measure { cursor:pointer; }
+.privacy-chart .privacy-measure:focus-visible { outline:none; }
+.privacy-chart .privacy-measure:focus-visible .privacy-dot { stroke:var(--chart-pink); stroke-width:5; }
+.privacy-controls { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:10px 0 14px; }
+.privacy-controls button { min-height:44px; padding:8px 14px; border:1px solid #a6b0c1; border-radius:4px; color:var(--chart-ink); background:transparent; font:inherit; cursor:pointer; font-variant-numeric:tabular-nums; }
+.privacy-controls button[aria-pressed="true"] { background:#fce5ef; border-color:var(--chart-pink); box-shadow:inset 0 -2px var(--chart-pink); }
+.privacy-controls button:hover { background:#fce5ef; }
+.privacy-controls button:focus-visible,.privacy-scale input:focus-visible { outline:2px solid var(--chart-pink); outline-offset:3px; }
+.privacy-scale { display:flex; gap:8px; align-items:center; font-size:14px; cursor:pointer; }
+.privacy-scale input { width:18px; height:18px; accent-color:var(--chart-pink); }
+.privacy-selection { padding:14px 0; border-block:1px solid #ccd3df; font-variant-numeric:tabular-nums; }
+.privacy-selection strong { font-size:1.1em; }
+.privacy-selection p { margin:4px 0; }
+.privacy-status { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.privacy-controls[hidden], .privacy-scale[hidden] { display:none; }
+@media(prefers-reduced-motion:reduce){.privacy-chart * {scroll-behavior:auto;transition:none!important;}}

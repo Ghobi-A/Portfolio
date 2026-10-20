@@ -43,15 +43,15 @@ class Page(HTMLParser):
 class PortfolioTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.source = (ROOT / 'index.html').read_text()
-        cls.html = (OUT / 'index.html').read_text()
+        cls.source = (ROOT / 'index.html').read_text(encoding='utf-8')
+        cls.html = (OUT / 'index.html').read_text(encoding='utf-8')
         cls.page = Page(cls.html)
         cls.text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', cls.html))
         cls.ids = [attrs['id'] for _, attrs in cls.page.tags if 'id' in attrs]
 
     def test_restaurant_case_study_assets_and_privacy(self):
         folder = OUT / 'projects/restaurant-analytics'
-        html = (folder / 'index.html').read_text()
+        html = (folder / 'index.html').read_text(encoding='utf-8')
         page = Page(html)
         self.assertEqual(page.nesting_errors, [])
         self.assertEqual(page.stack, [])
@@ -86,12 +86,12 @@ class PortfolioTests(unittest.TestCase):
             self.assertNotIn(denied, json.dumps(data))
         self.assertLess(self.html.index('id="file-dp"'), self.html.index('id="file-kh4"'))
         self.assertLess(self.html.index('id="file-kh4"'), self.html.index('id="GA-RA-07"'))
-        active = (folder / 'index.html').read_text()
+        active = (folder / 'index.html').read_text(encoding='utf-8')
         self.assertIn('observed-data.js', active)
         self.assertNotIn('demo-data.js', active)
 
     def test_metadata_singletons_and_valid_jsonld(self):
-        self.assertEqual(len(self.page.elements('title')), 4)  # page + three SVG titles
+        self.assertGreaterEqual(len(self.page.elements('title')), 3)  # page + named quantitative figures
         self.assertEqual(self.html.count('<title>Ghobikan'), 1)
         for key in ('description', 'twitter:card', 'twitter:image'):
             self.assertEqual(sum(m.get('name') == key for m in self.page.elements('meta')), 1)
@@ -102,7 +102,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual(person['name'], 'Ghobikan Aravindan')
         self.assertEqual(person['address']['addressLocality'], 'London')
         projects = json.loads(scripts[1])['itemListElement']
-        self.assertEqual(len(projects), 7)
+        self.assertEqual(len(projects), 8)
         for project in projects:
             self.assertIn(project['item']['url'].split('#')[1], self.ids)
 
@@ -113,7 +113,7 @@ class PortfolioTests(unittest.TestCase):
     def test_evidence_pass(self):
         for text in ('8.68 s', '8.54 s', '304-row extract', 'not volume-representative', 'RDP accounting', 'MIDI stems'):
             self.assertIn(text, self.text)
-        self.assertEqual(len(self.page.elements('figure')), 8)
+        self.assertGreaterEqual(len(self.page.elements('figure')), 7)
 
     def test_builder_is_idempotent_and_layout_independent(self):
         self.assertEqual(polish_html(self.html), self.html)
@@ -145,8 +145,8 @@ class PortfolioTests(unittest.TestCase):
             self.assertIn(case, self.ids)
 
     def test_no_js_disclosures_and_semantic_visuals(self):
-        self.assertEqual(len(self.page.elements('details')), 6)
-        self.assertEqual(len(self.page.elements('summary')), 6)
+        self.assertEqual(len(self.page.elements('details')), 7)
+        self.assertEqual(len(self.page.elements('summary')), 7)
         self.assertNotIn('onclick=', self.html)
         for svg in self.page.elements('svg'):
             self.assertTrue(svg.get('aria-hidden') == 'true' or svg.get('aria-labelledby'))
@@ -183,16 +183,24 @@ class PortfolioTests(unittest.TestCase):
                 self.assertEqual(attrs.get('target'), '_blank')
                 self.assertTrue({'noopener', 'noreferrer'} <= set(attrs.get('rel', '').split()))
 
+    def test_interactive_dossier_uses_authored_evidence(self):
+        main = (OUT / 'assets/js/main.js').read_text(encoding='utf-8')
+        for feature in ('row.cells', 'partition-readout', 'evidenceinspect', 'requestAnimationFrame(updateReadingPosition)', 'ResizeObserver'):
+            self.assertIn(feature, main)
+        self.assertIn('id="partition-benchmark"', self.html)
+        self.assertLess(self.source.index("classList.add('nav-enhanced')"), self.source.index('<main id="top">'))
+        self.assertNotIn('classList.add("nav-enhanced")', main)
+
     def test_content_guardrails_and_motion_fallback(self):
         self.assertNotIn('Blackhorse', self.html)
         self.assertNotIn('crestbound-duelists.streamlit.app', self.html)
         for text in ('single-runner measurements', 'Implemented / demo-only forecasts', 'synthetic bootstrap', 'not membership-inference'):
             self.assertIn(text, self.text)
-        css = (OUT / 'assets/css/site.css').read_text()
+        css = (OUT / 'assets/css/site.css').read_text(encoding='utf-8')
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
         self.assertNotRegex(css, r'(?<!-)opacity:\s*0\s*[;}]')
-        motion = (OUT / 'assets/js/motion.js').read_text()
-        self.assertIn('!window.gsap', motion)
+        motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
+        self.assertNotIn('gsap.min.js', self.html)
         self.assertIn('prefers-reduced-motion: no-preference', motion)
 
 

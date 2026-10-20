@@ -1,4 +1,20 @@
-# Intelligence dossier redesign
+# Portfolio implementation
+
+## Gallery Proof completion — 20 October 2026
+
+This section supersedes the older visual and browser-validation notes below, which remain as history. The approved implementation is code-led Study Gallery structure with Proof Print colors, a project-first opening, self-hosted Source Serif 4 and compact GitHub source buttons. No framework, server-side API, remote animation library or hosting change was added.
+
+The three measured privacy settings are selectable by pointer or keyboard. A monotone smooth guide and pink interval envelope join the observed values; the note explicitly distinguishes these from new observations or interval estimates. The full 0–1 axis toggle updates its caption. Native disclosures preserve all case studies, and metadata now lists eight projects including the separate restaurant analytics/engineering entries and Semantic Drift.
+
+The supplied Hollow Court image replaces the previous Crestbound route image. Semantic Drift follows Audio Lab with a three-condition, six-generation protocol diagram and explicit pre-data status. Restaurant case study, observed-aggregate dashboard and methodology surfaces use the same palette; a visible return link remains available on phones.
+
+Native WAAPI draws the chart guide once, acknowledges selection, and sequences ordered system steps. No section is hidden before enhancement. Motion cancels when the document hides or the user requests reduced motion. Chart points remain visible throughout. The previous GSAP import and dependency are absent from the page.
+
+Validation: 13 structural tests and three JavaScript syntax checks pass. Offline Chromium browser tests cover the chart's three selections, arrow keys, full-axis toggle, seven disclosures, mobile menu/Escape, image decoding, compact icon dimensions, four dashboard tabs and responsive overflow. Main captures: 1440px desktop, 390px mobile, 320px narrow phone and 1732px opening. The in-app HTTP preview is refreshed at `http://127.0.0.1:55011/`. Browser test evidence and captures live in `.impeccable/review/`. No Lighthouse score, physical-device performance guarantee, deployment or experiment rerun is claimed.
+
+The independent review/documentation agents exhausted their available usage; the finish review and design-system documentation were completed inline. DESIGN.md and its schema-v2 sidecar describe the implemented system, not the superseded comp. Asset origins are recorded in sidecars. The site remains local until an explicit publish request.
+
+Final link probe: 19 of 23 unique HTTPS destinations returned 200, including both Semantic Drift links, the Crestbound playable page and restaurant site. Three Streamlit destinations returned 303 provider responses and LinkedIn returned 999; those four remain unverified, not proven broken. Final browser checks additionally pass all seven disclosure deep links, no-JS navigation/exact values/native disclosures, aggregate export, and overflow at 768/1024/1250/1920px. The 320px full-page capture was stitched from unmodified native viewport captures to avoid Chromium's long-page paint limit.
 
 ## Follow-up evidence and motion pass — 9 September 2026
 

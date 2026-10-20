@@ -25,7 +25,7 @@ def check(url):
 
 
 if __name__ == '__main__':
-    page = Page((OUT / 'index.html').read_text())
+    page = Page((OUT / 'index.html').read_text(encoding='utf-8'))
     urls = sorted({urldefrag(a['href'])[0] for a in page.elements('a') if a.get('href', '').startswith('https://')})
     with concurrent.futures.ThreadPoolExecutor(max_workers=6) as pool:
         for url, status, final in pool.map(check, urls):

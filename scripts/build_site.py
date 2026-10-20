@@ -20,12 +20,12 @@ ASSETS = OUT / "assets"
 SITE_URL = "https://ghobi-a.github.io/Portfolio/"
 SOCIAL_URL = f"{SITE_URL}assets/social-preview.png"
 
-INK = (11, 13, 12)
-PAPER = (232, 230, 223)
-GRID = (218, 215, 206)
-SAGE = (88, 100, 89)
-RUST = (168, 68, 46)
-LINE = (183, 179, 168)
+INK = (16, 36, 73)
+PAPER = (253, 252, 250)
+GRID = (235, 238, 244)
+SAGE = (67, 92, 133)
+RUST = (189, 0, 95)
+LINE = (216, 223, 233)
 
 FONT = {
     "A": ("01110","10001","10001","11111","10001","10001","10001"),
@@ -83,7 +83,7 @@ def polish_html(source: str) -> str:
 <meta name="author" content="Ghobikan Aravindan">
 <meta name="robots" content="index, follow">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#E8E6DF">
+<meta name="theme-color" content="#FDFCFA">
 <link rel="canonical" href="{SITE_URL}">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -147,6 +147,7 @@ def polish_html(source: str) -> str:
         ('GA-UA-04', 'Restaurant Ordering and Kitchen Operations Platform'),
         ('GA-CD-03', 'Crestbound Duelists — RPG Balance Lab'),
         ('GA-CA-06', 'Creative Audio Lab'),
+        ('GA-SD-08', 'Semantic Drift'),
     ]
     metadata += '<script type="application/ld+json">\n' + json.dumps({
         '@context': 'https://schema.org',
@@ -291,7 +292,7 @@ def main() -> None:
     if not cv_source.is_file():
         raise FileNotFoundError(f"Portfolio CV asset is missing: {cv_source}")
     shutil.copy2(cv_source, ASSETS / cv_source.name)
-    for directory in ('css', 'js', 'visuals'):
+    for directory in ('css', 'js', 'visuals', 'fonts', 'images'):
         source = ROOT / 'assets' / directory
         if source.is_dir():
             shutil.copytree(source, ASSETS / directory)
@@ -303,9 +304,9 @@ def main() -> None:
     (ASSETS / "apple-touch-icon.png").write_bytes(make_touch_icon())
     (ASSETS / "favicon.svg").write_text(
         """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-<rect width="64" height="64" rx="8" fill="#E8E6DF"/>
-<rect x="5" y="5" width="54" height="54" rx="5" fill="none" stroke="#0B0D0C" stroke-width="3"/>
-<path d="M17 21h13v5h-7v12h7v5H17zM34 21h13v22h-6v-7h-5v7h-6zm2 5v5h5v-5z" fill="#A8442E"/>
+<rect width="64" height="64" rx="8" fill="#FDFCFA"/>
+<rect x="5" y="5" width="54" height="54" rx="5" fill="none" stroke="#102449" stroke-width="3"/>
+<path d="M17 21h13v5h-7v12h7v5H17zM34 21h13v22h-6v-7h-5v7h-6zm2 5v5h5v-5z" fill="#BD005F"/>
 </svg>
 """,
         encoding="utf-8",

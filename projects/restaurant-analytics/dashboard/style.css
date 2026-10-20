@@ -1,12 +1,13 @@
 :root {
   color-scheme: light;
-  --ink: #172c31;
-  --muted: #5c7075;
-  --teal: #087f8c;
-  --line: #dbe3e1;
-  --paper: #fff;
-  --back: #f3f5f2;
-  --warn: #a34b1f;
+  --ink: #102449;
+  --muted: #526079;
+  --accent: #bd005f;
+  --line: #cbd0da;
+  --paper: #fdfcfa;
+  --back: #f5f3f1;
+  --warn: #9d3150;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
 }
 * {
   box-sizing: border-box;
@@ -36,7 +37,29 @@ button {
   cursor: pointer;
 }
 a {
-  color: var(--teal);
+  color: var(--accent);
+  text-underline-offset: .22em;
+}
+::selection {
+  background: #ffd137;
+  color: var(--ink);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+}
+aside :focus-visible {
+  outline-color: #ffd137;
+}
+input {
+  caret-color: var(--accent);
+  accent-color: var(--accent);
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+.tablewrap {
+  scrollbar-color: var(--muted) var(--back);
 }
 .workspace {
   display: grid;
@@ -45,8 +68,8 @@ a {
 }
 aside {
   padding: 32px 20px;
-  background: #16363c;
-  color: #e6f2ef;
+  background: #102449;
+  color: #fdfcfa;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -61,19 +84,19 @@ aside {
   font-size: 17px;
 }
 .brandmark {
-  border: 1px solid #7daba8;
-  border-radius: 10px;
+  border: 1px solid #ed007b;
+  border-radius: 0;
   padding: 9px 6px;
   font-size: 16px;
 }
 .brand small {
   display: block;
-  color: #aac6c5;
-  font-size: 11px;
+  color: #ccd4e5;
+  font-size: 12px;
   font-weight: 400;
 }
 .navlabel {
-  color: #a9c4c4;
+  color: #ccd4e5;
   font-size: 10px;
   letter-spacing: 2px;
   margin: 18px 8px 0;
@@ -85,40 +108,58 @@ nav {
 nav button {
   border: 0;
   background: transparent;
-  color: #c5d9d7;
+  color: #e0e5f0;
   text-align: left;
   padding: 14px 11px;
-  border-radius: 7px;
+  border-radius: 4px;
   font-size: 13px;
 }
 nav button span {
-  color: #8aabaa;
+  color: #ccd4e5;
   margin-right: 9px;
   font-size: 11px;
 }
 nav button[aria-current="page"] {
-  background: #2d555b;
+  background: #bd005f;
   color: white;
 }
 nav button:hover {
-  background: #244a50;
+  background: #293e63;
+}
+nav button[aria-current="page"]:hover {
+  background: #a30052;
+}
+nav button[aria-current="page"] span {
+  color: #fff;
+}
+nav button {
+  min-height: 44px;
 }
 .asidefoot {
   margin-top: auto;
   padding: 28px 9px 0;
   font-size: 12px;
-  color: #bad0ce;
+  color: #ccd4e5;
 }
 .asidefoot a {
-  color: #d8e9e6;
+  color: #fdfcfa;
 }
 .badge {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 1.4px;
   padding: 6px 9px;
-  border: 1px solid #82a8a7;
+  border: 1px solid #8190ae;
   border-radius: 4px;
-  color: #d0e5e1;
+  color: #fdfcfa;
+}
+.badge::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 7px;
+  background: #ffd137;
+  border-radius: 50%;
 }
 main {
   padding: 32px 38px 20px;
@@ -139,14 +180,12 @@ header {
   margin: 0 0 5px;
 }
 h1 {
-  font-size: 29px;
-  font-weight: 650;
+  font: 36px/1.15 var(--serif);
   letter-spacing: -0.6px;
   margin: 0;
 }
 h2 {
-  font-size: 15px;
-  font-weight: 650;
+  font: 23px/1.25 var(--serif);
   margin: 0;
 }
 p {
@@ -154,20 +193,27 @@ p {
 }
 .export,
 #reset {
-  background: #fff;
-  border: 1px solid #b9ceca;
+  background: var(--paper);
+  border: 1px solid #8190ae;
   padding: 9px 13px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 12px;
   color: var(--ink);
+  min-height: 44px;
+}
+.export:hover,
+#reset:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: #fcf0f5;
 }
 .notice {
   padding: 12px 16px;
-  background: #eef1df;
-  border: 1px solid #d5dfba;
-  border-radius: 7px;
+  background: #f9edf2;
+  border: 1px solid #dfb7ca;
+  border-radius: 4px;
   font-size: 12px;
-  color: #4e5f38;
+  color: var(--ink);
 }
 .filters {
   display: flex;
@@ -185,16 +231,17 @@ p {
 }
 input,
 select {
-  background: #fff;
-  border: 1px solid #cbd8d4;
-  border-radius: 6px;
+  background: var(--paper);
+  border: 1px solid #8190ae;
+  border-radius: 4px;
   padding: 9px 11px;
   color: var(--ink);
   min-width: 147px;
   max-width: 100%;
+  min-height: 44px;
 }
 .scope {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   margin-bottom: 20px;
 }
@@ -205,14 +252,16 @@ select {
   margin-bottom: 18px;
 }
 .kpi {
+  min-width: 0;
+  overflow-wrap: anywhere;
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: 4px;
   background: var(--paper);
   padding: 16px 18px;
 }
 .kpi-label {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
 }
@@ -224,7 +273,7 @@ select {
   font-variant-numeric: tabular-nums;
 }
 .kpi-note {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
 }
 .kpi.warn .kpi-value {
@@ -237,14 +286,14 @@ select {
   margin-bottom: 17px;
 }
 .panel {
-  background: #fff;
+  background: var(--paper);
   border: 1px solid var(--line);
-  border-radius: 9px;
+  border-radius: 4px;
   padding: 20px;
   min-width: 0;
 }
 .panel .sub {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   margin: 5px 0 16px;
 }
@@ -260,19 +309,20 @@ select {
   grid-template-columns: minmax(85px, 35%) 1fr 54px;
   gap: 10px;
   align-items: center;
-  font-size: 11px;
+  font-size: 12px;
 }
 .bar-label {
   overflow-wrap: anywhere;
 }
 .track {
   height: 9px;
-  background: #edf2ef;
+  background: #e7e9ef;
   border-radius: 3px;
 }
 .fill {
   height: 100%;
-  background: var(--teal);
+  /* The existing renderer emits an inline teal background. Keep data/JS untouched. */
+  background: var(--accent) !important;
   border-radius: 3px;
   min-width: 0;
 }
@@ -296,7 +346,7 @@ select {
 table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
 th {
@@ -308,15 +358,15 @@ th {
 }
 td {
   padding: 9px 8px;
-  border-bottom: 1px solid #edf1ee;
+  border-bottom: 1px solid var(--line);
 }
 td.num {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 .callout {
-  background: #f3f5ed;
-  border-left: 3px solid #bf763d;
+  background: #f9edf2;
+  border-left: 1px solid var(--accent);
   padding: 12px 14px;
   font-size: 12px;
   margin: 14px 0 0;
@@ -330,11 +380,12 @@ td.num {
   margin-top: 25px;
   padding-top: 15px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .definitions summary {
   font-weight: 600;
   cursor: pointer;
+  min-height: 44px;
 }
 .definitions p {
   max-width: 1000px;
@@ -346,7 +397,7 @@ footer {
   gap: 10px;
   margin-top: 20px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 .legend {
   font-size: 11px;
@@ -426,6 +477,30 @@ footer {
     display: block;
   }
   .notice {
-    font-size: 11px;
+    font-size: 12px;
   }
+}
+
+@media (max-width: 500px) {
+  header { flex-wrap: wrap; }
+  .export { max-width: 100%; }
+  h1 { font-size: 30px; }
+  .kpi-value { overflow-wrap: anywhere; }
+}
+
+/* Standalone legacy methodology document shares the report's reading treatment. */
+.methodology {
+  max-width: 760px;
+  margin: 56px auto;
+  padding: 0 24px;
+  font: 19px/1.75 var(--serif);
+}
+.methodology h1 { font-size: clamp(32px, 5vw, 46px); margin-bottom: 24px; }
+.methodology a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 24px; }
+
+@media print {
+  .workspace { display: block; }
+  aside, .export { display: none; }
+  main { padding: 0; max-width: none; }
+  .kpi, .panel { break-inside: avoid; }
 }

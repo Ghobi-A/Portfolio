@@ -31,6 +31,7 @@ jobs:
           python scripts/test_site.py
           node --check assets/js/main.js
           node --check assets/js/motion.js
+          node --check assets/js/privacy-chart.js
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
