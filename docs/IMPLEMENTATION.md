@@ -1,5 +1,15 @@
 # Intelligence dossier redesign
 
+## Interactive dossier follow-up
+
+The supplied motion brief is implemented on top of the evidence pass. `main.js` progressively adds touch/keyboard stage inspectors to evaluation, combat and trust diagrams, plus a measured partition inspector that reads the visible source table. No duplicate metric store or API dependency is introduced. Selected rows/points and diagram stages remain clearly marked; original descriptions and tables remain usable without JavaScript or GSAP.
+
+`motion.js` adds shared timing primitives, a clipped name reveal, delayed punctuation, staged grid/observations/trace/holdout/annotation construction, and distinct horizontal section activation. Existing one-shot graph drawing and node choreography remain. CSS adds reusable easing tokens, active dossier-link rules, focus/hover project feedback and selected inspector states. A thin reading-progress rule uses one scheduled animation frame per scroll event batch; five project positions are read per frame, with no polling or continuous animation loop.
+
+Intentionally static: exact numerical values (no count-up that could momentarily imply different measurements); architecture topology (inspection changes emphasis, not model behaviour); no route transition because all case studies are native disclosures; no parallax because it adds scroll work without explaining evidence. No custom cursor. The existing conceptual hero is still labelled conceptual.
+
+Browser viewport, keyboard, console and Lighthouse verification remain outstanding under the previously documented plain-static preview limitation. Build and structural checks do not imply that those browser acceptance criteria passed.
+
 ## Follow-up evidence and motion pass — 9 September 2026
 
 Continues the merged redesign on `portfolio/evidence-motion-pass`, without changing the build or deployment architecture. The current main branch already has balanced figure markup; a strict explicit-tag nesting regression now guards against the previously reported stray closing tag.

@@ -3,12 +3,13 @@
   "use strict";
   if (!window.gsap || !window.matchMedia) return;
   const gsap = window.gsap;
+  const motion = { fast: 0.18, reveal: 0.42, chart: 0.8, stagger: 0.06, ease: 'power2.out' };
   const media = gsap.matchMedia();
   media.add("(prefers-reduced-motion: no-preference)", () => {
     const context = gsap.context(() => {
       // A reload into a case study should not play an offscreen entrance.
       if (!location.hash) {
-        gsap.from(".hero-top, .hero-role", {
+        gsap.from(".header-inner, .hero-top, .hero-role", {
           opacity: 0,
           y: 4,
           duration: 0.35,
@@ -16,12 +17,18 @@
           clearProps: "all",
         });
         gsap.from(".hero h1", {
-          opacity: 0,
-          y: 8,
-          duration: 0.5,
+          clipPath: 'inset(0 0 100% 0)',
+          y: 6,
+          duration: motion.reveal,
+          ease: motion.ease,
           delay: 0.08,
           clearProps: "all",
         });
+        gsap.from('.hero h1 .rust', { opacity:0, scale:0.8, transformOrigin:'center', duration:motion.fast, delay:0.48, clearProps:'all' });
+        gsap.from('.hero-instrument rect', { opacity:0.25, duration:motion.reveal, delay:0.25, clearProps:'all' });
+        gsap.from('.hero-instrument .dashed', { scaleY:0, transformOrigin:'center top', duration:motion.reveal, delay:0.55, clearProps:'all' });
+        gsap.from('.hero-instrument .signal-point', { opacity:0, duration:motion.fast, delay:0.8, clearProps:'all' });
+        gsap.from('.hero-instrument .plot-label', { opacity:0, duration:motion.fast, delay:0.85, clearProps:'all' });
         gsap.from(".hero-statement, .hero-support, .actions", {
           opacity: 0,
           y: 6,
@@ -58,9 +65,9 @@
             context.add(() => {
               if (entry.target.matches(".section-heading, .contact-invitation")) {
                 gsap.from(entry.target, {
-                  y: 8,
+                  x: -4,
                   opacity: 0.65,
-                  duration: 0.45,
+                  duration: motion.reveal,
                   clearProps: "all",
                 });
               } else {
