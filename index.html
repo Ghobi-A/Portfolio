@@ -187,7 +187,7 @@
             </figcaption>
           </figure>
         </div>
-        <div class="hero-index"><span class="eyebrow">Inside the dossier</span><a href="#file-dp">01 · Privacy &amp; ML research</a><a href="#file-kh4">02 · Applied NLP</a><a href="#GA-RA-07">03 · SQL &amp; BI</a><a href="#file-di">04 · ML pipelines</a><a href="#file-uag">05 · Production systems</a><a href="#file-cd">06 · Simulation</a></div>
+        <div class="hero-index"><span class="eyebrow">Inside the dossier</span><a href="#file-dp">01 · Privacy &amp; ML research</a><a href="#file-kh4">02 · Applied NLP</a><a href="#GA-RA-07">03 · SQL, BI &amp; production</a><a href="#file-di">04 · ML pipelines</a><a href="#file-cd">05 · Simulation</a></div>
       </section>
       <section id="projects" class="section wrap" aria-labelledby="work-title">
         <div class="section-heading">
@@ -196,7 +196,7 @@
             <h2 id="work-title">Questions, made tangible.</h2>
           </div>
           <p>
-            Seven projects.<br />From a model’s assumptions to the system
+            Six projects.<br />From a model’s assumptions to the system
             around it.
           </p>
         </div>
@@ -610,8 +610,151 @@
           </details>
         </article>
 <article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
-<div class="project-top eyebrow"><span>GA-RA-07 / Featured SQL &amp; BI case study</span><span class="badge">Synthetic public demo</span></div>
-<div class="project-grid"><div class="project-copy"><h3 id="ra-title">Restaurant Revenue<br /><em>&amp; Operations Analytics.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A read-only PostgreSQL analytical layer, Power BI model and DAX build kit, and four-page interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. Power BI Desktop execution remains pending; scale scenarios are labelled estimates.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>JSONB</li><li>BI modelling</li><li>DAX</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore four dashboard pages and a clearly labelled scale scenario. Power BI Desktop validation remains pending.</figcaption></figure></div></article>
+<div class="project-top eyebrow"><span>GA-RA-07 / End-to-end product, SQL &amp; BI</span><span class="badge">Synthetic public demo</span></div>
+<div class="project-grid"><div class="project-copy"><h3 id="ra-title">UK Asia Grill<br /><em>Data &amp; Operations Platform.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A deployed restaurant ordering and kitchen-operations platform, complemented by a read-only PostgreSQL analytical layer, Power BI model and DAX build kit, and four-page interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. Power BI Desktop execution remains pending; scale scenarios are labelled estimates.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>SQL &amp; BI</li><li>TypeScript</li><li>Supabase</li><li>Stripe</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore four dashboard pages and a clearly labelled scale scenario. Power BI Desktop validation remains pending.</figcaption></figure></div><div id="file-uag" class="restaurant-engineering"><h4>Production ordering &amp; kitchen operations</h4><div class="project-grid">
+            <div class="project-copy">
+              <h3 id="uag-title">
+                An order is more<br />than <em>a checkout.</em>
+              </h3>
+              <p class="problem">
+                Keep the customer, payment provider and kitchen in agreement.
+              </p>
+              <p>
+                A restaurant ordering and kitchen-operations platform for UK
+                Asia Grill, with server-owned pricing and a webhook-confirmed
+                payment flow.
+              </p>
+              <div class="result-statement">
+                One order lifecycle.<br /><em>Explicit trust boundaries.</em>
+              </div>
+              <ul class="tags" aria-label="Technologies">
+                <li>TypeScript</li>
+                <li>TanStack Start</li>
+                <li>Supabase</li>
+                <li>Stripe</li>
+              </ul>
+              <div class="text-links">
+                <a href="https://www.ukasiagrill.co.uk/"
+                  >Visit restaurant site ↗</a
+                ><span class="private-label">Repository private</span>
+              </div>
+            </div>
+            <figure class="evidence-panel operations">
+              <div class="panel-title eyebrow">
+                Fig. 04 / Payment-to-kitchen lifecycle
+              </div>
+              <ol class="order-flow">
+                <li>
+                  <span>01</span>
+                  <div>
+                    <strong>Validate the order</strong
+                    ><small
+                      >Server pricing · opening hours · delivery area</small
+                    >
+                  </div>
+                </li>
+                <li>
+                  <span>02</span>
+                  <div>
+                    <strong>Take payment</strong
+                    ><small>Stripe checkout · idempotent requests</small>
+                  </div>
+                </li>
+                <li class="critical">
+                  <span>03</span>
+                  <div>
+                    <strong>Confirm by webhook</strong
+                    ><small>The browser is not proof of payment</small>
+                  </div>
+                </li>
+                <li>
+                  <span>04</span>
+                  <div>
+                    <strong>Synchronise the kitchen</strong
+                    ><small>Realtime updates · staff-only access</small>
+                  </div>
+                </li>
+              </ol>
+              <figcaption>
+                Verified implementation architecture, not a transaction-volume
+                claim. Physical printer and live-payment acceptance tests are
+                not evidenced here.
+              </figcaption>
+            </figure>
+          </div>
+          <details class="case-study" id="GA-UA-04">
+            <summary aria-controls="uag-case">
+              View case study
+              <span class="sr-only">— Restaurant Ordering Platform</span
+              ><span class="case-symbol" aria-hidden="true">+</span>
+            </summary>
+            <div class="case-content" id="uag-case">
+              <div class="evidence-strip trust-map">
+                <span class="eyebrow">Trust boundaries / architecture only</span>
+                <ol class="method-rail"><li><strong>Public browser</strong><span>Requests an order; cannot confirm payment</span></li><li><strong>Server boundary</strong><span>Validates pricing &amp; payment webhook</span></li><li><strong>Staff boundary</strong><span>Restricted kitchen operations</span></li></ol>
+                <p class="diagram-note">Printing remains proposed and hardware-unverified. No live payment acceptance result is implied.</p>
+              </div>
+              <div class="case-grid">
+                <section>
+                  <h4>The question</h4>
+                  <p>
+                    How can a guest order move safely from a public storefront
+                    to restricted kitchen operations?
+                  </p>
+                </section>
+                <section>
+                  <h4>The system</h4>
+                  <p>
+                    A server-rendered TanStack Start application, Supabase
+                    database/realtime layer and Stripe integration, with Vercel
+                    deployment configuration.
+                  </p>
+                </section>
+                <section>
+                  <h4>Method</h4>
+                  <p>
+                    Use server-authoritative validation, signed staff sessions,
+                    deny-by-default row-level security, rate limits and
+                    idempotent request handling.
+                  </p>
+                </section>
+                <section>
+                  <h4>Evaluation</h4>
+                  <p>
+                    Automated tests and CI cover application behaviour. Payment,
+                    access-control and operational go-live checks are documented
+                    separately; code presence alone does not verify live
+                    acceptance.
+                  </p>
+                </section>
+                <section>
+                  <h4>Result</h4>
+                  <p>
+                    A deployed public site backed by an implemented ordering
+                    architecture. Guest history is device-local, not a
+                    customer-account system.
+                  </p>
+                </section>
+                <section>
+                  <h4>Technical insight</h4>
+                  <p>
+                    Payment confirmation belongs at a verified server boundary.
+                    Repeated events and partially completed flows are normal
+                    system states, not exceptional cases.
+                  </p>
+                </section>
+              </div>
+              <aside class="scope-note">
+                <span class="badge">Open PR / hardware validation pending</span>
+                <p>
+                  Automatic PrintNode kitchen printing is proposed in private PR
+                  #59. It is not presented as shipped or physically verified.
+                  Loyalty redemption is disabled.
+                </p>
+              </aside>
+            </div>
+          </details>
+        </div></article>
 <article
           id="file-di"
           class="project project-data"
@@ -804,159 +947,7 @@
             </div>
           </details>
         </article>
-<article
-          id="file-uag"
-          class="project project-ops"
-          aria-labelledby="uag-title"
-        >
-          <div class="project-top eyebrow">
-            <span>GA-UA-04 / Product &amp; operations engineering</span
-            ><span class="badge">Deployed website · private source</span>
-          </div>
-          <div class="project-grid">
-            <div class="project-copy">
-              <h3 id="uag-title">
-                An order is more<br />than <em>a checkout.</em>
-              </h3>
-              <p class="problem">
-                Keep the customer, payment provider and kitchen in agreement.
-              </p>
-              <p>
-                A restaurant ordering and kitchen-operations platform for UK
-                Asia Grill, with server-owned pricing and a webhook-confirmed
-                payment flow.
-              </p>
-              <div class="result-statement">
-                One order lifecycle.<br /><em>Explicit trust boundaries.</em>
-              </div>
-              <ul class="tags" aria-label="Technologies">
-                <li>TypeScript</li>
-                <li>TanStack Start</li>
-                <li>Supabase</li>
-                <li>Stripe</li>
-              </ul>
-              <div class="text-links">
-                <a href="https://www.ukasiagrill.co.uk/"
-                  >Visit restaurant site ↗</a
-                ><span class="private-label">Repository private</span>
-              </div>
-            </div>
-            <figure class="evidence-panel operations">
-              <div class="panel-title eyebrow">
-                Fig. 04 / Payment-to-kitchen lifecycle
-              </div>
-              <ol class="order-flow">
-                <li>
-                  <span>01</span>
-                  <div>
-                    <strong>Validate the order</strong
-                    ><small
-                      >Server pricing · opening hours · delivery area</small
-                    >
-                  </div>
-                </li>
-                <li>
-                  <span>02</span>
-                  <div>
-                    <strong>Take payment</strong
-                    ><small>Stripe checkout · idempotent requests</small>
-                  </div>
-                </li>
-                <li class="critical">
-                  <span>03</span>
-                  <div>
-                    <strong>Confirm by webhook</strong
-                    ><small>The browser is not proof of payment</small>
-                  </div>
-                </li>
-                <li>
-                  <span>04</span>
-                  <div>
-                    <strong>Synchronise the kitchen</strong
-                    ><small>Realtime updates · staff-only access</small>
-                  </div>
-                </li>
-              </ol>
-              <figcaption>
-                Verified implementation architecture, not a transaction-volume
-                claim. Physical printer and live-payment acceptance tests are
-                not evidenced here.
-              </figcaption>
-            </figure>
-          </div>
-          <details class="case-study" id="GA-UA-04">
-            <summary aria-controls="uag-case">
-              View case study
-              <span class="sr-only">— Restaurant Ordering Platform</span
-              ><span class="case-symbol" aria-hidden="true">+</span>
-            </summary>
-            <div class="case-content" id="uag-case">
-              <div class="evidence-strip trust-map">
-                <span class="eyebrow">Trust boundaries / architecture only</span>
-                <ol class="method-rail"><li><strong>Public browser</strong><span>Requests an order; cannot confirm payment</span></li><li><strong>Server boundary</strong><span>Validates pricing &amp; payment webhook</span></li><li><strong>Staff boundary</strong><span>Restricted kitchen operations</span></li></ol>
-                <p class="diagram-note">Printing remains proposed and hardware-unverified. No live payment acceptance result is implied.</p>
-              </div>
-              <div class="case-grid">
-                <section>
-                  <h4>The question</h4>
-                  <p>
-                    How can a guest order move safely from a public storefront
-                    to restricted kitchen operations?
-                  </p>
-                </section>
-                <section>
-                  <h4>The system</h4>
-                  <p>
-                    A server-rendered TanStack Start application, Supabase
-                    database/realtime layer and Stripe integration, with Vercel
-                    deployment configuration.
-                  </p>
-                </section>
-                <section>
-                  <h4>Method</h4>
-                  <p>
-                    Use server-authoritative validation, signed staff sessions,
-                    deny-by-default row-level security, rate limits and
-                    idempotent request handling.
-                  </p>
-                </section>
-                <section>
-                  <h4>Evaluation</h4>
-                  <p>
-                    Automated tests and CI cover application behaviour. Payment,
-                    access-control and operational go-live checks are documented
-                    separately; code presence alone does not verify live
-                    acceptance.
-                  </p>
-                </section>
-                <section>
-                  <h4>Result</h4>
-                  <p>
-                    A deployed public site backed by an implemented ordering
-                    architecture. Guest history is device-local, not a
-                    customer-account system.
-                  </p>
-                </section>
-                <section>
-                  <h4>Technical insight</h4>
-                  <p>
-                    Payment confirmation belongs at a verified server boundary.
-                    Repeated events and partially completed flows are normal
-                    system states, not exceptional cases.
-                  </p>
-                </section>
-              </div>
-              <aside class="scope-note">
-                <span class="badge">Open PR / hardware validation pending</span>
-                <p>
-                  Automatic PrintNode kitchen printing is proposed in private PR
-                  #59. It is not presented as shipped or physically verified.
-                  Loyalty redemption is disabled.
-                </p>
-              </aside>
-            </div>
-          </details>
-        </article>
+
 <article
           id="file-cd"
           class="project project-game"
