@@ -1,7 +1,7 @@
 // Configure only with a separately reviewed, public-safe Power BI Publish-to-web URL.
 // Never embed a report containing private operational data or customer/order-level records
 // without explicitly authorising public disclosure of the entire underlying dataset.
-const PUBLIC_POWER_BI_EMBED_URL = "";
+const PUBLIC_POWER_BI_EMBED_URL = "https://app.powerbi.com/view?r=eyJrIjoiODgwY2JlNmMtZGMxNC00YmRkLTlhMjQtZjliODY3OGEwNTE3IiwidCI6IjNjODI5NDhhLTBlMjEtNDk1MC1iYjI0LWZjMWFmMzI0OTRkYSJ9";
 
 (() => {
   if (!PUBLIC_POWER_BI_EMBED_URL) return;
