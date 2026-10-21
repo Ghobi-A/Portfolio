@@ -106,6 +106,28 @@ class PortfolioTests(unittest.TestCase):
         for project in projects:
             self.assertIn(project['item']['url'].split('#')[1], self.ids)
 
+    def test_recruiter_routes_and_qualification(self):
+        self.assertIn('class="recruiter-intro"', self.html)
+        self.assertIn('For analytics: restaurant operations', self.text)
+        self.assertIn('For data science: NLP evaluation', self.text)
+        self.assertIn('UK right to work', self.text)
+        intro = self.html.split('class="recruiter-intro"', 1)[1].split('</div>', 1)[0]
+        for target in ('#GA-RA-07', '#file-kh4', 'mailto:ghobikan15@hotmail.co.uk'):
+            self.assertIn(target, intro)
+
+    def test_nlp_metrics_keep_development_limits(self):
+        kh = self.html.split('id="file-kh4"', 1)[1].split('id="GA-RA-07"', 1)[0]
+        text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', kh))
+        for value in ('0.65', '0.55–0.77', '0.30', '2.5', '2.1–3.3',
+                      '197/200', 'One annotator', 'Not a final test set', 'five-fold'):
+            self.assertIn(value, text)
+
+    def test_pbix_provenance_not_promoted(self):
+        self.assertNotIn('A real-data PBIX', self.html)
+        case = (OUT / 'projects/restaurant-analytics/index.html').read_text()
+        self.assertNotIn('real-data, de-identified PBIX', case)
+        self.assertIn('embedded data provenance is not independently verified', case)
+
     def test_explicit_markup_is_balanced(self):
         self.assertEqual(self.page.nesting_errors, [])
         self.assertEqual(self.page.stack, [])

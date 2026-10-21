@@ -1,5 +1,39 @@
 # Project evidence ledger
 
+## Recruitment evidence refresh — 22 October 2026
+
+This section supersedes the historical status snapshots below only for the
+projects rechecked here. No experiments were rerun. The new introduction routes
+analytics readers to restaurant operations and DS readers to NLP evaluation;
+the existing gallery, privacy chart and experimental-work separation remain.
+
+Demand-intelligence main now contains the temporal/marketing implementation;
+its own current documentation distinguishes preliminary NLP evaluation,
+demo-only forecasting and synthetic MMM. PR #23 is merged, not pending.
+The displayed word-and-character SVM results come from `reports/ml/group_cv_report.md`:
+actionable PR-AUC 0.65 (group-bootstrap 95% 0.55–0.77), prevalence 0.30,
+Lift@10% 2.5 (2.1–3.3), 200 labelled rows and 23 groups. This five-fold
+out-of-fold view is distinct from the repeated 70/15/15 group holdouts.
+197/200 labels are YouTube; one annotator, empty classes and development reuse
+limit the result. No production lift or sales outcome is asserted.
+
+Source blob identities: KH4 README `86cce17464bad392fc53238bb6f9e0434a5d5933`;
+group-CV report `642e1a42a651375acfef6559357a40f59e1ab1de`;
+cross-validation implementation `8297ffda26d9021816edb99b10a6245d3d01ad91`.
+Privacy case-study blob `4630e3661372b555c9de3417e3804517306a04cd` supports
+the proxy audit and failure-detection narrative; achieved epsilon still covers
+prepared records, not raw-data preprocessing or research releases.
+
+Restaurant source and Portfolio disagree about whether the supplied PBIX
+contains observed or synthetic data. Its data provenance is therefore not
+asserted as verified. Public observed aggregate tables, fictional demo CSVs and
+the supplied native PBIX are separate evidence objects. Native rendering,
+refresh and reconciliation remain unverified. No order-level source is added.
+
+The new CV versions are supplied separately for owner verification of employment
+and certifications. The existing public CV download is intentionally unchanged;
+no unverified credentials are newly published in this change.
+
 ## Portfolio presentation update — 20 October 2026
 
 The interactive privacy chart retains the three source observations: ε 0.49 / 2 / 6, mean prediction ROC-AUC .933 / .944 / .945 and their five-seed 95% t intervals. The smooth curve is monotone cubic interpolation between the measured means; it is a visual guide, not a new fitted predictive model. The pink envelope joins the displayed interval boundaries and does not establish uncertainty at unmeasured settings. The exact-value fallback remains available without JavaScript; a full 0–1 AUC axis can be selected.
@@ -10,7 +44,7 @@ Semantic Drift is sourced from the public repository README and draft protocol a
 
 No public audio/MIDI demo file was found in the inspected Midi tree; the Audio Lab links the existing generation notebook and repository rather than claiming an audio sample. Existing project evidence and publication-status caveats below remain in force; this presentation work did not rerun the experiments.
 
-Reviewed 9 September 2026. Sources are repository documentation and current PR metadata, not independently rerun project experiments. Only Portfolio was changed. Blackhorse Barber is deliberately excluded.
+Historical snapshot reviewed 9 September 2026; see the dated refresh above for current rechecked scope. Sources are repository documentation and PR metadata, not independently rerun project experiments. Only Portfolio was changed. Blackhorse Barber is deliberately excluded.
 
 ## Publication rule
 
@@ -18,7 +52,7 @@ Keep **implemented**, **measured**, **proposed in an open PR**, and **future exp
 
 | Project | Current evidence | Intended / pending scope | Public source |
 | --- | --- | --- | --- |
-| Behavioural Demand Intelligence | 4,831 processed signals; 200 audited labels; 23 groups; five-seed preliminary classifier evaluation | Open #23: timestamp provenance, weekly probability-mass proxy, rolling-origin Bayesian forecasting, monitoring, API/dashboard service; separate synthetic MMM | [README](https://github.com/Ghobi-A/kh4-demand-intel#readme), [PR #23](https://github.com/Ghobi-A/kh4-demand-intel/pull/23) |
+| Behavioural Demand Intelligence | 200 audited labels; 23 groups; preliminary group-CV PR-AUC 0.65 and Lift@10% 2.5; temporal/API/MMM code on main | Full-data forecasting, label expansion, independent annotation and a final untouched test set remain pending; synthetic MMM is a method demonstration | [README](https://github.com/Ghobi-A/kh4-demand-intel#readme), [merged PR #23](https://github.com/Ghobi-A/kh4-demand-intel/pull/23) |
 | Distributed Image ML Pipeline | 3,670 flower images; single-runner local Spark preprocessing and five-repeat input benchmarks | Dataproc runtime/lifecycle work merged; genuine multi-worker scaling measurements pending | [README and results](https://github.com/Ghobi-A/Big-Data#readme) |
 | Crestbound Duelists | Python simulation and Godot prototype; shared YAML/JSON data; stateful v2.2 evaluator | Open #18 targets longer 6–8-round fights; draft #21 expands Greymere while character animation/cohesion remain unfinished | [README](https://github.com/Ghobi-A/Crestbound-Duelists#readme), [#18](https://github.com/Ghobi-A/Crestbound-Duelists/pull/18), [#21](https://github.com/Ghobi-A/Crestbound-Duelists/pull/21) |
 | Restaurant Ordering & Kitchen Operations | TanStack Start/TypeScript, Supabase, Stripe; server-authoritative order and payment architecture; public website | Automatic kitchen printing is an open, hardware-unverified proposal. Guest history is device-local; loyalty redemption disabled | [Public website](https://www.ukasiagrill.co.uk/); private source reviewed but not republished |
@@ -53,7 +87,7 @@ Open PR heads at review:
 
 ## Evidence / motion follow-up
 
-All five public README blob identities above were rechecked against GitHub main and remain unchanged. KH4 #23 remains open and now documents demo-only forecasting results on a class-stratified 304-row extract, with the naive forecast beating the Bayesian model and no model recommended. This does not establish volume-representative demand, full-dataset performance or release status. Crestbound #18 remains open and #21 remains draft. Restaurant diagrams use only the previously reviewed architecture; private source was not re-audited in this pass.
+Historical follow-up: the five README identities above and open-PR observations describe that earlier pass, not current status. The 22 October refresh supersedes KH4 #23's open status: its code is on main and the PR is merged. Forecasting still uses a demo-only, class-stratified 304-row extract; no model is recommended and no full-data or sales claim follows. Historical Crestbound PR states have not been rechecked in this recruitment pass. Restaurant diagrams retain their architectural scope.
 
 Chart contract: the added partition plot asks how mean preprocessing throughput changes across the four tested partition categories. Eight measured rows, five runs per configuration, 3,670 images on one runner. Native SVG in the existing portfolio; ordered categorical x positions, zero-based 0–1,200 images/s y scale, rust solid Spark and sage dashed local baseline. Visible exact-value table provides a readable mobile/no-JS alternative. This shows local-mode partition scaling, never multi-worker scaling. Source: `Big-Data/reports/tables/benchmark_summary.csv`, blob `d4c12f145fee3b201ce3b966cc40cc74fd825a25`. Local means: 470.9964, 486.7626, 483.4392, 482.5676; Spark means: 446.8986, 806.8249, 1086.2015, 1109.5528. One decimal displayed; no significance claim. The source CSV retains standard deviations.
 
