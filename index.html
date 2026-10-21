@@ -75,6 +75,12 @@
     <main id="top">
       <section class="hero wrap" aria-labelledby="identity">
         <h1 id="identity" class="sr-only">Ghobikan Aravindan — Applied Data Scientist</h1>
+        <div class="recruiter-intro" aria-label="Professional introduction">
+          <p class="recruiter-role">Data science &amp; analytics · London · UK right to work</p>
+          <p class="recruiter-summary">I’m Ghobikan. I use Python and SQL to investigate operational data, evaluate machine-learning models and build usable data products.</p>
+          <p class="recruiter-evidence">MSc Data Science · Evaluated NLP · Privacy auditing · PostgreSQL &amp; BI</p>
+          <div class="text-links"><a href="#GA-RA-07">For analytics: restaurant operations ↗</a><a href="#file-kh4">For data science: NLP evaluation ↗</a><a href="mailto:ghobikan15@hotmail.co.uk">Contact me ↗</a></div>
+        </div>
         <nav class="collection-index" aria-label="Project collection">
           <a href="#file-dp" aria-current="location">Privacy Audit</a>
           <a href="#file-kh4">Demand Intelligence</a>
@@ -98,7 +104,8 @@
                 How much predictive utility survives a formal privacy
                 constraint?
               </p>
-              <p>I build and audit private learning systems, measuring prediction quality, privacy cost and subgroup behaviour. This benchmark makes the evidence and its limits available for inspection.</p>
+              <p>I built a reproducible private/non-private benchmark and investigated misleading proxy features and silent training failures. On high-cost prediction, DP-SGD achieved mean AUC .933 versus .953 for the strongest non-private baseline.</p>
+              <p class="evidence-note">Independent research benchmark. Five-seed evidence on 1,338 public teaching records; privacy accounting covers prepared records only. Research draft, not peer reviewed.</p>
 
 
 
@@ -317,7 +324,7 @@
         >
           <div class="project-top eyebrow">
             <span>GA-KH-01 / Behavioural intelligence</span
-            ><span class="badge">Evaluated baseline</span>
+            ><span class="badge">Preliminary development evaluation</span>
           </div>
           <div class="project-grid">
             <div class="project-copy">
@@ -329,26 +336,30 @@
                 Separating actionable interest from general fan discussion.
               </p>
               <p>
-                A leakage-aware NLP system that separates actionable audience
-                signals from general discussion around Kingdom Hearts IV.
+                I built a two-stage NLP pipeline to prioritise useful human
+                review. Preliminary SVM ranking results are stronger than
+                fine-grained intent classification on the current corpus.
               </p>
               <dl class="metrics">
                 <div>
-                  <dt>Processed signals</dt>
-                  <dd>4,831</dd>
+                  <dt>Actionable PR-AUC</dt>
+                  <dd>0.65</dd>
                 </div>
                 <div>
-                  <dt>Discussion groups</dt>
-                  <dd>23</dd>
+                  <dt>Lift at top 10%</dt>
+                  <dd>2.5×</dd>
                 </div>
                 <div>
-                  <dt>Evaluation seeds</dt>
-                  <dd>5</dd>
+                  <dt>Labelled comments</dt>
+                  <dd>200</dd>
                 </div>
               </dl>
               <p class="evidence-note">
-                A 200-row audited corpus supports preliminary evaluation—not a
-                market-demand or sales claim.
+                Group-aware out-of-fold development evaluation across 23 groups.
+                PR-AUC 0.65 (95% group-bootstrap interval 0.55–0.77) against
+                positive prevalence 0.30; Lift@10% 2.5 (2.1–3.3).
+                One annotator; 197/200 labels are YouTube. Not a final test set
+                or a market-demand or sales claim.
               </p>
               <ul class="tags" aria-label="Technologies">
                 <li>Python</li>
@@ -398,8 +409,9 @@
                 </div>
               </div>
               <figcaption>
-                Architecture from the repository. Group holdouts reduce thread
-                leakage; calibration and thresholds use validation data only.
+                The diagram shows the repeated group-holdout pipeline. Headline
+                metrics use a separate five-fold group-aware evaluation with
+                inner validation for calibration and threshold selection.
               </figcaption>
             </figure>
           </div>
@@ -443,18 +455,22 @@
                 <section>
                   <h4>Evaluation</h4>
                   <p>
-                    Group-aware 70/15/15 splits over five seeds. Inspect
-                    macro-F1, actionable PR-AUC, calibration, ranking and
-                    errors. Two intent classes have no labelled examples; 197 of
-                    200 labels come from YouTube.
+                    Five-fold group-aware evaluation produces out-of-fold scores;
+                    calibration and thresholds use inner validation groups.
+                    Repeated 70/15/15 group holdouts are a separate view.
+                    Two intent classes have no labelled examples; 197 of 200
+                    labels come from YouTube. All results remain preliminary.
                   </p>
                 </section>
                 <section>
                   <h4>Result</h4>
                   <p>
-                    Rules lead end-to-end macro-F1 on this small corpus; SVM
-                    leads actionable ranking. High split variance makes this
-                    preliminary evidence, not a final model ranking.
+                    Word-and-character SVM reached actionable PR-AUC 0.65
+                    versus prevalence 0.30, and Lift@10% 2.5, on the labelled
+                    development corpus. Rules lead repeated-holdout end-to-end
+                    macro-F1; high_intent F1 is zero out of fold. The evidence
+                    supports preliminary review ranking, not reliable eight-class
+                    intent prediction.
                   </p>
                 </section>
                 <section>
@@ -492,7 +508,7 @@
         </article>
 <article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
 <div class="project-top eyebrow"><span>GA-RA-07 / End-to-end product, SQL &amp; BI</span><span class="badge">Operational aggregates</span></div>
-<div class="project-grid"><div class="project-copy"><h3 id="ra-title">UK Asia Grill<br /><em>Data &amp; Operations Platform.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A deployed restaurant ordering and kitchen-operations platform, complemented by a read-only PostgreSQL analytical layer, four-page Power BI report with DAX measures, and a separate interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. A real-data PBIX has been supplied and structurally inspected (four pages, 55 visuals); Desktop rendering and KPI reconciliation remain pending. Scale scenarios are estimates.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>SQL &amp; BI</li><li>Power BI / DAX</li><li>TypeScript</li><li>Supabase</li><li>Stripe</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore the separate browser dashboard and clearly labelled scale scenario. The native PBIX is structurally inspected but not engine-validated.</figcaption></figure></div><div id="file-uag" class="restaurant-engineering"><h4>Production ordering &amp; kitchen operations</h4><div class="project-grid">
+<div class="project-grid"><div class="project-copy"><h3 id="ra-title">UK Asia Grill<br /><em>Data &amp; Operations Platform.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A deployed restaurant ordering and kitchen-operations platform, complemented by a read-only PostgreSQL analytical layer, four-page Power BI report with DAX measures, and a separate interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. A supplied PBIX has been structurally inspected (four pages, 55 visuals); its embedded data provenance, Desktop rendering and KPI reconciliation remain unverified. Scale scenarios are estimates.</p><p><strong>My contribution:</strong> I built the ordering platform and read-only analytics layer, defined order/item/notification grains and investigated payment and timestamp quality. The recommendation is to reconcile payments and improve lifecycle measurement before treating recorded order value as revenue or interpreting preparation-time averages.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>SQL &amp; BI</li><li>Power BI / DAX</li><li>TypeScript</li><li>Supabase</li><li>Stripe</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore the separate browser dashboard and clearly labelled scale scenario. The native PBIX is structurally inspected but not engine-validated.</figcaption></figure></div><div id="file-uag" class="restaurant-engineering"><h4>Production ordering &amp; kitchen operations</h4><div class="project-grid">
             <div class="project-copy">
               <h3 id="uag-title">
                 An order is more<br />than <em>a checkout.</em>
@@ -1031,12 +1047,12 @@
                 silent training failures.
               </p>
               <span class="evidence-ref">Privacy audit ↗</span></a
-            ><a href="#GA-UA-04"
-              ><span class="eyebrow">Product engineering / 04</span>
-              <h3>Systems that hold up</h3>
+            ><a href="#GA-RA-07"
+              ><span class="eyebrow">Analytics &amp; product / 04</span>
+              <h3>SQL, KPIs &amp; operations</h3>
               <p>
-                Server-side validation, database access controls, payment events
-                and realtime operations.
+                Order-grain SQL, DAX model specifications and payment-provenance
+                checks, built around a deployed restaurant platform.
               </p>
               <span class="evidence-ref">Restaurant platform ↗</span></a
             >
