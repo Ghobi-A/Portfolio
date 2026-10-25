@@ -103,15 +103,15 @@
       items.forEach((item, index) => item.classList.toggle("is-inspected", index === selected));
       buttons.forEach((button, index) => button.setAttribute("aria-pressed", String(index === selected)));
       const item = items[selected];
-      const heading = item.querySelector("strong").textContent.trim();
-      const description = (item.querySelector("small, p") || item.querySelector("span:not(.eyebrow)"))?.textContent.trim() || "";
+      const heading = (item.querySelector("strong") || item).textContent.trim();
+      const description = item.dataset.inspectNote || (item.querySelector("small, p") || item.querySelector("span:not(.eyebrow)"))?.textContent.trim() || "";
       output.textContent = `${heading}. ${description}`;
       if (notify) rail.dispatchEvent(new CustomEvent("evidenceinspect", { bubbles: true, detail: { target: item } }));
     };
     const buttons = items.map((item, index) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = item.dataset.inspectLabel || item.querySelector("strong").textContent;
+      button.textContent = item.dataset.inspectLabel || (item.querySelector("strong") || item).textContent;
       button.setAttribute("aria-controls", output.id);
       button.addEventListener("click", () => select(index));
       controls.append(button);
@@ -130,6 +130,9 @@
   if (classifier) inspectStages(classifier, [...classifier.querySelectorAll(".system-node")], "Explore the classification pipeline");
   const lifecycle = document.querySelector(".order-flow");
   if (lifecycle) inspectStages(lifecycle, [...lifecycle.children], "Inspect the order lifecycle");
+
+  document.querySelectorAll(".simulation-branches, .token-flow").forEach(rail =>
+    inspectStages(rail, [...rail.children], rail.matches(".token-flow") ? "Explore the MIDI pipeline" : "Explore the shared combat model"));
 
   const benchmark = document.querySelector(".partition-chart");
   if (benchmark) {

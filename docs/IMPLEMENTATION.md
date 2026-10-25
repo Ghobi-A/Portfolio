@@ -1,5 +1,16 @@
 # Portfolio implementation
 
+## Recruitment and motion completion — 25 October 2026
+
+This is the current implementation; earlier entries below are historical. See [the audit, screenshots and validation report](MOTION-RECRUITMENT-2026-10-25.md).
+
+The visible identity opening adds direct work, CV, contact and role-specific project routes. PR #7's evidence-led NLP copy and PBIX provenance corrections are incorporated selectively. PR #5's already-merged inspectors, reading progress and disclosures were retained and extended, without merging its obsolete selectors. Source claims were rechecked; CV and employment history are unchanged.
+
+Native WAAPI now coordinates the opening, one-shot scroll entrances, diagram stages and chart feedback. Static CSS is always the final visible state. Motion cancels on reduced-motion changes, focus, document hiding and page exit. The privacy widget updates existing selection nodes, preserving SVG focus and measured values. Crestbound and MIDI stages use the existing keyboard inspector pattern. Anchors use one 100px scroll-padding allowance plus 12px scroll margin instead of doubling the header offset.
+
+No framework, production dependency, remote font, hosting or deployment change. Build and structural checks remain dependency-free. `scripts/browser_site.cjs` is an optional Playwright regression suite for review environments; it does not ship in `_site`.
+
+
 ## Gallery Proof completion — 20 October 2026
 
 This section supersedes the older visual and browser-validation notes below, which remain as history. The approved implementation is code-led Study Gallery structure with Proof Print colors, a project-first opening, self-hosted Source Serif 4 and compact GitHub source buttons. No framework, server-side API, remote animation library or hosting change was added.
