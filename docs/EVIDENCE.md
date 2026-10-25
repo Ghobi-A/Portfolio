@@ -1,5 +1,11 @@
 # Project evidence ledger
 
+## Local restaurant AI integration — 25 October 2026
+
+The `projects/restaurant-ai/` case study records a locally executed integration from PR #70's source snapshot `bd8aa1219f398ec9e6fc56fdf254db7dc9b5b06e`, extended on `codex/local-ai-poc`. Actual Qwen3 4B inference ran through Ollama 0.40.11 on an RTX 2070 with PostgreSQL 17.6, PostgREST 16.5 and Chromium. The captured run completed at 2026-10-25T16:12:46.832Z, took 6761 ms in the browser proof, used 945 input / 262 output tokens and recorded zero provider cost. The answer appeared in the browser and was persisted with status `completed`; order acknowledgement was unchanged. Zero synthetic Gateway requests and zero page errors were recorded. The 51 focused regression tests passed. App/contract/E2E typechecks and focused lint were checked separately.
+
+The JSON and desktop/mobile PNGs are direct execution artifacts using synthetic records. No customer data or production credentials are included. A model-quality benchmark was not performed. The case study explicitly retains observed limitations: the small model can confuse staff transport with food delivery and assign an unhelpful uncertainty label. This is local integration evidence, not a public model endpoint, a restaurant outcome, Microsoft tenant validation or a production release.
+
 ## Motion and recruitment verification — 25 October 2026
 
 The recruitment refresh below was adopted from Portfolio PR #7, with the visible introduction rewritten for this design. No new qualification, employment history or replacement CV is published. Source files were fetched read-only from public main branches; no experiments were rerun.

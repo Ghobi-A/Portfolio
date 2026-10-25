@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local AI incident investigator — Ghobikan Aravindan</title>
+<meta name="description" content="A verified local AI proof of concept for restaurant operations: timestamped evidence, constrained model output, PostgreSQL audit trails and human decisions.">
+<link rel="stylesheet" href="../../assets/css/site.css">
+<style>
+body{background:#fdfcfa;color:#102449}.ai-case{max-width:1080px;margin:48px auto 80px;padding:0 28px;font:18px/1.7 Georgia,serif}.ai-case *{box-sizing:border-box}.ai-case a{color:#bd005f;text-underline-offset:.2em}.ai-case a:focus-visible{outline:2px solid #bd005f;outline-offset:5px}.ai-case h1{font-size:clamp(38px,6vw,72px);line-height:1.08;letter-spacing:-.03em;max-width:900px}.ai-case h2{font-size:32px;line-height:1.2;margin-top:52px}.ai-case p{max-width:74ch}.ai-kicker,.ai-caption{font:14px/1.6 Arial,sans-serif;color:#526079}.ai-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;border-block:1px solid #cbd0da;padding:24px 0;margin:32px 0}.ai-proof strong{display:block;font:36px/1.3 Georgia,serif}.ai-proof span{font:14px/1.5 Arial,sans-serif}.ai-flow{padding:24px;background:#f7f2f3;border-left:3px solid #bd005f}.ai-case figure{margin:30px 0}.ai-case img{display:block;width:100%;height:auto;border:1px solid #cbd0da}.ai-case details{margin:24px 0}.ai-case summary{cursor:pointer;padding:12px 0}.ai-case blockquote{border-left:3px solid #bd005f;margin:24px 0;padding:8px 24px}.ai-links{display:flex;gap:24px;flex-wrap:wrap}.ai-links a{padding:10px 0}@media(max-width:600px){.ai-case{margin-top:24px;padding:0 20px}.ai-proof{grid-template-columns:1fr;gap:16px}.ai-case h2{font-size:28px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body><main class="ai-case">
+<a href="../../index.html#GA-RA-07">← Back to the portfolio</a>
+<p class="ai-kicker">UK ASIA GRILL / LOCAL AI PROOF OF CONCEPT / 25 OCTOBER 2026</p>
+<h1>An incident needs evidence.<br><em>AI helps staff investigate.</em></h1>
+<p>A kitchen order can remain unacknowledged even when a notification was attempted. I extended the restaurant operations platform with an AI investigator that reads timestamped server facts, suggests a next step and saves its explanation to an audit trail. Staff retain control of every operational decision.</p>
+<div class="ai-proof" aria-label="Recorded verification results"><div><strong>6.8 s</strong><span>One recorded warm-model browser flow</span></div><div><strong>$0</strong><span>Provider API cost for local inference</span></div><div><strong>51</strong><span>Focused regression tests passed</span></div></div>
+<p class="ai-caption">A single synthetic integration run on an RTX 2070 with Qwen3 4B. These figures are not a latency benchmark, an accuracy score or measured restaurant impact. Electricity and local storage are separate from provider API cost.</p>
+<h2>From staff question to saved evidence</h2>
+<p class="ai-flow">Staff browser → authenticated server handler → PostgREST → PostgreSQL evidence → local Qwen3 model → schema and evidence-ID validation → audited database result → explanation in the staff interface.</p>
+<p>The model receives a bounded, redacted evidence bundle. It returns structured facts, tentative hypotheses, missing evidence and one recommendation. The local inference path has no execution tools. The existing hosted AI SDK path remains separate, with its read tools and budget controls.</p>
+<h2>What was actually verified</h2>
+<p>Chromium signed in as test staff, opened a detected incident and requested a real local model investigation. The application displayed the returned answer; PostgreSQL recorded a completed run with 945 input tokens and 262 output tokens. The order stayed unacknowledged, no synthetic Gateway response was used, and no browser errors were recorded. Screenshots cover desktop and a 390-pixel mobile viewport.</p>
+<blockquote><p>Recorded recommendation: <strong>check_kitchen_device</strong>. The model identified failed staff push transport and missing kitchen device evidence. The full recorded output is available below, including its limitations.</p></blockquote>
+<p>The focused regression suite covered evidence validation, provider failure, prompt injection, production rejection of local inference, permissions, approvals, idempotency and audit transactions: 51 passed, zero failed. These tests use synthetic records.</p>
+<details><summary>View the desktop execution capture</summary><figure><img src="local-ai-desktop.png" alt="Actual local kitchen dashboard showing synthetic order facts, the AI recommendation and the persisted investigation timeline" width="1440" height="4953" loading="lazy"><figcaption class="ai-caption">Captured from the local implementation. All displayed order and customer fields are deliberately synthetic. Browser notification and Realtime setup are outside this local proof.</figcaption></figure></details>
+<details><summary>View the mobile execution capture</summary><figure><img src="local-ai-mobile.png" alt="Mobile viewport of the same local AI incident investigation" width="390" height="844" loading="lazy"><figcaption class="ai-caption">390-pixel viewport; no horizontal overflow in the verification run.</figcaption></figure></details>
+<h2>The boundary matters</h2>
+<p>This is a working local integration, not a public inference service or a production rollout. Model files remain on the developer's computer and the services can be stopped after a demo. The static portfolio serves the case study and captured evidence without running a paid model endpoint.</p>
+<p>Integration success does not establish model correctness. Earlier outputs confused staff push delivery with food delivery; clearer evidence names and instructions improved the recommendation, but the final output still contains unnecessary discussion of collection delivery confirmation and labels uncertainty as conflicting. A supervisor should inspect the underlying facts. No measured improvement in response time, revenue or incident resolution is claimed.</p>
+<p>Real Microsoft tenant connections, Power Platform connector behaviour, physical device notifications and production deployment are separate acceptance work. This proof used synthetic records and local inference.</p>
+<div class="ai-links"><a href="verification.json">Read the recorded model output and verification JSON ↗</a><a href="https://github.com/Ghobi-A/ukasiagrill/tree/codex/local-ai-poc">Review implementation source ↗</a><a href="../restaurant-analytics/index.html">Restaurant analytics case study ↗</a></div>
+</main></body></html>

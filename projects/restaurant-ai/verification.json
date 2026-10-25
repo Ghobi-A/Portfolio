@@ -1,0 +1,47 @@
+{
+  "verifiedAt": "2026-10-25T16:12:46.832Z",
+  "model": "ollama/qwen3:4b",
+  "durationMs": 6761,
+  "inputTokens": 945,
+  "outputTokens": 262,
+  "providerCostUsd": "0.000000",
+  "summary": {
+    "fact_ids": [
+      "incident.type",
+      "incident.state",
+      "order.status",
+      "order.payment_method",
+      "order.payment",
+      "order.kitchen",
+      "order.ack",
+      "order.visible",
+      "order.state_at",
+      "order.fulfilment",
+      "order.scheduled",
+      "delivery.status",
+      "delivery.attempts",
+      "delivery.receipts",
+      "payment.provider"
+    ],
+    "rationale": "Staff push transport failed for 6 attempts with no receipts, but collection orders don't require delivery confirmation. Kitchen device state may indicate if order was acknowledged by kitchen staff.",
+    "hypotheses": [
+      {
+        "explanation": "Staff push transport failed after 6 attempts with no receipts, but order is collection so delivery confirmation not required",
+        "evidence_ids": [
+          "delivery.status",
+          "delivery.attempts",
+          "delivery.receipts",
+          "order.fulfilment"
+        ]
+      }
+    ],
+    "uncertainty": "conflicting_evidence",
+    "recommendation": "check_kitchen_device",
+    "missing_evidence": [
+      "kitchen.device.state"
+    ]
+  },
+  "browserErrors": [],
+  "databaseStatus": "completed",
+  "syntheticGatewayRequests": 0
+}
