@@ -39,7 +39,15 @@ node --check assets/js/privacy-chart.js
 python scripts/check_links.py  # optional external HTTP checks
 ```
 
-See [the project evidence ledger](docs/EVIDENCE.md) for source snapshots, metric definitions and open-PR scope. See [implementation and QA notes](docs/IMPLEMENTATION.md) for the audit, architecture and remaining browser validation. Structural tests do not replace browser/Lighthouse checks.
+See [the project evidence ledger](docs/EVIDENCE.md) for source snapshots, metric definitions and open-PR scope. See [implementation and QA notes](docs/IMPLEMENTATION.md) for the audit, architecture and remaining browser validation. Structural tests do not replace browser/Lighthouse checks. The [25 October motion and recruitment report](docs/MOTION-RECRUITMENT-2026-10-25.md) includes current browser coverage, before/after screenshots and measured Lighthouse results.
+
+Optional browser regression (requires Playwright and Chromium in the review environment, not the website):
+
+```bash
+SITE_URL=http://127.0.0.1:8000 CHROME_PATH=/usr/bin/chromium node scripts/browser_site.cjs
+```
+
+It checks 320, 375, 390, 768, 1024, 1440 and 1920px widths, keyboard controls, diagrams, chart selections, one-shot motion, live and initial reduced motion, no-JS fallbacks and project deep links. Set `REVIEW_DIR` to choose the screenshot/results directory. If Playwright is absent, install it in a temporary review-tools directory and expose that directory through `NODE_PATH`; there are no runtime npm dependencies.
 
 ## Local preview
 

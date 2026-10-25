@@ -99,7 +99,7 @@ Keep grouping tight inside charts and controls, then separate full projects gene
 
 ## Elevation & Depth
 
-Flat by default. Fine borders and restrained tonal backgrounds define evidence panels; there is no card-lift or ambient shadow system. The pink chart envelope encodes displayed interval boundaries, not elevation. A hover image-brightness change acknowledges the playable Crestbound link.
+Flat by default. Fine borders and restrained tonal backgrounds define evidence panels. Pointer hover lifts selected evidence panels by 3px without shadows; keyboard focus uses a border and tone change. Reduced motion removes the lift. The pink chart envelope encodes displayed interval boundaries, not elevation. A hover image-brightness change acknowledges the playable Crestbound link.
 
 ## Shapes
 
@@ -125,7 +125,7 @@ Exactly three measured observations remain selectable by pointer, touch, Enter, 
 
 ### Disclosures and motion
 
-Native details/summary keeps the complete case studies available with or without enhancement. Motion draws the guide once and acknowledges a selected result; ordered diagram stages animate once in reading order. No infinite loops, repeated section fade-ups or hidden-by-default content. Reduced motion and document visibility cancel movement without removing results or state cues.
+Native details/summary keeps the complete case studies available with or without enhancement. Motion draws the guide once and acknowledges a selected result; ordered diagram stages animate once in reading order. Section headings, descriptions and supporting metadata enter once with distinct timing; charts draw their guides and ordered diagrams sequence their stages. No infinite loops, replay on reverse scrolling or hidden-by-default content. Reduced motion and document visibility cancel movement without removing results or state cues.
 
 ## Do's and Don'ts
 
@@ -140,5 +140,15 @@ Native details/summary keeps the complete case studies available with or without
 
 - Don't fabricate measurements, outcomes, participant data or completed features.
 - Don't let global SVG rules enlarge interface icons.
-- Don't add generic reveal choreography to every section.
+- Don't repeat identical choreography on every element; use the motion hierarchy below.
 - Don't put visible illustrative captions on decorative artwork; keep quantitative interpretation limits where they matter.
+
+## Recruitment and motion refinement — 25 October 2026
+
+The opening presents a visible name, role, a concise value statement and direct work/CV/contact actions. A secondary column links analytics, NLP and privacy evidence. The seven decorative bars are a typographic signal motif, not experimental data; they are hidden from assistive technology. On phones the practice column becomes a compact stacked section.
+
+`assets/js/motion.js` owns the optional choreography. Use `play` for a finite effect and `lift` for transform/opacity entrances; keep final states in CSS. Timings: 560ms reveal, 85ms stagger, 700ms chart, 220ms selection feedback. Opening movement is 12–18px; section titles use 20px, diagrams 12px and metadata 10px. Delayed effects use backwards fill only during their finite lifetime, never persistent inline styles.
+
+The observer unobserves each target immediately on entrance. Bookmarks and restored history skip the opening sequence. Chart means, intervals and exact values remain fixed; only their guides and selection emphasis animate. Focus stops ancestor movement. Preference changes, page hiding and page exit cancel effects; pending observers reconnect on a back/forward cache restoration. Without JavaScript, IntersectionObserver or WAAPI, the authored content remains readable.
+
+Project accents use pink for research/NLP, blue for image and restaurant systems, and ink for the RPG. Existing authored stages remain the source for inspectors; audio adds explanatory `data-inspect-note` text without claiming neural or real-corpus results. See [the validation report](docs/MOTION-RECRUITMENT-2026-10-25.md) for screenshots and measured limits.

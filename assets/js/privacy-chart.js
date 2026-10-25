@@ -96,6 +96,7 @@
       if(axis) axis.textContent = full ? "Full AUC axis: 0–1." : "AUC axis truncated to 0.90–0.97 to show variation.";
     };
     const choose = index => {
+      const previousGuideX = Number(svg.querySelector(".privacy-selection-guide")?.getAttribute("x1"));
       selected=index;
       const point=points[index];
       controls.forEach((button,i)=>button.setAttribute("aria-pressed",String(i===index)));
@@ -105,8 +106,21 @@
       root.querySelectorAll("[data-privacy-gap]").forEach(el=>el.textContent=(0.953-point.auc).toFixed(3));
       const status=root.querySelector("[data-privacy-status]");
       if(status)status.textContent="Selected ε "+point.epsilon+": mean prediction AUC "+format(point.auc)+", 95% t interval "+format(point.low)+"–"+format(point.high)+".";
-      render();
-      root.dispatchEvent(new CustomEvent("privacyselect",{bubbles:true}));
+      if (!svg.querySelector(".privacy-measure")) render();
+      else {
+        svg.querySelectorAll(".privacy-measure").forEach((mark, i) => {
+          mark.classList.toggle("is-selected", i === selected);
+          mark.setAttribute("aria-pressed", String(i === selected));
+          mark.querySelector(".privacy-dot").setAttribute("r", i === selected ? "8" : "6");
+        });
+        const guide = svg.querySelector(".privacy-selection-guide");
+        const mark = svg.querySelector(".is-selected .privacy-dot");
+        guide.setAttribute("x1", mark.getAttribute("cx"));
+        guide.setAttribute("x2", mark.getAttribute("cx"));
+        guide.setAttribute("y1", mark.getAttribute("cy"));
+      }
+      const guideX = Number(svg.querySelector(".privacy-selection-guide").getAttribute("x1"));
+      root.dispatchEvent(new CustomEvent("privacyselect", { bubbles: true, detail: { offsetX: Number.isFinite(previousGuideX) ? previousGuideX - guideX : 0 } }));
     };
     controls.forEach((button,index)=>{
       button.addEventListener("click",()=>choose(index));
