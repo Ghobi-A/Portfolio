@@ -9,7 +9,7 @@ const url = process.env.SITE_URL || 'http://127.0.0.1:8000';
 const output = process.env.REVIEW_DIR || '/tmp/portfolio-browser-review';
 fs.mkdirSync(output, { recursive: true });
 (async () => {
-  const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/chromium', args: ['--no-sandbox'] });
+  const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/chromium', args: ['--no-sandbox', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const report = [];
   try {
     for (const width of [320, 375, 390, 768, 1024, 1440, 1920]) {
@@ -17,21 +17,30 @@ fs.mkdirSync(output, { recursive: true });
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));
       page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
-      await page.addInitScript(() => {
-        window.motionLog = [];
-        const animate = Element.prototype.animate;
-        Element.prototype.animate = function (frames, options) {
-          window.motionLog.push({ target: this.id || this.className?.baseVal || this.className, delay: options.delay || 0, frames });
-          return animate.call(this, frames, options);
-        };
-      });
       await page.goto(url);
       await page.waitForTimeout(1200);
       assert(await page.locator('#identity').isVisible());
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${width}: opening overflow`);
-      const sequence = await page.evaluate(() => window.motionLog.filter(item => ['recruiter-role', 'headline-line', 'recruiter-summary', 'recruiter-description', 'actions intro-actions'].includes(item.target)));
+      // GSAP opening: five ordered beats at 85ms, then the split text is reverted.
+      const motionLog = () => page.evaluate(() => window.portfolioMotion.log);
+      const sequence = (await motionLog()).filter(item => ['recruiter-role', 'headline-line', 'recruiter-summary', 'recruiter-description', 'actions intro-actions'].includes(item.target));
       assert.equal(sequence.length, 5);
       assert.deepEqual(sequence.map(item => item.delay), [0,85,170,255,340]);
+      await page.waitForTimeout(1600);
+      assert.equal(await page.evaluate(() => document.documentElement.classList.contains('motion-intro')), false);
+      assert.equal(await page.locator('#identity').evaluate(el => el.querySelectorAll('.split-char, .split-line').length), 0, `${width}: split text not reverted`);
+      // Three.js field: desktop only, decorative, and idle once settled (no render loop).
+      const field = await page.evaluate(() => ({ host: !!document.querySelector('.signal-field'), hidden: document.querySelector('.signal-field')?.getAttribute('aria-hidden'), frames: window.portfolioMotion.field?.frames ?? null }));
+      if (width < 1024) assert.equal(field.host, false, `${width}: field mounted on a narrow viewport`);
+      else if (field.host) {
+        assert.equal(field.hidden, 'true');
+        // Wait for the 2.6s arrival to settle, then prove nothing renders while idle.
+        await page.waitForFunction(() => window.portfolioMotion.field?.uniforms.uProgress.value === 1, null, { timeout: 8000 });
+        await page.waitForTimeout(300);
+        const settled = await page.evaluate(() => window.portfolioMotion.field.frames);
+        await page.waitForTimeout(1000);
+        assert.equal(await page.evaluate(() => window.portfolioMotion.field.frames), settled, `${width}: field keeps rendering while idle`);
+      }
       await page.screenshot({ path: path.join(output, `after-${width}.png`) });
       // Keyboard-only mobile menu and focus return.
       if (width <= 760) {
@@ -73,14 +82,15 @@ fs.mkdirSync(output, { recursive: true });
       // Observe an offscreen title entering once, then return: no replay.
       await page.locator('#di-title').scrollIntoViewIfNeeded();
       await page.waitForTimeout(800);
-      const count = await page.evaluate(() => window.motionLog.filter(item => item.target === 'di-title').length);
+      const count = (await motionLog()).filter(item => item.target === 'di-title').length;
       assert.equal(count, 1);
       await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
       await page.locator('#di-title').scrollIntoViewIfNeeded();
       await page.waitForTimeout(100);
-      assert.equal(await page.evaluate(() => window.motionLog.filter(item => item.target === 'di-title').length), count);
+      assert.equal((await motionLog()).filter(item => item.target === 'di-title').length, count);
       // Finish image decoding and check fonts and local assets after full traversal.
-      await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(image => image.decode())); });
+      // Lazy images that were never scrolled near never start loading, so decode() would wait forever.
+      await page.evaluate(async () => { await document.fonts.ready; await Promise.all([...document.images].map(image => { image.loading = 'eager'; return image.decode().catch(() => { throw new Error(`Image failed to decode: ${image.currentSrc || image.src}`); }); })); });
       assert(await page.evaluate(() => document.fonts.check('18px "Source Serif 4"')));
       assert.deepEqual(errors, [], `${width}: browser errors`);
       console.log(`PASS ${width}px: keyboard, charts, diagrams, disclosures, one-shot motion, fonts, images, overflow and console`);
@@ -91,10 +101,14 @@ fs.mkdirSync(output, { recursive: true });
     await page.goto(url);
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.waitForTimeout(50);
+    const activeTweens = () => page.evaluate(() => gsap.globalTimeline.getChildren(true, true, false).filter(tween => tween.isActive()).length);
     assert.equal(await page.evaluate(() => document.getAnimations().filter(a => a.playState === 'running').length), 0);
+    assert.equal(await activeTweens(), 0, 'live reduced motion left GSAP tweens running');
+    assert.equal(await page.locator('#identity').evaluate(el => el.querySelectorAll('.split-char').length), 0);
     await page.locator('#di-title').scrollIntoViewIfNeeded();
     await page.waitForTimeout(80);
     assert.equal(await page.evaluate(() => document.getAnimations().length), 0);
+    assert.equal(await activeTweens(), 0);
     await page.locator('#GA-DI-02 summary').click();
     assert(await page.locator('#GA-DI-02').evaluate(el => el.open));
     await page.emulateMedia({ reducedMotion: 'no-preference' });
@@ -104,9 +118,16 @@ fs.mkdirSync(output, { recursive: true });
     await page.goBack();
     assert(await page.locator('#GA-CD-03').evaluate(el => el.open));
     await page.close();
-    const reduced = await browser.newPage({ reducedMotion: 'reduce' });
+    const reduced = await browser.newPage({ reducedMotion: 'reduce', viewport: { width: 1440, height: 1000 } });
     await reduced.goto(url);
+    assert.equal(await reduced.evaluate(() => document.documentElement.classList.contains('motion-intro')), false);
     assert.equal(await reduced.evaluate(() => document.getAnimations().length), 0);
+    await reduced.waitForTimeout(1500);
+    assert.equal(await reduced.evaluate(() => gsap.globalTimeline.getChildren(true, true, false).filter(tween => tween.isActive()).length), 0);
+    await reduced.mouse.move(700, 300);
+    await reduced.mouse.move(760, 340, { steps: 6 });
+    const still = await reduced.evaluate(() => window.portfolioMotion.field?.uniforms.uPointerStrength.value ?? 0);
+    assert.equal(still, 0, 'reduced motion: pointer moved the field');
     await reduced.close();
     for (const width of [320, 1440]) {
       const nojs = await browser.newPage({ javaScriptEnabled: false, viewport: { width, height: 1000 } });

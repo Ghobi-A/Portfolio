@@ -292,7 +292,7 @@ def main() -> None:
     if not cv_source.is_file():
         raise FileNotFoundError(f"Portfolio CV asset is missing: {cv_source}")
     shutil.copy2(cv_source, ASSETS / cv_source.name)
-    for directory in ('css', 'js', 'visuals', 'fonts', 'images'):
+    for directory in ('css', 'js', 'vendor', 'visuals', 'fonts', 'images'):
         source = ROOT / 'assets' / directory
         if source.is_dir():
             shutil.copytree(source, ASSETS / directory)

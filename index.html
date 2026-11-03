@@ -12,11 +12,26 @@
     <meta name="theme-color" content="#E8E6DF" />
     <!-- METADATA:END -->
     <link rel="preload" href="assets/fonts/source-serif-4-regular-subset.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="assets/css/site.css?v=20261025-motion" />
-    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261025-motion" />
-    <script defer src="assets/js/privacy-chart.js?v=20261025-motion"></script>
-    <script defer src="assets/js/main.js?v=20261025-motion"></script>
-    <script defer src="assets/js/motion.js?v=20261025-motion"></script>
+    <link rel="stylesheet" href="assets/css/site.css?v=20261103-gsap" />
+    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261103-gsap" />
+    <script>
+      /* Hold only the opening for the moment before motion.js plays it. A 3s failsafe always
+         reveals it; no-JS, reduced-motion, bookmarked and restored visits never hide anything. */
+      (() => {
+        const root = document.documentElement;
+        const nav = performance.getEntriesByType?.('navigation')[0];
+        if (location.hash || nav?.type === 'back_forward' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        root.classList.add('motion-intro');
+        setTimeout(() => root.classList.remove('motion-intro'), 3000);
+      })();
+    </script>
+    <script defer src="assets/js/privacy-chart.js?v=20261103-gsap"></script>
+    <script defer src="assets/js/main.js?v=20261103-gsap"></script>
+    <script defer src="assets/vendor/gsap/gsap.min.js?v=3.15.0"></script>
+    <script defer src="assets/vendor/gsap/CustomEase.min.js?v=3.15.0"></script>
+    <script defer src="assets/vendor/gsap/ScrollTrigger.min.js?v=3.15.0"></script>
+    <script defer src="assets/vendor/gsap/SplitText.min.js?v=3.15.0"></script>
+    <script defer src="assets/js/motion.js?v=20261103-gsap"></script>
   </head>
   <body>
     <a class="skip-link" href="#projects">Skip to selected work</a>

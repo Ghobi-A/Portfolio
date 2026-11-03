@@ -16,7 +16,7 @@ Personal portfolio for an applied data scientist building evaluated machine-lear
 
 ## Build and deployment
 
-The portfolio is a dependency-free static site: semantic content in `index.html`, styling in `assets/css/site.css`, behaviour in `assets/js/main.js`, and reduced-motion-aware native animation in `assets/js/motion.js`. The interactive privacy figure lives in `assets/js/privacy-chart.js` and `assets/css/privacy-chart.css`. Source Serif 4 is self-hosted with its open-font licence in `assets/fonts/`; no remote font or animation library is required. Before deployment, `scripts/build_site.py` creates `_site` and adds:
+The portfolio is a static site with no runtime npm step: semantic content in `index.html`, styling in `assets/css/site.css`, behaviour in `assets/js/main.js`, and reduced-motion-aware GSAP choreography in `assets/js/motion.js`. GSAP 3.15 is vendored in `assets/vendor/gsap/`. The desktop hero's Three.js signal field (`assets/js/signal-field.js`) is lazy-loaded and built from `tools/motion/` (`npm ci && npm run build`); both outputs are committed. The interactive privacy figure lives in `assets/js/privacy-chart.js` and `assets/css/privacy-chart.css`. Source Serif 4 is self-hosted with its open-font licence in `assets/fonts/`; no remote font or script is loaded. Before deployment, `scripts/build_site.py` creates `_site` and adds:
 
 - Open Graph and Twitter/X social-preview metadata
 - a generated 1200×630 branded preview image
@@ -39,7 +39,7 @@ node --check assets/js/privacy-chart.js
 python scripts/check_links.py  # optional external HTTP checks
 ```
 
-See [the project evidence ledger](docs/EVIDENCE.md) for source snapshots, metric definitions and open-PR scope. See [implementation and QA notes](docs/IMPLEMENTATION.md) for the audit, architecture and remaining browser validation. Structural tests do not replace browser/Lighthouse checks. The [25 October motion and recruitment report](docs/MOTION-RECRUITMENT-2026-10-25.md) includes current browser coverage, before/after screenshots and measured Lighthouse results.
+See [the 3 November motion audit](docs/MOTION-AUDIT-2026-11-03.md) for the GSAP/Three.js motion system, its budgets and verification. See [the project evidence ledger](docs/EVIDENCE.md) for source snapshots, metric definitions and open-PR scope. See [implementation and QA notes](docs/IMPLEMENTATION.md) for the audit, architecture and remaining browser validation. Structural tests do not replace browser/Lighthouse checks. The [25 October motion and recruitment report](docs/MOTION-RECRUITMENT-2026-10-25.md) includes current browser coverage, before/after screenshots and measured Lighthouse results.
 
 Optional browser regression (requires Playwright and Chromium in the review environment, not the website):
 

@@ -1,0 +1,14 @@
+{
+  "name": "portfolio-motion-tools",
+  "private": true,
+  "description": "Build-time only: bundles the Three.js hero field and vendors GSAP into assets/. The website has no runtime npm dependency.",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10",
+    "gsap": "3.15.0",
+    "three": "0.187.0"
+  }
+}

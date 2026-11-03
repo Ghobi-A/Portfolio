@@ -152,3 +152,18 @@ The opening presents a visible name, role, a concise value statement and direct 
 The observer unobserves each target immediately on entrance. Bookmarks and restored history skip the opening sequence. Chart means, intervals and exact values remain fixed; only their guides and selection emphasis animate. Focus stops ancestor movement. Preference changes, page hiding and page exit cancel effects; pending observers reconnect on a back/forward cache restoration. Without JavaScript, IntersectionObserver or WAAPI, the authored content remains readable.
 
 Project accents use pink for research/NLP, blue for image and restaurant systems, and ink for the RPG. Existing authored stages remain the source for inspectors; audio adds explanatory `data-inspect-note` text without claiming neural or real-corpus results. See [the validation report](docs/MOTION-RECRUITMENT-2026-10-25.md) for screenshots and measured limits.
+
+## Motion layer — 3 November 2026
+
+Motion now runs on vendored GSAP 3.15 (core, ScrollTrigger, SplitText, CustomEase) plus a lazily loaded Three.js hero field. It supersedes the WAAPI choreography described above, but every rule above still applies: final states live in CSS, nothing replays on reverse scroll, there are no perpetual loops, and reduced motion, focus and page hiding settle everything immediately.
+
+- **Curves.** `portfolio-out` (`.23, 1, .32, 1`) for anything arriving. `portfolio-in-out` (`.77, 0, .175, 1`) for anything moving between two on-screen states (chart guides, the selection guide, the field resolving). Never ease-in for UI.
+- **Durations.** Press 160ms, feedback 220ms, menu 200ms, reveal 600ms, masked headings 900ms, chart guides 800ms, hero field 2.6s once.
+- **Hierarchy by mechanism.** Name: characters behind a mask. Summary and section/project titles: lines behind a mask. Body, panels and metadata: an 8–16px lift with a fade. Diagrams: reading-order stages. Splits are reverted when they finish.
+- **Never hide interactive content mid-animation.** Animate `opacity`, not `autoAlpha` or visibility, so links and controls stay focusable throughout.
+- **The only CSS-hidden state** is `.motion-intro`. The inline head script adds it, and it is removed by motion.js or a 3s failsafe.
+- **Press and hover.** Controls scale to .97 on `:active`. Hover effects are gated by `(hover: hover) and (pointer: fine)`.
+- **Signal field.** Decorative and `aria-hidden`, at ≥1024px only. Ink points, a pink ridge and one yellow selected point with an ink ring. It renders on demand only. Pointer input lifts nearby points. Scrolling settles it as the evidence takes over. It never carries labels or values.
+
+The audit, budgets and verification are in [the motion audit](docs/MOTION-AUDIT-2026-11-03.md). Rebuild the field or update GSAP with `tools/motion` (`npm ci && npm run build`).
+

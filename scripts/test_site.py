@@ -219,10 +219,35 @@ class PortfolioTests(unittest.TestCase):
             self.assertIn(text, self.text)
         css = (OUT / 'assets/css/site.css').read_text(encoding='utf-8')
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
-        self.assertNotRegex(css, r'(?<!-)opacity:\s*0\s*[;}]')
+        # Content is never hidden by default. The only exception is the pending opening,
+        # scoped to a class that an inline 3s failsafe (and motion.js) always removes.
+        unscoped = re.sub(r'\.motion-intro [^{]+\{[^}]*\}', '', css)
+        self.assertNotRegex(unscoped, r'(?<!-)opacity:\s*0\s*[;}]')
+        gate = self.source.split("classList.add('motion-intro')", 1)
+        self.assertEqual(len(gate), 2)
+        self.assertIn("setTimeout(() => root.classList.remove('motion-intro'), 3000)", gate[1].split('</script>', 1)[0])
+        self.assertIn("prefers-reduced-motion: reduce", gate[0].rsplit('<script>', 1)[1])
         motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
-        self.assertNotIn('gsap.min.js', self.html)
         self.assertIn('prefers-reduced-motion: reduce', motion)
+        self.assertIn('releaseIntro', motion)
+
+    def test_motion_libraries_are_vendored_and_ordered(self):
+        sources = [attrs['src'] for attrs in self.page.elements('script') if attrs.get('src')]
+        for src in sources:
+            self.assertFalse(urlparse(src).scheme, f'Remote script: {src}')
+        names = [urlparse(src).path.rsplit('/', 1)[1] for src in sources]
+        for library in ('gsap.min.js', 'CustomEase.min.js', 'ScrollTrigger.min.js', 'SplitText.min.js'):
+            self.assertLess(names.index(library), names.index('motion.js'))
+            self.assertTrue((OUT / 'assets/vendor/gsap' / library).is_file())
+        self.assertTrue((OUT / 'assets/vendor/gsap/LICENSE.md').is_file())
+        # Three.js is never parsed on the critical path: motion.js imports it lazily.
+        self.assertNotIn('signal-field.js', ' '.join(sources))
+        field = (OUT / 'assets/js/signal-field.js').read_text(encoding='utf-8')
+        self.assertIn('export', field)
+        self.assertIn('three.js', field.split('*/', 1)[0])
+        motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
+        for guard in ('import(fieldScript)', 'min-width: 1024px', 'saveData', 'webgl2'):
+            self.assertIn(guard, motion)
 
 
 if __name__ == '__main__':
