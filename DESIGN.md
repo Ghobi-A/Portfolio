@@ -167,3 +167,19 @@ Motion now runs on vendored GSAP 3.15 (core, ScrollTrigger, SplitText, CustomEas
 
 The audit, budgets and verification are in [the motion audit](docs/MOTION-AUDIT-2026-11-03.md). Rebuild the field or update GSAP with `tools/motion` (`npm ci && npm run build`).
 
+## Living motion — 5 November 2026
+
+The owner asked for a site that feels clearly alive, so the earlier "no perpetual loops" rule is relaxed in one place.
+
+- **The hero field runs continuously**, but only while it is on screen, the tab is visible and reduced motion is off. Slow travelling waves cross the surface, a pink signal pulse sweeps through it about every nine seconds, and the yellow selected point breathes. A fine pointer lifts nearby points; entering or tapping the field sends a ripple. Scrolling away scatters it back toward noise. It runs on every width where WebGL2 is available and Save-Data is off. Below 1024px it is a full-bleed band between identity and practice, with its space reserved before paint.
+- **Scroll-driven, reversible depth:**
+  - Evidence panels travel ±56px (±28px on phones) against the story beside them.
+  - Project titles drift in from the left and section headings from the right, so the page alternates as it scrolls.
+  - The contact headline grows into place.
+  - Imagery parallaxes ±7% inside its frame.
+  - The practice bars respond to scroll speed, then settle.
+  - These are scrubbed, so they follow the scrollbar both ways. None of them changes a value.
+- **Data marks arrive.** Measured points pop in after their guide line has passed them, whiskers grow from their means, and headline figures rise into place behind a mask. Figures never count up, so no intermediate number is ever shown.
+- **Pointer spotlight.** A soft pink light follows a fine pointer across evidence panels. The 3px hover lift was removed, because panels now move with the scroll.
+- Everything above stops for reduced motion. The field then shows one still frame.
+

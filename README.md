@@ -16,7 +16,7 @@ Personal portfolio for an applied data scientist building evaluated machine-lear
 
 ## Build and deployment
 
-The portfolio is a static site with no runtime npm step: semantic content in `index.html`, styling in `assets/css/site.css`, behaviour in `assets/js/main.js`, and reduced-motion-aware GSAP choreography in `assets/js/motion.js`. GSAP 3.15 is vendored in `assets/vendor/gsap/`. The desktop hero's Three.js signal field (`assets/js/signal-field.js`) is lazy-loaded and built from `tools/motion/` (`npm ci && npm run build`); both outputs are committed. The interactive privacy figure lives in `assets/js/privacy-chart.js` and `assets/css/privacy-chart.css`. Source Serif 4 is self-hosted with its open-font licence in `assets/fonts/`; no remote font or script is loaded. Before deployment, `scripts/build_site.py` creates `_site` and adds:
+The portfolio is a static site with no runtime npm step: semantic content in `index.html`, styling in `assets/css/site.css`, behaviour in `assets/js/main.js`, and reduced-motion-aware GSAP choreography in `assets/js/motion.js`. GSAP 3.15 is vendored in `assets/vendor/gsap/`. The hero's Three.js signal field (`assets/js/signal-field.js`) is lazy-loaded and built from `tools/motion/` (`npm ci && npm run build`); both outputs are committed. The interactive privacy figure lives in `assets/js/privacy-chart.js` and `assets/css/privacy-chart.css`. Source Serif 4 is self-hosted with its open-font licence in `assets/fonts/`; no remote font or script is loaded. Before deployment, `scripts/build_site.py` creates `_site` and adds:
 
 - Open Graph and Twitter/X social-preview metadata
 - a generated 1200×630 branded preview image

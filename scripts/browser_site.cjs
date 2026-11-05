@@ -29,17 +29,21 @@ fs.mkdirSync(output, { recursive: true });
       await page.waitForTimeout(1600);
       assert.equal(await page.evaluate(() => document.documentElement.classList.contains('motion-intro')), false);
       assert.equal(await page.locator('#identity').evaluate(el => el.querySelectorAll('.split-char, .split-line').length), 0, `${width}: split text not reverted`);
-      // Three.js field: desktop only, decorative, and idle once settled (no render loop).
-      const field = await page.evaluate(() => ({ host: !!document.querySelector('.signal-field'), hidden: document.querySelector('.signal-field')?.getAttribute('aria-hidden'), frames: window.portfolioMotion.field?.frames ?? null }));
-      if (width < 1024) assert.equal(field.host, false, `${width}: field mounted on a narrow viewport`);
-      else if (field.host) {
+      // Three.js field: decorative, alive while on screen, and idle once scrolled away.
+      const field = await page.evaluate(() => ({ host: !!document.querySelector('.signal-field canvas'), hidden: document.querySelector('.signal-field')?.getAttribute('aria-hidden') }));
+      if (field.host) {
         assert.equal(field.hidden, 'true');
-        // Wait for the 2.6s arrival to settle, then prove nothing renders while idle.
-        await page.waitForFunction(() => window.portfolioMotion.field?.uniforms.uProgress.value === 1, null, { timeout: 8000 });
-        await page.waitForTimeout(300);
-        const settled = await page.evaluate(() => window.portfolioMotion.field.frames);
-        await page.waitForTimeout(1000);
-        assert.equal(await page.evaluate(() => window.portfolioMotion.field.frames), settled, `${width}: field keeps rendering while idle`);
+        const before = await page.evaluate(() => window.portfolioMotion.field.frames);
+        await page.waitForTimeout(500);
+        assert(await page.evaluate(() => window.portfolioMotion.field.looping), `${width}: field not animating on screen`);
+        assert((await page.evaluate(() => window.portfolioMotion.field.frames)) > before, `${width}: field not rendering on screen`);
+        await page.evaluate(() => scrollTo({ top: document.querySelector('#file-kh4').offsetTop, behavior: 'instant' }));
+        await page.waitForTimeout(400);
+        const away = await page.evaluate(() => window.portfolioMotion.field.frames);
+        await page.waitForTimeout(700);
+        assert.equal(await page.evaluate(() => window.portfolioMotion.field.frames), away, `${width}: field renders while off screen`);
+        await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
+        await page.waitForTimeout(200);
       }
       await page.screenshot({ path: path.join(output, `after-${width}.png`) });
       // Keyboard-only mobile menu and focus return.
@@ -128,6 +132,10 @@ fs.mkdirSync(output, { recursive: true });
     await reduced.mouse.move(760, 340, { steps: 6 });
     const still = await reduced.evaluate(() => window.portfolioMotion.field?.uniforms.uPointerStrength.value ?? 0);
     assert.equal(still, 0, 'reduced motion: pointer moved the field');
+    const reducedFrames = await reduced.evaluate(() => window.portfolioMotion.field?.frames ?? 0);
+    await reduced.waitForTimeout(700);
+    assert.equal(await reduced.evaluate(() => window.portfolioMotion.field?.frames ?? 0), reducedFrames, 'reduced motion: field keeps rendering');
+    assert.equal(await reduced.evaluate(() => window.portfolioMotion.field?.looping ?? false), false);
     await reduced.close();
     for (const width of [320, 1440]) {
       const nojs = await browser.newPage({ javaScriptEnabled: false, viewport: { width, height: 1000 } });

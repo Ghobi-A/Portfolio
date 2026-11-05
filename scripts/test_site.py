@@ -221,7 +221,9 @@ class PortfolioTests(unittest.TestCase):
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
         # Content is never hidden by default. The only exception is the pending opening,
         # scoped to a class that an inline 3s failsafe (and motion.js) always removes.
+        # Decorative ::before/::after overlays (no content) may also start transparent.
         unscoped = re.sub(r'\.motion-intro [^{]+\{[^}]*\}', '', css)
+        unscoped = re.sub(r'[^{}]*::(?:before|after)\s*\{[^}]*\}', '', unscoped)
         self.assertNotRegex(unscoped, r'(?<!-)opacity:\s*0\s*[;}]')
         gate = self.source.split("classList.add('motion-intro')", 1)
         self.assertEqual(len(gate), 2)
@@ -246,8 +248,18 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn('export', field)
         self.assertIn('three.js', field.split('*/', 1)[0])
         motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
-        for guard in ('import(fieldScript)', 'min-width: 1024px', 'saveData', 'webgl2'):
-            self.assertIn(guard, motion)
+        self.assertIn('import(fieldScript)', motion)
+        self.assertIn('has-field', motion)
+        # The capability check runs before paint so the field's space is reserved (no layout shift).
+        head = self.source.split('</head>', 1)[0]
+        for guard in ("classList.add('has-field')", 'saveData', "getContext('webgl2')"):
+            self.assertIn(guard, head)
+        self.assertEqual(self.html.count('class="signal-field" aria-hidden="true"'), 1)
+        # The loop only runs while visible, on screen and without reduced motion (checked in source;
+        # the bundle is minified).
+        source = (ROOT / 'tools/motion/signal-field.src.js').read_text(encoding='utf-8')
+        for guard in ('reduced.matches', 'IntersectionObserver', 'document.hidden', 'gsap.ticker.remove(tick)'):
+            self.assertIn(guard, source)
 
 
 if __name__ == '__main__':

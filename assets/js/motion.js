@@ -103,30 +103,24 @@
     Promise.race([fonts, new Promise((resolve) => setTimeout(resolve, 450))]).then(runIntro);
   } else releaseIntro();
 
-  // ---- Hero field (Three.js), desktop only and loaded lazily ------------------
-  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261103", document.currentScript.src).href;
-  const wantsField = () => intro && fieldScript
-    && matchMedia("(min-width: 1024px)").matches
-    && !navigator.connection?.saveData
-    && (navigator.deviceMemory ?? 8) >= 4
-    && (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch { return false; } })();
+  // ---- Hero field (Three.js), loaded lazily ----------------------------------
+  // The host is authored in the page; the head script adds .has-field only when
+  // WebGL2 is available and Save-Data is off, so its space is reserved before paint.
+  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261105", document.currentScript.src).href;
+  const fieldHost = document.querySelector(".signal-field");
   const loadField = () => {
-    if (!wantsField()) return;
-    const host = document.createElement("div");
-    host.className = "signal-field";
-    host.setAttribute("aria-hidden", "true");
-    intro.prepend(host);
+    if (!fieldHost || !fieldScript || !root.classList.contains("has-field")) return;
     import(fieldScript)
       .then(({ mountSignalField }) => {
-        const field = mountSignalField(host, { gsap, ScrollTrigger, reduced, intro: playIntro, surface: hero });
-        if (!field) host.remove();
+        const field = mountSignalField(fieldHost, { gsap, ScrollTrigger, reduced, intro: playIntro, surface: hero, compact: innerWidth < 1024 });
+        if (!field) { fieldHost.remove(); root.classList.remove("has-field"); }
         window.portfolioMotion.field = field;
       })
-      .catch(() => host.remove());
+      .catch(() => { fieldHost.remove(); root.classList.remove("has-field"); });
   };
   const idle = window.requestIdleCallback || ((callback) => setTimeout(callback, 200));
-  if (document.readyState === "complete") idle(loadField, { timeout: 1200 });
-  else window.addEventListener("load", () => idle(loadField, { timeout: 1200 }), { once: true });
+  if (document.readyState === "complete") idle(loadField, { timeout: 800 });
+  else window.addEventListener("load", () => idle(loadField, { timeout: 800 }), { once: true });
 
   // ---- Scroll reveals: once, at the moment of entry ---------------------------
   const revealed = new WeakSet();
@@ -143,8 +137,24 @@
         track(gsap.fromTo(line, { strokeDasharray: length, strokeDashoffset: length },
           { strokeDashoffset: 0, duration: timing.chart, ease: "portfolio-in-out", delay: delay + 0.1, clearProps: "strokeDasharray,strokeDashoffset" }), label);
       });
-      const envelope = element.querySelectorAll(".privacy-bloom, .privacy-whisker, .intervals");
-      if (envelope.length) track(gsap.from(envelope, { opacity: 0, duration: 0.5, delay: delay + 0.35, clearProps: "opacity" }));
+      const envelope = element.querySelectorAll(".privacy-bloom, .intervals");
+      if (envelope.length) track(gsap.from(envelope, { opacity: 0, duration: 0.6, delay: delay + 0.35, clearProps: "opacity" }));
+      // Measured points arrive in order once their guide has passed them. Positions never change.
+      const marks = element.querySelectorAll(".privacy-measure, .partition-marker, .signal-point > circle");
+      if (marks.length) track(gsap.from(marks, { opacity: 0, scale: 0.4, transformOrigin: "50% 50%", duration: 0.55, ease: "back.out(2)", stagger: 0.14, delay: delay + 0.3, clearProps: "opacity,transform" }));
+      const whiskers = element.querySelectorAll(".privacy-whisker, .privacy-interval-wash");
+      if (whiskers.length) track(gsap.from(whiskers, { scaleY: 0, transformOrigin: "50% 50%", duration: 0.6, stagger: 0.07, delay: delay + 0.45, clearProps: "transform" }));
+      return;
+    }
+    if (element.matches(".project-copy > .metrics")) {
+      // Each exact figure rises into place behind a mask. Figures never count up.
+      const figures = [...element.querySelectorAll("dd")];
+      const splits = figures.map((figure) => split(figure, "lines"));
+      track(gsap.from(splits.flatMap(({ instance }) => instance.lines), {
+        yPercent: 110, duration: 0.8, stagger: 0.12, delay,
+        onComplete: () => splits.forEach(({ revert }) => revert()),
+      }), label);
+      track(gsap.from(element.querySelectorAll("dt"), { opacity: 0, y: 8, stagger: 0.12, delay: delay + 0.2, clearProps: "opacity,transform" }));
       return;
     }
     if (element.matches(".signal-system, .token-flow, .method-rail, .semantic-chain, .simulation-branches, .order-flow")) {
@@ -160,6 +170,11 @@
     }
     if (element.matches(".gameplay-shot")) {
       track(gsap.from(element, { clipPath: "inset(8% 6% 8% 6%)", duration: 1, ease: "portfolio-in-out", delay, clearProps: "clipPath" }), label);
+      return;
+    }
+    // Panels already travel with the scroll (see below), so they only fade in here.
+    if (element.matches(".project-grid > .evidence-panel") && !reduced.matches) {
+      track(gsap.from(element, { opacity: 0, duration: 0.7, delay, clearProps: "opacity" }), label);
       return;
     }
     const distance = element.matches(".project-copy > .tags") ? 10 : element.matches(".evidence-panel, .semantic-design") ? 14 : 16;
@@ -191,15 +206,84 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 
-  // ---- Scroll-linked depth: one image, scrubbed, never on reduced motion ------
-  gsap.matchMedia().add("(prefers-reduced-motion: no-preference) and (min-width: 761px)", () => {
-    document.querySelectorAll(".gameplay-shot img").forEach((image) => {
-      gsap.fromTo(image, { yPercent: -3, scale: 1.08 }, {
-        yPercent: 3, scale: 1.08, ease: "none",
+  // ---- Scroll-driven depth: scrubbed, reversible, never on reduced motion -----
+  // These follow the scroll position rather than playing once. Values never change.
+  const motion = gsap.matchMedia();
+  motion.add({
+    wide: "(prefers-reduced-motion: no-preference) and (min-width: 761px)",
+    narrow: "(prefers-reduced-motion: no-preference) and (max-width: 760px)",
+  }, ({ conditions }) => {
+    const depth = conditions.wide ? 1 : 0.5;
+    // Evidence travels slightly faster than the story beside it.
+    document.querySelectorAll(".project-grid > .evidence-panel").forEach((panel) => {
+      gsap.fromTo(panel, { y: 56 * depth }, {
+        y: -56 * depth, ease: "none",
+        scrollTrigger: { trigger: panel, start: "top bottom", end: "bottom top", scrub: 0.6 },
+      });
+    });
+    // Project titles drift in from the left as they cross the lower half of the screen.
+    document.querySelectorAll(".project-copy > h3").forEach((title) => {
+      gsap.fromTo(title, { x: -36 * depth }, {
+        x: 0, ease: "none",
+        scrollTrigger: { trigger: title, start: "top bottom", end: "top 45%", scrub: 0.5 },
+      });
+    });
+    // On wide screens section headings drift the other way, so the page alternates.
+    // On phones they are full width, so they come from the left and never overflow.
+    document.querySelectorAll(".section-heading h2, .semantic-lab h2").forEach((heading) => {
+      gsap.fromTo(heading, { x: conditions.wide ? 36 : -18 }, {
+        x: 0, ease: "none",
+        scrollTrigger: { trigger: heading, start: "top bottom", end: "top 50%", scrub: 0.5 },
+      });
+    });
+    // The closing invitation grows into place.
+    document.querySelectorAll(".contact h2").forEach((heading) => {
+      gsap.fromTo(heading, { scale: 0.9, transformOrigin: "0% 100%" }, {
+        scale: 1, ease: "none",
+        scrollTrigger: { trigger: heading, start: "top bottom", end: "top 55%", scrub: 0.5 },
+      });
+    });
+    // Imagery: a deeper parallax inside its frame.
+    document.querySelectorAll(".gameplay-shot img, .paper-study img").forEach((image) => {
+      gsap.fromTo(image, { yPercent: -7 * depth, scale: 1.14 }, {
+        yPercent: 7 * depth, scale: 1.14, ease: "none",
         scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 0.5 },
       });
     });
+    // The practice bars answer the speed of the scroll, then settle.
+    const bars = [...document.querySelectorAll(".practice-signal span")];
+    const setters = bars.map((bar) => gsap.quickTo(bar, "scaleY", { duration: 0.5, ease: "power3.out" }));
+    gsap.set(bars, { transformOrigin: "50% 100%" });
+    let settleTimer = 0;
+    ScrollTrigger.create({
+      trigger: hero, start: "top top", end: "bottom top",
+      onUpdate: (self) => {
+        const energy = Math.min(Math.abs(self.getVelocity()) / 2400, 1);
+        setters.forEach((set, index) => set(1 + energy * (0.25 + 0.55 * Math.abs(Math.sin(index * 1.7 + self.progress * 9)))));
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(() => setters.forEach((set) => set(1)), 140);
+      },
+    });
+    return () => { clearTimeout(settleTimer); gsap.set(bars, { clearProps: "transform" }); };
   });
+
+  // ---- Pointer spotlight on evidence panels (fine pointers only) --------------
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    let spotFrame = 0;
+    let spotEvent = null;
+    document.addEventListener("pointermove", (event) => {
+      spotEvent = event;
+      if (spotFrame) return;
+      spotFrame = requestAnimationFrame(() => {
+        spotFrame = 0;
+        const panel = spotEvent.target.closest?.(".evidence-panel");
+        if (!panel) return;
+        const rect = panel.getBoundingClientRect();
+        panel.style.setProperty("--spot-x", `${spotEvent.clientX - rect.left}px`);
+        panel.style.setProperty("--spot-y", `${spotEvent.clientY - rect.top}px`);
+      });
+    }, { passive: true });
+  }
 
   // ---- Interaction feedback (<= 220ms) ----------------------------------------
   document.addEventListener("privacyselect", (event) => {

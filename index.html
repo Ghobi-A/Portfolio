@@ -12,26 +12,31 @@
     <meta name="theme-color" content="#E8E6DF" />
     <!-- METADATA:END -->
     <link rel="preload" href="assets/fonts/source-serif-4-regular-subset.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="assets/css/site.css?v=20261103-gsap" />
-    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261103-gsap" />
+    <link rel="stylesheet" href="assets/css/site.css?v=20261105-alive" />
+    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261105-alive" />
     <script>
       /* Hold only the opening for the moment before motion.js plays it. A 3s failsafe always
          reveals it; no-JS, reduced-motion, bookmarked and restored visits never hide anything. */
       (() => {
         const root = document.documentElement;
         const nav = performance.getEntriesByType?.('navigation')[0];
+        // Reserve the hero field's space before paint when it can run: WebGL2, no Save-Data.
+        try {
+          if (!navigator.connection?.saveData && (navigator.deviceMemory ?? 8) >= 2
+            && document.createElement('canvas').getContext('webgl2')) root.classList.add('has-field');
+        } catch {}
         if (location.hash || nav?.type === 'back_forward' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
         root.classList.add('motion-intro');
         setTimeout(() => root.classList.remove('motion-intro'), 3000);
       })();
     </script>
-    <script defer src="assets/js/privacy-chart.js?v=20261103-gsap"></script>
-    <script defer src="assets/js/main.js?v=20261103-gsap"></script>
+    <script defer src="assets/js/privacy-chart.js?v=20261105-alive"></script>
+    <script defer src="assets/js/main.js?v=20261105-alive"></script>
     <script defer src="assets/vendor/gsap/gsap.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/CustomEase.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/ScrollTrigger.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/SplitText.min.js?v=3.15.0"></script>
-    <script defer src="assets/js/motion.js?v=20261103-gsap"></script>
+    <script defer src="assets/js/motion.js?v=20261105-alive"></script>
   </head>
   <body>
     <a class="skip-link" href="#projects">Skip to selected work</a>
@@ -102,6 +107,7 @@
               <a class="intro-contact" href="mailto:ghobikan15@hotmail.co.uk">Let’s talk <span aria-hidden="true">↗</span></a>
             </div>
           </div>
+          <div class="signal-field" aria-hidden="true"></div>
           <aside class="intro-practice" aria-label="Technical strengths and project routes">
             <p class="eyebrow">An evidence-led practice</p>
             <div class="practice-signal" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>

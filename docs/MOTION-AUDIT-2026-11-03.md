@@ -105,3 +105,17 @@ npm run build
 These are headless Chromium captures of the implementation at 1440px, not mockups: [settled hero](review/2026-11-03/hero-settled-1440.png), [pointer lens](review/2026-11-03/hero-pointer-1440.png), [opening sequence, four frames](review/2026-11-03/opening-sequence.png) and [browser results](review/2026-11-03/browser-results.json).
 
 ![Settled hero with the signal field](review/2026-11-03/hero-settled-1440.png)
+
+## 8. Follow-up, 5 November: "not animated or dynamic"
+
+After deployment, the owner reported the site did not feel animated. On the live site at 1440px, GSAP was active, the field rendered 81 frames and there were no console errors. So the system worked, but as designed it played once and then went still, its effects were small, and phones never saw the field. The owner chose "clearly alive". `DESIGN.md` → *Living motion* records the new rules. In short:
+
+- **The field loops**, paused off screen, in hidden tabs and under reduced motion. It has travelling waves, a signal pulse, a breathing selected point, a cursor lens with ripples, and scroll scatter. A 40×22 point version runs on phones and tablets, in a band reserved before paint.
+- **Scrubbed scroll depth:** panel travel, title and heading drift, the contact scale, image parallax and scroll-speed bars.
+- **Chart marks and masked figure reveals** on arrival. Exact values only.
+- **A pointer spotlight** on evidence panels.
+
+The browser regression now asserts that the field renders on screen, stops rendering when scrolled away, and stays still under reduced motion.
+
+
+Screenshots: [desktop with cursor lens](review/2026-11-05/hero-alive-1440.png), [tablet band](review/2026-11-05/hero-alive-820.png), [phone band](review/2026-11-05/hero-alive-390.png), [browser results](review/2026-11-05/browser-results.json).
