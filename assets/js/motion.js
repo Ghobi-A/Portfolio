@@ -173,7 +173,7 @@
       return;
     }
     // Panels already travel with the scroll (see below), so they only fade in here.
-    if (element.matches(".project-grid > .evidence-panel") && !reduced.matches) {
+    if (element.matches(".project-grid > .evidence-panel, .project-copy > .tags") && !reduced.matches) {
       track(gsap.from(element, { opacity: 0, duration: 0.7, delay, clearProps: "opacity" }), label);
       return;
     }
@@ -213,58 +213,108 @@
     wide: "(prefers-reduced-motion: no-preference) and (min-width: 761px)",
     narrow: "(prefers-reduced-motion: no-preference) and (max-width: 760px)",
   }, ({ conditions }) => {
-    const depth = conditions.wide ? 1 : 0.5;
-    // Evidence travels slightly faster than the story beside it.
+    const depth = conditions.wide ? 1 : 0.45;
+    const scrub = (target, from, to, trigger, start, end, amount = 0.6) =>
+      gsap.fromTo(target, from, { ...to, ease: "none", scrollTrigger: { trigger, start, end, scrub: amount } });
+
+    // Hero exit: the introduction lifts away and dims as the work arrives.
+    const copy = hero.querySelector(".intro-copy");
+    const practice = hero.querySelector(".intro-practice");
+    if (copy) scrub(copy, { y: 0, opacity: 1 }, { y: -110 * depth, opacity: 0.25 }, hero, "top top", "bottom top", 0.4);
+    if (practice && conditions.wide) scrub(practice, { y: 0 }, { y: -50 }, hero, "top top", "bottom top", 0.4);
+
+    // Evidence panels rise and settle as they enter, then drift on with the page.
     document.querySelectorAll(".project-grid > .evidence-panel").forEach((panel) => {
-      gsap.fromTo(panel, { y: 56 * depth }, {
-        y: -56 * depth, ease: "none",
-        scrollTrigger: { trigger: panel, start: "top bottom", end: "bottom top", scrub: 0.6 },
-      });
+      scrub(panel, { y: 140 * depth, scale: 0.94, transformOrigin: "50% 0%" }, { y: 0, scale: 1 }, panel, "top bottom", "top 55%", 0.7);
     });
-    // Project titles drift in from the left as they cross the lower half of the screen.
+    // Project titles sweep in from the left across the lower half of the screen.
     document.querySelectorAll(".project-copy > h3").forEach((title) => {
-      gsap.fromTo(title, { x: -36 * depth }, {
-        x: 0, ease: "none",
-        scrollTrigger: { trigger: title, start: "top bottom", end: "top 45%", scrub: 0.5 },
-      });
+      scrub(title, { x: -120 * depth }, { x: 0 }, title, "top bottom", "top 50%", 0.6);
     });
-    // On wide screens section headings drift the other way, so the page alternates.
-    // On phones they are full width, so they come from the left and never overflow.
+    // Wide: section headings sweep from the right so the page alternates. Phones: from the left.
     document.querySelectorAll(".section-heading h2, .semantic-lab h2").forEach((heading) => {
-      gsap.fromTo(heading, { x: conditions.wide ? 36 : -18 }, {
-        x: 0, ease: "none",
-        scrollTrigger: { trigger: heading, start: "top bottom", end: "top 50%", scrub: 0.5 },
-      });
+      scrub(heading, { x: conditions.wide ? 120 : -40 }, { x: 0 }, heading, "top bottom", "top 50%", 0.6);
+    });
+    // Figures and tags lift a little later than their title.
+    document.querySelectorAll(".project-copy > .metrics, .project-copy > .tags").forEach((block) => {
+      scrub(block, { y: 50 * depth }, { y: 0 }, block, "top bottom", "top 60%", 0.6);
     });
     // The closing invitation grows into place.
     document.querySelectorAll(".contact h2").forEach((heading) => {
-      gsap.fromTo(heading, { scale: 0.9, transformOrigin: "0% 100%" }, {
-        scale: 1, ease: "none",
-        scrollTrigger: { trigger: heading, start: "top bottom", end: "top 55%", scrub: 0.5 },
-      });
+      scrub(heading, { scale: 0.75, transformOrigin: "0% 100%" }, { scale: 1 }, heading, "top bottom", "top 50%", 0.6);
     });
-    // Imagery: a deeper parallax inside its frame.
-    document.querySelectorAll(".gameplay-shot img, .paper-study img").forEach((image) => {
-      gsap.fromTo(image, { yPercent: -7 * depth, scale: 1.14 }, {
-        yPercent: 7 * depth, scale: 1.14, ease: "none",
-        scrollTrigger: { trigger: image.parentElement, start: "top bottom", end: "bottom top", scrub: 0.5 },
-      });
+    // Imagery: a deep parallax inside its frame, and a slight turn for the paper study.
+    document.querySelectorAll(".gameplay-shot img").forEach((image) => {
+      scrub(image, { yPercent: -9 * depth, scale: 1.18 }, { yPercent: 9 * depth, scale: 1.18 }, image.parentElement, "top bottom", "bottom top", 0.5);
     });
-    // The practice bars answer the speed of the scroll, then settle.
+    document.querySelectorAll(".paper-study img").forEach((image) => {
+      scrub(image, { y: 60 * depth, rotate: -4 }, { y: -60 * depth, rotate: 4 }, image.parentElement, "top bottom", "bottom top", 0.5);
+    });
+
+    // The practice bars run like a live meter while the opening is on screen.
     const bars = [...document.querySelectorAll(".practice-signal span")];
-    const setters = bars.map((bar) => gsap.quickTo(bar, "scaleY", { duration: 0.5, ease: "power3.out" }));
     gsap.set(bars, { transformOrigin: "50% 100%" });
-    let settleTimer = 0;
+    const meter = gsap.timeline({ paused: true });
+    bars.forEach((bar, index) => {
+      meter.to(bar, { scaleY: 0.45 + ((index * 37) % 10) / 12, duration: 0.7 + (index % 3) * 0.25, ease: "sine.inOut", repeat: -1, yoyo: true }, index * 0.09);
+    });
+    ScrollTrigger.create({ trigger: hero, start: "top bottom", end: "bottom top", onToggle: (self) => (self.isActive ? meter.play() : meter.pause()) });
+    // Fast scrolling drives the meter harder for a moment.
+    let energyTimer = 0;
     ScrollTrigger.create({
-      trigger: hero, start: "top top", end: "bottom top",
+      trigger: document.body, start: 0, end: "max",
       onUpdate: (self) => {
-        const energy = Math.min(Math.abs(self.getVelocity()) / 2400, 1);
-        setters.forEach((set, index) => set(1 + energy * (0.25 + 0.55 * Math.abs(Math.sin(index * 1.7 + self.progress * 9)))));
-        clearTimeout(settleTimer);
-        settleTimer = setTimeout(() => setters.forEach((set) => set(1)), 140);
+        meter.timeScale(1 + Math.min(Math.abs(self.getVelocity()) / 800, 3));
+        clearTimeout(energyTimer);
+        energyTimer = setTimeout(() => gsap.to(meter, { timeScale: 1, duration: 0.6 }), 120);
       },
     });
-    return () => { clearTimeout(settleTimer); gsap.set(bars, { clearProps: "transform" }); };
+
+    // Skills marquee: two rows drift in opposite directions and answer the scroll.
+    const rows = [...document.querySelectorAll(".marquee-track")].map((track, index) => {
+      track.append(...[...track.children].map((child) => child.cloneNode(true)));
+      return gsap.fromTo(track, { xPercent: index % 2 ? -50 : 0 }, { xPercent: index % 2 ? 0 : -50, duration: 38 + index * 8, ease: "none", repeat: -1 });
+    });
+    let direction = 1;
+    const marquee = document.querySelector(".signal-marquee");
+    if (marquee && rows.length) {
+      ScrollTrigger.create({ trigger: marquee, start: "top bottom", end: "bottom top", onToggle: (self) => rows.forEach((row) => (self.isActive ? row.play() : row.pause())) });
+      ScrollTrigger.create({
+        trigger: document.body, start: 0, end: "max",
+        onUpdate: (self) => {
+          if (self.direction !== direction) direction = self.direction;
+          const speed = direction * (1 + Math.min(Math.abs(self.getVelocity()) / 300, 6));
+          rows.forEach((row) => gsap.to(row, { timeScale: speed, duration: 0.25, overwrite: true }));
+          clearTimeout(marquee.settle);
+          marquee.settle = setTimeout(() => rows.forEach((row) => gsap.to(row, { timeScale: direction, duration: 1.1, overwrite: true })), 140);
+        },
+      });
+    }
+
+    // Magnetic actions: primary buttons lean toward a fine pointer.
+    const cleanups = [];
+    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      document.querySelectorAll(".button, .intro-contact").forEach((button) => {
+        const toX = gsap.quickTo(button, "x", { duration: 0.45, ease: "power3.out" });
+        const toY = gsap.quickTo(button, "y", { duration: 0.45, ease: "power3.out" });
+        const move = (event) => {
+          const rect = button.getBoundingClientRect();
+          toX((event.clientX - rect.left - rect.width / 2) * 0.28);
+          toY((event.clientY - rect.top - rect.height / 2) * 0.4);
+        };
+        const leave = () => { toX(0); toY(0); };
+        button.addEventListener("pointermove", move);
+        button.addEventListener("pointerleave", leave);
+        cleanups.push(() => { button.removeEventListener("pointermove", move); button.removeEventListener("pointerleave", leave); gsap.set(button, { clearProps: "transform" }); });
+      });
+    }
+    return () => {
+      clearTimeout(energyTimer);
+      clearTimeout(marquee?.settle);
+      cleanups.forEach((cleanup) => cleanup());
+      document.querySelectorAll(".marquee-track").forEach((track) => track.replaceChildren(...[...track.children].slice(0, track.children.length / 2)));
+      gsap.set([...bars, copy, practice].filter(Boolean), { clearProps: "transform,opacity" });
+    };
   });
 
   // ---- Pointer spotlight on evidence panels (fine pointers only) --------------
@@ -314,7 +364,7 @@
   // A focused control and its ancestors must stop moving immediately.
   document.addEventListener("focusin", (event) => {
     for (let element = event.target; element && element !== document.body; element = element.parentElement) {
-      gsap.getTweensOf(element).forEach((tween) => tween.progress(1));
+      gsap.getTweensOf(element).forEach((tween) => { if (!tween.scrollTrigger && !tween.vars.repeat) tween.progress(1); });
     }
   });
   reduced.addEventListener("change", () => { if (reduced.matches) settleAll(); });

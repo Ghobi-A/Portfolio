@@ -55,9 +55,9 @@ const vertexShader = /* glsl */ `
   float easeOut(float t) { return 1.0 - pow(1.0 - t, 4.0); }
 
   float surface(vec2 q, float t) {
-    return 0.34 * sin(q.x * 0.85 + q.y * 0.55 + t * 0.55)
-         + 0.18 * sin(q.y * 1.35 - q.x * 0.40 - t * 0.42)
-         + 0.07 * sin(length(q - vec2(1.2, 0.4)) * 2.6 - t * 1.25);
+    return 0.42 * sin(q.x * 0.85 + q.y * 0.55 + t * 1.05)
+         + 0.24 * sin(q.y * 1.35 - q.x * 0.40 - t * 0.8)
+         + 0.12 * sin(length(q - vec2(1.2, 0.4)) * 2.6 - t * 2.2);
   }
 
   void main() {
@@ -73,9 +73,9 @@ const vertexShader = /* glsl */ `
     vec3 p = mix(noisy, ordered, t);
 
     // A pink pulse travels across the surface every ~9s: a signal passing through.
-    float scan = fract(uTime * 0.11) * 1.6 - 0.3;
-    float heat = exp(-pow((aSweep - scan) * 9.0, 2.0)) * t;
-    p.y += heat * 0.12;
+    float scan = fract(uTime * 0.2) * 1.6 - 0.3;
+    float heat = exp(-pow((aSweep - scan) * 6.0, 2.0)) * t;
+    p.y += heat * 0.28;
 
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vec4 clip = projectionMatrix * mv;
@@ -83,20 +83,20 @@ const vertexShader = /* glsl */ `
 
     // Interrogate: points near the pointer lift toward the viewer and part.
     vec2 d = (ndc - uPointer) * vec2(uAspect, 1.0);
-    float lift = exp(-dot(d, d) * 16.0) * uPointerStrength * t;
-    mv.xy += normalize(d + 1e-5) * lift * 0.2;
-    mv.z += lift * 0.6;
+    float lift = exp(-dot(d, d) * 10.0) * uPointerStrength * t;
+    mv.xy += normalize(d + 1e-5) * lift * 0.3;
+    mv.z += lift * 0.9;
 
     // Ripple: a ring expanding from the last place the pointer pressed or entered.
     float age = uTime - uRipple.z;
     float ring = length((ndc - uRipple.xy) * vec2(uAspect, 1.0));
     float wave = exp(-pow((ring - age * 0.9) * 7.0, 2.0)) * exp(-age * 1.4) * uRipple.w * step(0.0, age);
-    mv.y += wave * 0.32 * t;
+    mv.y += wave * 0.5 * t;
 
     gl_Position = projectionMatrix * mv;
     float breathe = aTone > 1.5 ? 1.0 + 0.18 * sin(uTime * 2.1) : 1.0;
     gl_PointSize = uSize * aScale * breathe * uPixelRatio * (1.0 + lift * 0.6 + heat * 0.45) / -mv.z;
-    vAlpha = mix(0.25, 1.0, t) * smoothstep(-15.0, -6.5, mv.z);
+    vAlpha = mix(0.3, 1.0, t) * smoothstep(-19.0, -8.0, mv.z);
     vTone = aTone;
     vHeat = clamp(max(heat, lift * 1.4) + wave * 0.8, 0.0, 1.0);
   }
@@ -115,8 +115,8 @@ const fragmentShader = /* glsl */ `
     float r = length(gl_PointCoord - 0.5);
     if (r > 0.5) discard;
     float edge = smoothstep(0.5, 0.4, r);
-    vec3 color = mix(uInk, uPink, max(vTone * 0.9, vHeat * 0.9));
-    float strength = vTone > 0.5 ? 1.0 : 0.82 + vHeat * 0.18;
+    vec3 color = mix(uInk, uPink, max(vTone * 0.9, vHeat));
+    float strength = vTone > 0.5 ? 1.0 : 0.95;
     if (vTone > 1.5) {
       // The selected observation: yellow fill with an ink ring, as in the charts.
       color = mix(uYellow, uInk, smoothstep(0.3, 0.36, r));
@@ -163,7 +163,7 @@ function buildGeometry(cols, rows) {
 
       const onRidge = Math.abs(z - ridge(x)) < DEPTH / rows * 0.8;
       tone[i] = onRidge ? 1 : 0;
-      scale[i] = onRidge ? 1.25 : 0.9 + random() * 0.2;
+      scale[i] = onRidge ? 1.35 : 1.0 + random() * 0.25;
       const score = onRidge ? y - Math.abs(x - 1.6) * 0.3 : -Infinity;
       if (score > selectedScore) { selectedScore = score; selected = i; }
     }
@@ -345,7 +345,7 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
       trigger: pointerSurface, start: "top top", end: "bottom top", scrub: 0.8,
       onUpdate: (self) => {
         if (reduced.matches) return;
-        uniforms.uScatter.value = self.progress * 0.8;
+        uniforms.uScatter.value = Math.min(1, self.progress * 1.3);
         group.position.y = self.progress * 0.6;
         group.rotation.z = self.progress * -0.12;
         uniforms.uOpacity.value = 1 - self.progress * 0.5;

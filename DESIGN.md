@@ -183,3 +183,18 @@ The owner asked for a site that feels clearly alive, so the earlier "no perpetua
 - **Pointer spotlight.** A soft pink light follows a fine pointer across evidence panels. The 3px hover lift was removed, because panels now move with the scroll.
 - Everything above stops for reduced motion. The field then shows one still frame.
 
+### Stronger pass (same day)
+
+The owner reviewed the live site and still found too little movement. Measured on the live site, about 2% of the viewport changed every two seconds, and the scroll effects were 56px spread over a full screen of travel. The pass made five changes:
+- **Field:** roughly twice the wave speed and a larger amplitude, a pink pulse every five seconds, darker far rows, and a wider cursor lens. Scrolling fully scatters it.
+- **Skills marquee:** two `aria-hidden` rows between the opening and the work. They drift in opposite directions, speed up with scroll velocity and reverse with scroll direction, and pause off screen.
+- **Scroll motion:**
+  - The opening lifts and dims as you leave it.
+  - Evidence panels rise 140px and scale from .94 as they enter.
+  - Titles and headings sweep 120px, and the contact headline scales from .75.
+  - Figures and tags lift after their title, and imagery parallaxes ±9%.
+- **Live meter:** the practice bars run continuously while the opening is visible, faster when you scroll fast.
+- **Magnetic actions:** buttons lean toward a fine pointer. Press feedback uses the CSS `scale` property so the two compose.
+
+After the pass, about 7% of the viewport changes every two seconds at rest, and 10–14% per scroll step. Focus never jumps a scrubbed or repeating tween. Reduced motion reverts everything through `gsap.matchMedia`.
+

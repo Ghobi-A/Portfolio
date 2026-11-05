@@ -4245,9 +4245,9 @@ void main() {
   float easeOut(float t) { return 1.0 - pow(1.0 - t, 4.0); }
 
   float surface(vec2 q, float t) {
-    return 0.34 * sin(q.x * 0.85 + q.y * 0.55 + t * 0.55)
-         + 0.18 * sin(q.y * 1.35 - q.x * 0.40 - t * 0.42)
-         + 0.07 * sin(length(q - vec2(1.2, 0.4)) * 2.6 - t * 1.25);
+    return 0.42 * sin(q.x * 0.85 + q.y * 0.55 + t * 1.05)
+         + 0.24 * sin(q.y * 1.35 - q.x * 0.40 - t * 0.8)
+         + 0.12 * sin(length(q - vec2(1.2, 0.4)) * 2.6 - t * 2.2);
   }
 
   void main() {
@@ -4263,9 +4263,9 @@ void main() {
     vec3 p = mix(noisy, ordered, t);
 
     // A pink pulse travels across the surface every ~9s: a signal passing through.
-    float scan = fract(uTime * 0.11) * 1.6 - 0.3;
-    float heat = exp(-pow((aSweep - scan) * 9.0, 2.0)) * t;
-    p.y += heat * 0.12;
+    float scan = fract(uTime * 0.2) * 1.6 - 0.3;
+    float heat = exp(-pow((aSweep - scan) * 6.0, 2.0)) * t;
+    p.y += heat * 0.28;
 
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vec4 clip = projectionMatrix * mv;
@@ -4273,20 +4273,20 @@ void main() {
 
     // Interrogate: points near the pointer lift toward the viewer and part.
     vec2 d = (ndc - uPointer) * vec2(uAspect, 1.0);
-    float lift = exp(-dot(d, d) * 16.0) * uPointerStrength * t;
-    mv.xy += normalize(d + 1e-5) * lift * 0.2;
-    mv.z += lift * 0.6;
+    float lift = exp(-dot(d, d) * 10.0) * uPointerStrength * t;
+    mv.xy += normalize(d + 1e-5) * lift * 0.3;
+    mv.z += lift * 0.9;
 
     // Ripple: a ring expanding from the last place the pointer pressed or entered.
     float age = uTime - uRipple.z;
     float ring = length((ndc - uRipple.xy) * vec2(uAspect, 1.0));
     float wave = exp(-pow((ring - age * 0.9) * 7.0, 2.0)) * exp(-age * 1.4) * uRipple.w * step(0.0, age);
-    mv.y += wave * 0.32 * t;
+    mv.y += wave * 0.5 * t;
 
     gl_Position = projectionMatrix * mv;
     float breathe = aTone > 1.5 ? 1.0 + 0.18 * sin(uTime * 2.1) : 1.0;
     gl_PointSize = uSize * aScale * breathe * uPixelRatio * (1.0 + lift * 0.6 + heat * 0.45) / -mv.z;
-    vAlpha = mix(0.25, 1.0, t) * smoothstep(-15.0, -6.5, mv.z);
+    vAlpha = mix(0.3, 1.0, t) * smoothstep(-19.0, -8.0, mv.z);
     vTone = aTone;
     vHeat = clamp(max(heat, lift * 1.4) + wave * 0.8, 0.0, 1.0);
   }
@@ -4303,8 +4303,8 @@ void main() {
     float r = length(gl_PointCoord - 0.5);
     if (r > 0.5) discard;
     float edge = smoothstep(0.5, 0.4, r);
-    vec3 color = mix(uInk, uPink, max(vTone * 0.9, vHeat * 0.9));
-    float strength = vTone > 0.5 ? 1.0 : 0.82 + vHeat * 0.18;
+    vec3 color = mix(uInk, uPink, max(vTone * 0.9, vHeat));
+    float strength = vTone > 0.5 ? 1.0 : 0.95;
     if (vTone > 1.5) {
       // The selected observation: yellow fill with an ink ring, as in the charts.
       color = mix(uYellow, uInk, smoothstep(0.3, 0.36, r));
@@ -4312,4 +4312,4 @@ void main() {
     }
     gl_FragColor = vec4(color, edge * max(vAlpha, step(1.5, vTone) * 0.9) * strength * uOpacity);
   }
-`,pm=()=>{let i=20261103;return()=>(i=i*1664525+1013904223>>>0,i/4294967296)},mm=(i,t)=>.34*Math.sin(i*.85+t*.55)+.18*Math.sin(t*1.35-i*.4),gm=i=>.6*Math.sin(i*.62+.4)+.35;function Uc(i,t){let e=pm(),n=()=>(e()+e()+e()-1.5)/1.5,s=i*t,r=new Float32Array(s*3),a=new Float32Array(s*3),o=new Float32Array(s),c=new Float32Array(s),l=new Float32Array(s),u=new Float32Array(s),m=0,h=-1/0;for(let x=0,y=0;x<t;x++)for(let f=0;f<i;f++,y++){let d=(f/(i-1)-.5)*um,S=(x/(t-1)-.5)*Nc,R=mm(d,S);r.set([d,0,S],y*3),a.set([d*1.25+n()*1.6,R+n()*1.9,S+n()*2.2],y*3),o[y]=f/(i-1)*.85+e()*.15,u[y]=e();let T=Math.abs(S-gm(d))<Nc/t*.8;c[y]=T?1:0,l[y]=T?1.25:.9+e()*.2;let E=T?R-Math.abs(d-1.6)*.3:-1/0;E>h&&(h=E,m=y)}c[m]=2,l[m]=3.6;let p=new je;return p.setAttribute("position",new Se(r,3)),p.setAttribute("aNoise",new Se(a,3)),p.setAttribute("aSweep",new Se(o,1)),p.setAttribute("aTone",new Se(c,1)),p.setAttribute("aScale",new Se(l,1)),p.setAttribute("aSeed",new Se(u,1)),p}function ox(i,{gsap:t,ScrollTrigger:e,reduced:n,intro:s,surface:r,compact:a=!1}){let o;try{o=new aa({alpha:!0,antialias:!1,powerPreference:"low-power",premultipliedAlpha:!1})}catch{return null}o.setClearColor(0,0);let c=o.domElement;c.setAttribute("aria-hidden","true"),i.append(c);let l=new Vi,u=new Ce(30,1,.1,60),m=a?9.4:8.6;u.position.set(0,6.4,m),u.lookAt(0,a?.15:.55,.35);let h={uTime:{value:0},uProgress:{value:s&&!n.matches?0:1},uScatter:{value:0},uPointer:{value:new Yt(9,9)},uPointerStrength:{value:0},uRipple:{value:new ie(9,9,-10,0)},uPixelRatio:{value:1},uSize:{value:52},uAspect:{value:1},uOpacity:{value:1},uInk:{value:new Gt("#102449")},uPink:{value:new Gt("#bd005f")},uYellow:{value:new Gt("#ffd137")}},p=new Ye({uniforms:h,vertexShader:dm,fragmentShader:fm,transparent:!0,depthWrite:!1,depthTest:!1,blending:Vn}),x=a?Uc(40,22):Uc(62,32),y=new yn;y.add(new qi(x,p)),y.rotation.set(.04,-.28,0),l.add(y);let f=0,d=0,S=0,R=!0,T=0,E=()=>{T=0,!(!d||!S||document.hidden)&&(o.render(l,u),f++)},A=()=>{T||(T=requestAnimationFrame(E))},g=0,M=!1,O=(bt,kt)=>{g+=Math.min(kt,50)/1e3,h.uTime.value=g,E()},P=()=>R&&!document.hidden&&!n.matches,D=()=>{let bt=P();bt!==M&&(M=bt,M?t.ticker.add(O):(t.ticker.remove(O),A()))},z=()=>{let bt=i.getBoundingClientRect();if(d=Math.round(bt.width),S=Math.round(bt.height),!d||!S)return;let kt=Math.min(window.devicePixelRatio||1,a?1.5:2);o.setPixelRatio(kt),o.setSize(d,S,!1),u.aspect=d/S,u.position.z=m*Math.max(1,1.05/u.aspect),u.updateProjectionMatrix(),h.uPixelRatio.value=kt,h.uAspect.value=u.aspect,h.uSize.value=52*Math.min(1.2,Math.max(a?.7:.8,d/520)),A()},X=new ResizeObserver(z);X.observe(i),z();let I=new IntersectionObserver(([bt])=>{R=bt.isIntersecting,D()});I.observe(i);let H=new Set,Z=bt=>(H.add(bt),bt.then(()=>H.delete(bt)),bt);n.matches?t.set(i,{autoAlpha:1}):Z(t.fromTo(i,{autoAlpha:0},{autoAlpha:1,duration:.9,ease:"power2.out"})),h.uProgress.value<1&&Z(t.to(h.uProgress,{value:1,duration:2.6,delay:.15,ease:"portfolio-in-out",onUpdate:A}));let B={x:9,y:9,strength:0,tiltX:0,tiltY:0},tt=()=>{h.uPointer.value.set(B.x,B.y),h.uPointerStrength.value=B.strength,y.rotation.x=.04+B.tiltY,y.rotation.y=-.28+B.tiltX,M||A()},V=(bt,kt)=>t.quickTo(B,bt,{duration:kt,ease:"power3.out",onUpdate:tt}),Q=V("x",.5),j=V("y",.5),vt=V("strength",.6),It=V("tiltX",1.2),Y=V("tiltY",1.2),dt=matchMedia("(hover: hover) and (pointer: fine)"),_t=bt=>{let kt=i.getBoundingClientRect();return kt.width?[(bt.clientX-kt.left)/kt.width*2-1,-((bt.clientY-kt.top)/kt.height*2-1)]:null},At=!1,ft=(bt,kt,Kt)=>{h.uRipple.value.set(bt,kt,g,Kt)},Lt=bt=>{if(n.matches||!dt.matches)return;let kt=_t(bt);if(!kt)return;let[Kt,we]=kt,ce=Math.abs(Kt)<1.1&&Math.abs(we)<1.1;ce&&!At&&(B.x=Kt,B.y=we,ft(Kt,we,.8)),At=ce,Q(Kt),j(we),vt(ce?1:.25),It((bt.clientX/innerWidth*2-1)*.12),Y((bt.clientY/innerHeight*2-1)*.06)},ae=bt=>{if(n.matches)return;let kt=_t(bt);kt&&Math.abs(kt[0])<1.1&&Math.abs(kt[1])<1.1&&ft(kt[0],kt[1],1.4)},wt=()=>{At=!1,vt(0),It(0),Y(0)};r.addEventListener("pointermove",Lt,{passive:!0}),r.addEventListener("pointerdown",ae,{passive:!0}),r.addEventListener("pointerleave",wt,{passive:!0});let Xt=null;e&&(Xt=e.create({trigger:r,start:"top top",end:"bottom top",scrub:.8,onUpdate:bt=>{n.matches||(h.uScatter.value=bt.progress*.8,y.position.y=bt.progress*.6,y.rotation.z=bt.progress*-.12,h.uOpacity.value=1-bt.progress*.5,M||A())}}));let $t=()=>{n.matches?(H.forEach(bt=>bt.progress(1)),h.uProgress.value=1,h.uTime.value=0,h.uScatter.value=0,h.uRipple.value.w=0,B.strength=0,h.uPointerStrength.value=0,y.rotation.set(.04,-.28,0),y.rotation.z=0,y.position.y=0,h.uOpacity.value=1,Xt?.disable(!1)):Xt?.enable(),D(),A()};n.addEventListener("change",$t);let zt=()=>{document.hidden&&H.forEach(bt=>bt.progress(1)),D()};document.addEventListener("visibilitychange",zt),c.addEventListener("webglcontextlost",bt=>{bt.preventDefault(),he()}),n.matches&&Xt?.disable(!1),D();function he(){t.ticker.remove(O),cancelAnimationFrame(T),H.forEach(bt=>bt.kill()),Xt?.kill(),X.disconnect(),I.disconnect(),n.removeEventListener("change",$t),document.removeEventListener("visibilitychange",zt),r.removeEventListener("pointermove",Lt),r.removeEventListener("pointerdown",ae),r.removeEventListener("pointerleave",wt),x.dispose(),p.dispose(),o.dispose(),i.remove()}return{destroy:he,invalidate:A,uniforms:h,get frames(){return f},get looping(){return M}}}export{ox as mountSignalField};
+`,pm=()=>{let i=20261103;return()=>(i=i*1664525+1013904223>>>0,i/4294967296)},mm=(i,t)=>.34*Math.sin(i*.85+t*.55)+.18*Math.sin(t*1.35-i*.4),gm=i=>.6*Math.sin(i*.62+.4)+.35;function Uc(i,t){let e=pm(),n=()=>(e()+e()+e()-1.5)/1.5,s=i*t,r=new Float32Array(s*3),a=new Float32Array(s*3),o=new Float32Array(s),c=new Float32Array(s),l=new Float32Array(s),u=new Float32Array(s),m=0,h=-1/0;for(let x=0,y=0;x<t;x++)for(let f=0;f<i;f++,y++){let d=(f/(i-1)-.5)*um,S=(x/(t-1)-.5)*Nc,R=mm(d,S);r.set([d,0,S],y*3),a.set([d*1.25+n()*1.6,R+n()*1.9,S+n()*2.2],y*3),o[y]=f/(i-1)*.85+e()*.15,u[y]=e();let T=Math.abs(S-gm(d))<Nc/t*.8;c[y]=T?1:0,l[y]=T?1.35:1+e()*.25;let E=T?R-Math.abs(d-1.6)*.3:-1/0;E>h&&(h=E,m=y)}c[m]=2,l[m]=3.6;let p=new je;return p.setAttribute("position",new Se(r,3)),p.setAttribute("aNoise",new Se(a,3)),p.setAttribute("aSweep",new Se(o,1)),p.setAttribute("aTone",new Se(c,1)),p.setAttribute("aScale",new Se(l,1)),p.setAttribute("aSeed",new Se(u,1)),p}function ox(i,{gsap:t,ScrollTrigger:e,reduced:n,intro:s,surface:r,compact:a=!1}){let o;try{o=new aa({alpha:!0,antialias:!1,powerPreference:"low-power",premultipliedAlpha:!1})}catch{return null}o.setClearColor(0,0);let c=o.domElement;c.setAttribute("aria-hidden","true"),i.append(c);let l=new Vi,u=new Ce(30,1,.1,60),m=a?9.4:8.6;u.position.set(0,6.4,m),u.lookAt(0,a?.15:.55,.35);let h={uTime:{value:0},uProgress:{value:s&&!n.matches?0:1},uScatter:{value:0},uPointer:{value:new Yt(9,9)},uPointerStrength:{value:0},uRipple:{value:new ie(9,9,-10,0)},uPixelRatio:{value:1},uSize:{value:52},uAspect:{value:1},uOpacity:{value:1},uInk:{value:new Gt("#102449")},uPink:{value:new Gt("#bd005f")},uYellow:{value:new Gt("#ffd137")}},p=new Ye({uniforms:h,vertexShader:dm,fragmentShader:fm,transparent:!0,depthWrite:!1,depthTest:!1,blending:Vn}),x=a?Uc(40,22):Uc(62,32),y=new yn;y.add(new qi(x,p)),y.rotation.set(.04,-.28,0),l.add(y);let f=0,d=0,S=0,R=!0,T=0,E=()=>{T=0,!(!d||!S||document.hidden)&&(o.render(l,u),f++)},A=()=>{T||(T=requestAnimationFrame(E))},g=0,M=!1,O=(bt,kt)=>{g+=Math.min(kt,50)/1e3,h.uTime.value=g,E()},P=()=>R&&!document.hidden&&!n.matches,D=()=>{let bt=P();bt!==M&&(M=bt,M?t.ticker.add(O):(t.ticker.remove(O),A()))},z=()=>{let bt=i.getBoundingClientRect();if(d=Math.round(bt.width),S=Math.round(bt.height),!d||!S)return;let kt=Math.min(window.devicePixelRatio||1,a?1.5:2);o.setPixelRatio(kt),o.setSize(d,S,!1),u.aspect=d/S,u.position.z=m*Math.max(1,1.05/u.aspect),u.updateProjectionMatrix(),h.uPixelRatio.value=kt,h.uAspect.value=u.aspect,h.uSize.value=52*Math.min(1.2,Math.max(a?.7:.8,d/520)),A()},X=new ResizeObserver(z);X.observe(i),z();let I=new IntersectionObserver(([bt])=>{R=bt.isIntersecting,D()});I.observe(i);let H=new Set,Z=bt=>(H.add(bt),bt.then(()=>H.delete(bt)),bt);n.matches?t.set(i,{autoAlpha:1}):Z(t.fromTo(i,{autoAlpha:0},{autoAlpha:1,duration:.9,ease:"power2.out"})),h.uProgress.value<1&&Z(t.to(h.uProgress,{value:1,duration:2.6,delay:.15,ease:"portfolio-in-out",onUpdate:A}));let B={x:9,y:9,strength:0,tiltX:0,tiltY:0},tt=()=>{h.uPointer.value.set(B.x,B.y),h.uPointerStrength.value=B.strength,y.rotation.x=.04+B.tiltY,y.rotation.y=-.28+B.tiltX,M||A()},V=(bt,kt)=>t.quickTo(B,bt,{duration:kt,ease:"power3.out",onUpdate:tt}),Q=V("x",.5),j=V("y",.5),vt=V("strength",.6),It=V("tiltX",1.2),Y=V("tiltY",1.2),dt=matchMedia("(hover: hover) and (pointer: fine)"),_t=bt=>{let kt=i.getBoundingClientRect();return kt.width?[(bt.clientX-kt.left)/kt.width*2-1,-((bt.clientY-kt.top)/kt.height*2-1)]:null},At=!1,ft=(bt,kt,Kt)=>{h.uRipple.value.set(bt,kt,g,Kt)},Lt=bt=>{if(n.matches||!dt.matches)return;let kt=_t(bt);if(!kt)return;let[Kt,we]=kt,ce=Math.abs(Kt)<1.1&&Math.abs(we)<1.1;ce&&!At&&(B.x=Kt,B.y=we,ft(Kt,we,.8)),At=ce,Q(Kt),j(we),vt(ce?1:.25),It((bt.clientX/innerWidth*2-1)*.12),Y((bt.clientY/innerHeight*2-1)*.06)},ae=bt=>{if(n.matches)return;let kt=_t(bt);kt&&Math.abs(kt[0])<1.1&&Math.abs(kt[1])<1.1&&ft(kt[0],kt[1],1.4)},wt=()=>{At=!1,vt(0),It(0),Y(0)};r.addEventListener("pointermove",Lt,{passive:!0}),r.addEventListener("pointerdown",ae,{passive:!0}),r.addEventListener("pointerleave",wt,{passive:!0});let Xt=null;e&&(Xt=e.create({trigger:r,start:"top top",end:"bottom top",scrub:.8,onUpdate:bt=>{n.matches||(h.uScatter.value=Math.min(1,bt.progress*1.3),y.position.y=bt.progress*.6,y.rotation.z=bt.progress*-.12,h.uOpacity.value=1-bt.progress*.5,M||A())}}));let $t=()=>{n.matches?(H.forEach(bt=>bt.progress(1)),h.uProgress.value=1,h.uTime.value=0,h.uScatter.value=0,h.uRipple.value.w=0,B.strength=0,h.uPointerStrength.value=0,y.rotation.set(.04,-.28,0),y.rotation.z=0,y.position.y=0,h.uOpacity.value=1,Xt?.disable(!1)):Xt?.enable(),D(),A()};n.addEventListener("change",$t);let zt=()=>{document.hidden&&H.forEach(bt=>bt.progress(1)),D()};document.addEventListener("visibilitychange",zt),c.addEventListener("webglcontextlost",bt=>{bt.preventDefault(),he()}),n.matches&&Xt?.disable(!1),D();function he(){t.ticker.remove(O),cancelAnimationFrame(T),H.forEach(bt=>bt.kill()),Xt?.kill(),X.disconnect(),I.disconnect(),n.removeEventListener("change",$t),document.removeEventListener("visibilitychange",zt),r.removeEventListener("pointermove",Lt),r.removeEventListener("pointerdown",ae),r.removeEventListener("pointerleave",wt),x.dispose(),p.dispose(),o.dispose(),i.remove()}return{destroy:he,invalidate:A,uniforms:h,get frames(){return f},get looping(){return M}}}export{ox as mountSignalField};
