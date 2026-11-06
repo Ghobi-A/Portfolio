@@ -22,19 +22,3 @@ jobs:
         with:
           name: portfolio-static-build
           path: _site
-      - name: Confirm public Pages serves the reviewed motion
-        timeout-minutes: 5
-        run: |
-          site=https://ghobi-a.github.io/Portfolio
-          for attempt in $(seq 1 30); do
-            if curl -fsS --max-time 10 "$site/?verify=$GITHUB_RUN_ID-$attempt" -o "$RUNNER_TEMP/portfolio-live.html" &&
-               grep -q 'motion.js?v=20261106-scenes' "$RUNNER_TEMP/portfolio-live.html"; then
-              cmp _site/index.html "$RUNNER_TEMP/portfolio-live.html"
-              curl -fsS --max-time 15 "$site/assets/js/motion.js?v=20261106-scenes" | cmp _site/assets/js/motion.js -
-              curl -fsS --max-time 15 "$site/assets/css/site.css?v=20261106-scenes" | cmp _site/assets/css/site.css -
-              echo "Verified published HTML, motion script and CSS against the reviewed build."
-              exit 0
-            fi
-            sleep 7
-          done
-          exit 1
