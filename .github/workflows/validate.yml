@@ -17,6 +17,16 @@ jobs:
           node --check assets/js/main.js
           node --check assets/js/motion.js
           node --check assets/js/privacy-chart.js
+      - name: Verify animation in Chromium
+        run: |
+          npm install --prefix "$RUNNER_TEMP/portfolio-browser" playwright@1.56.1
+          mkdir -p "$RUNNER_TEMP/portfolio-pages"
+          ln -s "$GITHUB_WORKSPACE/_site" "$RUNNER_TEMP/portfolio-pages/Portfolio"
+          python -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/portfolio-pages" &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          curl -fsS --retry 10 --retry-connrefused --retry-delay 1 http://127.0.0.1:8765/Portfolio/ -o /dev/null
+          NODE_PATH="$RUNNER_TEMP/portfolio-browser/node_modules" CHROME_PATH="$(command -v google-chrome)" SITE_URL=http://127.0.0.1:8765/Portfolio REVIEW_DIR="$RUNNER_TEMP/portfolio-review" node scripts/browser_site.cjs
       - name: Retain reviewable build
         uses: actions/upload-artifact@v4
         with:

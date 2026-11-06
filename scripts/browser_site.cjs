@@ -54,6 +54,15 @@ fs.mkdirSync(output, { recursive: true });
         await page.waitForTimeout(200);
       }
       await page.screenshot({ path: path.join(output, `after-${width}.png`) });
+      if (field.host) {
+        const caption = page.locator('.signal-frame-caption');
+        const link = page.locator('.collection-index a').nth(1);
+        await link.evaluate(el => el.focus({ preventScroll: true }));
+        assert.equal(await caption.textContent(), await link.textContent());
+        await link.evaluate(el => el.blur());
+        assert.equal(await caption.textContent(), 'Noise → structure');
+        assert.equal(await evidence.evaluate(el => el.style.getPropertyValue('--scene-scan')), '');
+      }
       // Keyboard-only mobile menu and focus return.
       if (width <= 760) {
         await page.locator('.menu-button').focus();

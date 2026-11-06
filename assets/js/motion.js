@@ -33,6 +33,15 @@
     splits.forEach((split) => split.revert());
     splits.clear();
   };
+  const scanScene = (element, delay) => {
+    track(gsap.fromTo(element, { "--scene-scan": "-35%" }, {
+      "--scene-scan": "132%",
+      duration: 0.9,
+      delay,
+      ease: "portfolio-in-out",
+      onComplete: () => element.style.removeProperty("--scene-scan"),
+    }));
+  };
   const describe = (element) => element.id || [...element.classList].join(" ") || element.tagName.toLowerCase();
   const allowed = () => !reduced.matches && !document.hidden;
 
@@ -69,8 +78,8 @@
     const step = timing.stagger;
     const lift = { y: 10, opacity: 0.8, clearProps: "transform,opacity" };
     tl.from(role, lift, 0);
-    tl.from(nameSplit.instance.chars, { yPercent: 32, opacity: 0.72, duration: timing.line, stagger: 0.012 }, step);
-    tl.from(summarySplit.instance.lines, { yPercent: 28, opacity: 0.78, duration: timing.line, stagger: 0.06 }, step * 2);
+    tl.from(nameSplit.instance.chars, { yPercent: 58, opacity: 0.72, duration: timing.line, stagger: 0.016 }, step);
+    tl.from(summarySplit.instance.lines, { yPercent: 45, opacity: 0.78, duration: timing.line, stagger: 0.08 }, step * 2);
     tl.from(description, lift, step * 3);
     tl.from(actions.children, { ...lift, stagger: 0.04 }, step * 4);
     tl.from(practice, { opacity: 0.8, clearProps: "opacity" }, 0.18);
@@ -87,6 +96,40 @@
 
   if (playIntro && hero) runIntro();
 
+  // Preview the native project links in the decorative field frame.
+  const bindSceneSelector = (frame, signal) => {
+    const caption = frame.querySelector(".signal-frame-caption");
+    const defaultCaption = caption.textContent;
+    let hovered = null;
+    let focused = null;
+    let transition;
+    const preview = () => {
+      const label = (hovered || focused)?.textContent.trim() || defaultCaption;
+      if (caption.textContent === label) return;
+      transition?.progress(1);
+      caption.textContent = label;
+      if (!allowed()) return;
+      transition = gsap.fromTo(caption, { y: 5, opacity: 0.6 }, {
+        y: 0, opacity: 1, duration: timing.feedback, clearProps: "transform,opacity",
+      });
+      track(transition);
+    };
+    hero.querySelectorAll(".collection-index a").forEach((link) => {
+      link.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "touch") return;
+        hovered = link;
+        preview();
+      }, { signal });
+      link.addEventListener("pointerleave", () => {
+        if (hovered !== link) return;
+        hovered = null;
+        preview();
+      }, { signal });
+      link.addEventListener("focus", () => { focused = link; preview(); }, { signal });
+      link.addEventListener("blur", () => { focused = null; preview(); }, { signal });
+    });
+  };
+
   // ---- Hero field (Three.js), loaded lazily ----------------------------------
   // The host is authored in the page; the head script adds .has-field only when
   // WebGL2 is available and Save-Data is off, so its space is reserved before paint.
@@ -94,7 +137,9 @@
   const fieldHost = document.querySelector(".signal-field");
   const loadField = () => {
     if (!fieldHost || !fieldScript || !root.classList.contains("has-field")) return;
+    const selectorEvents = new AbortController();
     const hideField = () => {
+      selectorEvents.abort();
       root.classList.remove("has-field");
       fieldHost.remove();
       ScrollTrigger.refresh();
@@ -106,8 +151,11 @@
           gsap, ScrollTrigger, reduced, intro: playIntro && scrollY < 100,
           surface: hero, compact: innerWidth < 1200,
         });
-        if (!field) hideField();
         window.portfolioMotion.field = field;
+        if (!field) { hideField(); return; }
+        const frame = fieldHost.querySelector(".signal-frame");
+        bindSceneSelector(frame, selectorEvents.signal);
+        if (playIntro && scrollY < 100 && allowed()) scanScene(frame, 0.2);
       })
       .catch(hideField);
   };
@@ -124,6 +172,17 @@
     const label = describe(element);
     const delay = offset + Math.min(order * 0.06, 0.24);
 
+    if (element.matches(".project-grid > .evidence-panel")) {
+      scanScene(element, delay);
+      if (!element.matches(".frontier")) return;
+    }
+    if (element.matches(".project-copy > h3, .audio-lab > div > h3, .semantic-lab h2")) {
+      const { instance, revert } = split(element, "lines");
+      track(gsap.from(instance.lines, {
+        yPercent: 58, opacity: 0.74, delay, duration: timing.line, stagger: 0.07, onComplete: revert,
+      }), label);
+      return;
+    }
     if (element.matches(".partition-chart, .frontier")) {
       element.querySelectorAll(".draw-line, .privacy-fit").forEach((line) => {
         const length = line.hasAttribute("pathLength") ? Number(line.getAttribute("pathLength")) : line.getTotalLength();
@@ -146,7 +205,7 @@
     ".project-copy > p:not(.problem):not(.evidence-note):not(.study-context)",
     ".section-heading h2", ".section-heading > p", ".audio-lab > div > h3", ".semantic-lab h2", ".semantic-design",
     ".contact h2", ".contact-invitation",
-    ".frontier", ".partition-chart", ".signal-system", ".token-flow", ".method-rail", ".semantic-chain", ".simulation-branches", ".order-flow",
+    ".project-grid > .evidence-panel", ".partition-chart", ".signal-system", ".token-flow", ".method-rail", ".semantic-chain", ".simulation-branches", ".order-flow",
   ].join(","))].filter((element) => !element.closest(".hero"));
 
   // Anything already above the fold on a restored or deep-linked view stays put.
