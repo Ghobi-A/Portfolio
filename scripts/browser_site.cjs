@@ -27,12 +27,20 @@ fs.mkdirSync(output, { recursive: true });
       assert.equal(sequence.length, 5);
       assert.deepEqual(sequence.map(item => item.delay), [0,85,170,255,340]);
       await page.waitForTimeout(1600);
-      assert.equal(await page.evaluate(() => document.documentElement.classList.contains('motion-intro')), false);
       assert.equal(await page.locator('#identity').evaluate(el => el.querySelectorAll('.split-char, .split-line').length), 0, `${width}: split text not reverted`);
+      const evidence = page.locator('#file-dp .frontier');
+      assert.equal(await evidence.evaluate(el => getComputedStyle(el).transform), 'none', `${width}: chart moves out of its grid slot`);
       // Three.js field: decorative, alive while on screen, and idle once scrolled away.
       const field = await page.evaluate(() => ({ host: !!document.querySelector('.signal-field canvas'), hidden: document.querySelector('.signal-field')?.getAttribute('aria-hidden') }));
       if (field.host) {
         assert.equal(field.hidden, 'true');
+        assert(await page.locator('.signal-field').evaluate(el => {
+          const field = el.getBoundingClientRect();
+          return [...el.parentElement.querySelectorAll('.intro-copy, .intro-practice')].every(column => {
+            const copy = column.getBoundingClientRect();
+            return field.right <= copy.left || field.left >= copy.right || field.bottom <= copy.top || field.top >= copy.bottom;
+          });
+        }), `${width}: signal field overlaps the hero copy`);
         const before = await page.evaluate(() => window.portfolioMotion.field.frames);
         await page.waitForTimeout(500);
         assert(await page.evaluate(() => window.portfolioMotion.field.looping), `${width}: field not animating on screen`);
@@ -124,7 +132,6 @@ fs.mkdirSync(output, { recursive: true });
     await page.close();
     const reduced = await browser.newPage({ reducedMotion: 'reduce', viewport: { width: 1440, height: 1000 } });
     await reduced.goto(url);
-    assert.equal(await reduced.evaluate(() => document.documentElement.classList.contains('motion-intro')), false);
     assert.equal(await reduced.evaluate(() => document.getAnimations().length), 0);
     await reduced.waitForTimeout(1500);
     assert.equal(await reduced.evaluate(() => gsap.globalTimeline.getChildren(true, true, false).filter(tween => tween.isActive()).length), 0);

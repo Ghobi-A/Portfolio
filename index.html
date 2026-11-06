@@ -12,22 +12,18 @@
     <meta name="theme-color" content="#E8E6DF" />
     <!-- METADATA:END -->
     <link rel="preload" href="assets/fonts/source-serif-4-regular-subset.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="assets/css/site.css?v=20261105-alive" />
+    <link rel="stylesheet" href="assets/css/site.css?v=20261106-layout" />
     <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261105-alive" />
     <script>
-      /* Hold only the opening for the moment before motion.js plays it. A 3s failsafe always
-         reveals it; no-JS, reduced-motion, bookmarked and restored visits never hide anything. */
+      /* Reserve space for the field only on devices that can render it. */
       (() => {
-        const root = document.documentElement;
-        const nav = performance.getEntriesByType?.('navigation')[0];
-        // Reserve the hero field's space before paint when it can run: WebGL2, no Save-Data.
+        if (navigator.connection?.saveData || (navigator.deviceMemory ?? 8) < 2) return;
         try {
-          if (!navigator.connection?.saveData && (navigator.deviceMemory ?? 8) >= 2
-            && document.createElement('canvas').getContext('webgl2')) root.classList.add('has-field');
+          const context = document.createElement('canvas').getContext('webgl2');
+          if (!context) return;
+          context.getExtension('WEBGL_lose_context')?.loseContext();
+          document.documentElement.classList.add('has-field');
         } catch {}
-        if (location.hash || nav?.type === 'back_forward' || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        root.classList.add('motion-intro');
-        setTimeout(() => root.classList.remove('motion-intro'), 3000);
       })();
     </script>
     <script defer src="assets/js/privacy-chart.js?v=20261105-alive"></script>
@@ -36,7 +32,7 @@
     <script defer src="assets/vendor/gsap/CustomEase.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/ScrollTrigger.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/SplitText.min.js?v=3.15.0"></script>
-    <script defer src="assets/js/motion.js?v=20261105-alive"></script>
+    <script defer src="assets/js/motion.js?v=20261106-layout"></script>
   </head>
   <body>
     <a class="skip-link" href="#projects">Skip to selected work</a>
@@ -128,10 +124,6 @@
           <a href="#experimental">Audio Lab</a>
         </nav>
       </section>
-      <div class="signal-marquee" aria-hidden="true">
-        <div class="marquee-row"><div class="marquee-track"><span>Python</span><span>SQL</span><span><em>NLP evaluation</em></span><span>Differential privacy</span><span>Spark</span><span><em>Power&nbsp;BI &amp; DAX</em></span><span>PostgreSQL</span><span>Monte Carlo</span></div></div>
-        <div class="marquee-row"><div class="marquee-track"><span>Messy signals</span><span><em>evaluated models</em></span><span>usable systems</span><span><em>honest limits</em></span><span>inspectable evidence</span></div></div>
-      </div>
       <section id="projects" class="section wrap" aria-labelledby="work-title">
         <h2 id="work-title" class="sr-only">Selected work and research</h2>
         <article

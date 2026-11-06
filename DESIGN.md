@@ -198,3 +198,9 @@ The owner reviewed the live site and still found too little movement. Measured o
 
 After the pass, about 7% of the viewport changes every two seconds at rest, and 10–14% per scroll step. Focus never jumps a scrubbed or repeating tween. Reduced motion reverts everything through `gsap.matchMedia`.
 
+## Motion and layout repair — 6 November 2026
+
+The signal field occupies a dedicated desktop column, sits below the intro copy on tablets, and stacks between the intro and practice on phones. The WebGL fallback uses the plain intro layout.
+
+The project index leads directly into the work. GSAP handles brief, one-shot entrances, chart guide drawing, and control feedback. Project panels stay in their grid slots, and the opening copy is visible while scripts load. The Three.js field supplies continuous movement while visible and draws a still frame for reduced motion.
+

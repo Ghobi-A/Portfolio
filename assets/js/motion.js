@@ -1,27 +1,21 @@
-/* Optional GSAP choreography. Content is always visible in CSS; nothing here is
- * required to read, navigate or inspect the portfolio.
- *
- * Principles (see docs/MOTION-AUDIT-2026-11-03.md):
- *  - Entrances use a strong ease-out; on-screen movement uses ease-in-out.
- *  - Interaction feedback is <= 220ms; reveals ~600ms; the hero field ~2.6s, once.
- *  - Each target animates once. No replay on reverse scroll, no perpetual loops.
- *  - Reduced motion, focus, page hiding and page exit settle everything at once.
- */
+/* Optional GSAP entrances and feedback. Only the decorative hero field loops. */
 (() => {
   "use strict";
   const root = document.documentElement;
-  const releaseIntro = () => root.classList.remove("motion-intro");
   const { gsap, ScrollTrigger, SplitText, CustomEase } = window;
-  if (!gsap || !ScrollTrigger || !SplitText || !CustomEase) { releaseIntro(); return; }
+  if (!gsap || !ScrollTrigger || !SplitText || !CustomEase) {
+    root.classList.remove("has-field");
+    return;
+  }
 
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
   CustomEase.create("portfolio-out", "0.23, 1, 0.32, 1");
   CustomEase.create("portfolio-in-out", "0.77, 0, 0.175, 1");
-  gsap.defaults({ ease: "portfolio-out", duration: 0.6 });
+  gsap.defaults({ ease: "portfolio-out", duration: 0.5 });
   ScrollTrigger.config({ ignoreMobileResize: true });
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-  const timing = { feedback: 0.22, reveal: 0.6, line: 0.9, chart: 0.8, stagger: 0.085 };
+  const timing = { feedback: 0.22, reveal: 0.5, line: 0.65, chart: 0.8, stagger: 0.085 };
   const log = [];
   window.portfolioMotion = { log, timing };
 
@@ -32,14 +26,12 @@
     running.add(tween);
     if (label) log.push({ target: label, delay: Math.round(tween.delay() * 1000) });
     tween.then(() => running.delete(tween));
-    return tween;
   };
   const settleAll = () => {
     running.forEach((tween) => tween.progress(1));
     running.clear();
     splits.forEach((split) => split.revert());
     splits.clear();
-    releaseIntro();
   };
   const describe = (element) => element.id || [...element.classList].join(" ") || element.tagName.toLowerCase();
   const allowed = () => !reduced.matches && !document.hidden;
@@ -57,10 +49,8 @@
     && performance.getEntriesByType("navigation")[0]?.type !== "back_forward"
     && allowed();
   const hero = document.querySelector(".hero");
-  const intro = document.querySelector(".recruiter-intro");
 
   const runIntro = () => {
-    if (!allowed()) { releaseIntro(); return; }
     const role = hero.querySelector(".recruiter-role");
     const name = hero.querySelector("#identity .headline-line");
     const summary = hero.querySelector(".recruiter-summary");
@@ -70,24 +60,22 @@
     const index = hero.querySelector(".collection-index");
     const nameSplit = split(name, "lines,chars");
     const summarySplit = split(summary, "lines");
-    releaseIntro();
+    const bars = practice.querySelectorAll(".practice-signal span");
 
     const tl = gsap.timeline({
       defaults: { ease: "portfolio-out", duration: timing.reveal },
-      onComplete: () => { nameSplit.revert(); summarySplit.revert(); gsap.set([role, description, actions.children, practice, index.children, ...practice.querySelectorAll(".practice-signal span, .recruiter-evidence, .intro-routes a"), ...document.querySelectorAll(".header .brand, #primary-nav")], { clearProps: "transform,opacity,filter" }); },
+      onComplete: () => { nameSplit.revert(); summarySplit.revert(); },
     });
     const step = timing.stagger;
-    // Five ordered beats at 85ms intervals: role, name, summary, description, actions.
-    tl.from(role, { y: 12, opacity: 0, filter: "blur(4px)", clearProps: "filter" }, 0);
-    tl.from(nameSplit.instance.chars, { yPercent: 105, duration: timing.line, stagger: 0.018 }, step);
-    tl.from(summarySplit.instance.lines, { yPercent: 105, duration: timing.line, stagger: 0.09 }, step * 2);
-    tl.from(description, { y: 14, opacity: 0 }, step * 3);
-    tl.from(actions.children, { y: 10, opacity: 0, stagger: 0.05 }, step * 4);
-    tl.from(practice, { opacity: 0, duration: 0.8 }, 0.18);
-    tl.from(practice.querySelectorAll(".practice-signal span"), { scaleY: 0.12, transformOrigin: "50% 100%", duration: 0.7, stagger: 0.055 }, 0.24);
-    tl.from(practice.querySelectorAll(".recruiter-evidence, .intro-routes a"), { y: 8, opacity: 0, stagger: 0.05 }, 0.32);
-    tl.from(index.children, { y: 10, opacity: 0, stagger: 0.035 }, 0.42);
-    tl.from(".header .brand, #primary-nav", { y: -8, opacity: 0, stagger: 0.06, duration: 0.5 }, 0);
+    const lift = { y: 10, opacity: 0.8, clearProps: "transform,opacity" };
+    tl.from(role, lift, 0);
+    tl.from(nameSplit.instance.chars, { yPercent: 32, opacity: 0.72, duration: timing.line, stagger: 0.012 }, step);
+    tl.from(summarySplit.instance.lines, { yPercent: 28, opacity: 0.78, duration: timing.line, stagger: 0.06 }, step * 2);
+    tl.from(description, lift, step * 3);
+    tl.from(actions.children, { ...lift, stagger: 0.04 }, step * 4);
+    tl.from(practice, { opacity: 0.8, clearProps: "opacity" }, 0.18);
+    tl.from(bars, { scaleY: 0.35, duration: 0.65, stagger: 0.05, clearProps: "transform" }, 0.24);
+    tl.from(index.children, { opacity: 0.75, stagger: 0.03, clearProps: "opacity" }, 0.36);
     track(tl);
     // Record when each of the five beats actually starts on the timeline (read by the browser regression).
     const beats = [[role, "recruiter-role"], [nameSplit.instance.chars[0], "headline-line"], [summarySplit.instance.lines[0], "recruiter-summary"], [description, "recruiter-description"], [actions.children[0], "actions intro-actions"]];
@@ -97,11 +85,7 @@
     });
   };
 
-  if (playIntro && hero) {
-    // Lines and characters must be split with the real face, not the fallback.
-    const fonts = document.fonts?.ready || Promise.resolve();
-    Promise.race([fonts, new Promise((resolve) => setTimeout(resolve, 450))]).then(runIntro);
-  } else releaseIntro();
+  if (playIntro && hero) runIntro();
 
   // ---- Hero field (Three.js), loaded lazily ----------------------------------
   // The host is authored in the page; the head script adds .has-field only when
@@ -110,13 +94,22 @@
   const fieldHost = document.querySelector(".signal-field");
   const loadField = () => {
     if (!fieldHost || !fieldScript || !root.classList.contains("has-field")) return;
+    const hideField = () => {
+      root.classList.remove("has-field");
+      fieldHost.remove();
+      ScrollTrigger.refresh();
+    };
+    fieldHost.addEventListener("webglcontextlost", hideField, { capture: true, once: true });
     import(fieldScript)
       .then(({ mountSignalField }) => {
-        const field = mountSignalField(fieldHost, { gsap, ScrollTrigger, reduced, intro: playIntro, surface: hero, compact: innerWidth < 1024 });
-        if (!field) { fieldHost.remove(); root.classList.remove("has-field"); }
+        const field = mountSignalField(fieldHost, {
+          gsap, ScrollTrigger, reduced, intro: playIntro && scrollY < 100,
+          surface: hero, compact: innerWidth < 1200,
+        });
+        if (!field) hideField();
         window.portfolioMotion.field = field;
       })
-      .catch(() => { fieldHost.remove(); root.classList.remove("has-field"); });
+      .catch(hideField);
   };
   const idle = window.requestIdleCallback || ((callback) => setTimeout(callback, 200));
   if (document.readyState === "complete") idle(loadField, { timeout: 800 });
@@ -137,62 +130,31 @@
         track(gsap.fromTo(line, { strokeDasharray: length, strokeDashoffset: length },
           { strokeDashoffset: 0, duration: timing.chart, ease: "portfolio-in-out", delay: delay + 0.1, clearProps: "strokeDasharray,strokeDashoffset" }), label);
       });
-      const envelope = element.querySelectorAll(".privacy-bloom, .intervals");
-      if (envelope.length) track(gsap.from(envelope, { opacity: 0, duration: 0.6, delay: delay + 0.35, clearProps: "opacity" }));
-      // Measured points arrive in order once their guide has passed them. Positions never change.
-      const marks = element.querySelectorAll(".privacy-measure, .partition-marker, .signal-point > circle");
-      if (marks.length) track(gsap.from(marks, { opacity: 0, scale: 0.4, transformOrigin: "50% 50%", duration: 0.55, ease: "back.out(2)", stagger: 0.14, delay: delay + 0.3, clearProps: "opacity,transform" }));
-      const whiskers = element.querySelectorAll(".privacy-whisker, .privacy-interval-wash");
-      if (whiskers.length) track(gsap.from(whiskers, { scaleY: 0, transformOrigin: "50% 50%", duration: 0.6, stagger: 0.07, delay: delay + 0.45, clearProps: "transform" }));
-      return;
-    }
-    if (element.matches(".project-copy > .metrics")) {
-      // Each exact figure rises into place behind a mask. Figures never count up.
-      const figures = [...element.querySelectorAll("dd")];
-      const splits = figures.map((figure) => split(figure, "lines"));
-      track(gsap.from(splits.flatMap(({ instance }) => instance.lines), {
-        yPercent: 110, duration: 0.8, stagger: 0.12, delay,
-        onComplete: () => splits.forEach(({ revert }) => revert()),
-      }), label);
-      track(gsap.from(element.querySelectorAll("dt"), { opacity: 0, y: 8, stagger: 0.12, delay: delay + 0.2, clearProps: "opacity,transform" }));
       return;
     }
     if (element.matches(".signal-system, .token-flow, .method-rail, .semantic-chain, .simulation-branches, .order-flow")) {
       const items = element.matches(".signal-system") ? element.querySelectorAll(".system-node") : element.children;
       const stages = [...items].filter((item) => !item.matches(".evidence-inspector"));
-      track(gsap.from(stages, { y: 12, opacity: 0, stagger: { each: timing.stagger, amount: Math.min(stages.length * timing.stagger, 0.34) }, delay, clearProps: "transform,opacity" }), label);
+      track(gsap.from(stages, { y: 8, opacity: 0.78, stagger: { amount: 0.26 }, delay, clearProps: "transform,opacity" }), label);
       return;
     }
-    if (element.matches(".project-copy > h3, .section-heading h2, .semantic-lab h2, .contact h2")) {
-      const { instance, revert } = split(element, "lines");
-      track(gsap.from(instance.lines, { yPercent: 105, duration: timing.line, stagger: 0.08, delay, onComplete: revert }), label);
-      return;
-    }
-    if (element.matches(".gameplay-shot")) {
-      track(gsap.from(element, { clipPath: "inset(8% 6% 8% 6%)", duration: 1, ease: "portfolio-in-out", delay, clearProps: "clipPath" }), label);
-      return;
-    }
-    // Panels already travel with the scroll (see below), so they only fade in here.
-    if (element.matches(".project-grid > .evidence-panel, .project-copy > .tags") && !reduced.matches) {
-      track(gsap.from(element, { opacity: 0, duration: 0.7, delay, clearProps: "opacity" }), label);
-      return;
-    }
-    const distance = element.matches(".project-copy > .tags") ? 10 : element.matches(".evidence-panel, .semantic-design") ? 14 : 16;
-    const extra = element.matches(".project-copy > .tags") ? 0.12 : element.matches(".project-copy > p:not(.problem)") ? 0.07 : 0;
-    track(gsap.from(element, { y: distance, opacity: 0, delay: delay + extra, clearProps: "transform,opacity" }), label);
+    track(gsap.from(element, { y: 8, opacity: 0.8, delay, clearProps: "transform,opacity" }), label);
   };
 
   const targets = [...document.querySelectorAll([
     ".project-copy > h3", ".project-copy > .problem", ".project-copy > .metrics", ".project-copy > .tags",
-    ".project-copy > p:not(.problem):not(.evidence-note):not(.study-context)", ".project-grid > .evidence-panel",
+    ".project-copy > p:not(.problem):not(.evidence-note):not(.study-context)",
     ".section-heading h2", ".section-heading > p", ".audio-lab > div > h3", ".semantic-lab h2", ".semantic-design",
-    ".contact h2", ".contact-invitation", ".gameplay-shot",
-    ".partition-chart", ".signal-system", ".token-flow", ".method-rail", ".semantic-chain", ".simulation-branches", ".order-flow",
+    ".contact h2", ".contact-invitation",
+    ".frontier", ".partition-chart", ".signal-system", ".token-flow", ".method-rail", ".semantic-chain", ".simulation-branches", ".order-flow",
   ].join(","))].filter((element) => !element.closest(".hero"));
 
   // Anything already above the fold on a restored or deep-linked view stays put.
   // On a fresh visit they join the opening, just after the hero's five beats.
-  const inView = (element) => element.getBoundingClientRect().top < innerHeight - 36;
+  const inView = (element) => {
+    const { top, bottom } = element.getBoundingClientRect();
+    return bottom > 0 && top < innerHeight - 36;
+  };
   const start = () => {
     targets.filter(inView).forEach((element, order) => {
       if (playIntro) reveal(element, order, 0.45);
@@ -206,122 +168,12 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();
 
-  // ---- Scroll-driven depth: scrubbed, reversible, never on reduced motion -----
-  // These follow the scroll position rather than playing once. Values never change.
-  const motion = gsap.matchMedia();
-  motion.add({
-    wide: "(prefers-reduced-motion: no-preference) and (min-width: 761px)",
-    narrow: "(prefers-reduced-motion: no-preference) and (max-width: 760px)",
-  }, ({ conditions }) => {
-    const depth = conditions.wide ? 1 : 0.45;
-    const scrub = (target, from, to, trigger, start, end, amount = 0.6) =>
-      gsap.fromTo(target, from, { ...to, ease: "none", scrollTrigger: { trigger, start, end, scrub: amount } });
-
-    // Hero exit: the introduction lifts away and dims as the work arrives.
-    const copy = hero.querySelector(".intro-copy");
-    const practice = hero.querySelector(".intro-practice");
-    if (copy) scrub(copy, { y: 0, opacity: 1 }, { y: -110 * depth, opacity: 0.25 }, hero, "top top", "bottom top", 0.4);
-    if (practice && conditions.wide) scrub(practice, { y: 0 }, { y: -50 }, hero, "top top", "bottom top", 0.4);
-
-    // Evidence panels rise and settle as they enter, then drift on with the page.
-    document.querySelectorAll(".project-grid > .evidence-panel").forEach((panel) => {
-      scrub(panel, { y: 140 * depth, scale: 0.94, transformOrigin: "50% 0%" }, { y: 0, scale: 1 }, panel, "top bottom", "top 55%", 0.7);
-    });
-    // Project titles sweep in from the left across the lower half of the screen.
-    document.querySelectorAll(".project-copy > h3").forEach((title) => {
-      scrub(title, { x: -120 * depth }, { x: 0 }, title, "top bottom", "top 50%", 0.6);
-    });
-    // Wide: section headings sweep from the right so the page alternates. Phones: from the left.
-    document.querySelectorAll(".section-heading h2, .semantic-lab h2").forEach((heading) => {
-      scrub(heading, { x: conditions.wide ? 120 : -40 }, { x: 0 }, heading, "top bottom", "top 50%", 0.6);
-    });
-    // Figures and tags lift a little later than their title.
-    document.querySelectorAll(".project-copy > .metrics, .project-copy > .tags").forEach((block) => {
-      scrub(block, { y: 50 * depth }, { y: 0 }, block, "top bottom", "top 60%", 0.6);
-    });
-    // The closing invitation grows into place.
-    document.querySelectorAll(".contact h2").forEach((heading) => {
-      scrub(heading, { scale: 0.75, transformOrigin: "0% 100%" }, { scale: 1 }, heading, "top bottom", "top 50%", 0.6);
-    });
-    // Imagery: a deep parallax inside its frame, and a slight turn for the paper study.
-    document.querySelectorAll(".gameplay-shot img").forEach((image) => {
-      scrub(image, { yPercent: -9 * depth, scale: 1.18 }, { yPercent: 9 * depth, scale: 1.18 }, image.parentElement, "top bottom", "bottom top", 0.5);
-    });
-    document.querySelectorAll(".paper-study img").forEach((image) => {
-      scrub(image, { y: 60 * depth, rotate: -4 }, { y: -60 * depth, rotate: 4 }, image.parentElement, "top bottom", "bottom top", 0.5);
-    });
-
-    // The practice bars run like a live meter while the opening is on screen.
-    const bars = [...document.querySelectorAll(".practice-signal span")];
-    gsap.set(bars, { transformOrigin: "50% 100%" });
-    const meter = gsap.timeline({ paused: true });
-    bars.forEach((bar, index) => {
-      meter.to(bar, { scaleY: 0.45 + ((index * 37) % 10) / 12, duration: 0.7 + (index % 3) * 0.25, ease: "sine.inOut", repeat: -1, yoyo: true }, index * 0.09);
-    });
-    ScrollTrigger.create({ trigger: hero, start: "top bottom", end: "bottom top", onToggle: (self) => (self.isActive ? meter.play() : meter.pause()) });
-    // Fast scrolling drives the meter harder for a moment.
-    let energyTimer = 0;
-    ScrollTrigger.create({
-      trigger: document.body, start: 0, end: "max",
-      onUpdate: (self) => {
-        meter.timeScale(1 + Math.min(Math.abs(self.getVelocity()) / 800, 3));
-        clearTimeout(energyTimer);
-        energyTimer = setTimeout(() => gsap.to(meter, { timeScale: 1, duration: 0.6 }), 120);
-      },
-    });
-
-    // Skills marquee: two rows drift in opposite directions and answer the scroll.
-    const rows = [...document.querySelectorAll(".marquee-track")].map((track, index) => {
-      track.append(...[...track.children].map((child) => child.cloneNode(true)));
-      return gsap.fromTo(track, { xPercent: index % 2 ? -50 : 0 }, { xPercent: index % 2 ? 0 : -50, duration: 38 + index * 8, ease: "none", repeat: -1 });
-    });
-    let direction = 1;
-    const marquee = document.querySelector(".signal-marquee");
-    if (marquee && rows.length) {
-      ScrollTrigger.create({ trigger: marquee, start: "top bottom", end: "bottom top", onToggle: (self) => rows.forEach((row) => (self.isActive ? row.play() : row.pause())) });
-      ScrollTrigger.create({
-        trigger: document.body, start: 0, end: "max",
-        onUpdate: (self) => {
-          if (self.direction !== direction) direction = self.direction;
-          const speed = direction * (1 + Math.min(Math.abs(self.getVelocity()) / 300, 6));
-          rows.forEach((row) => gsap.to(row, { timeScale: speed, duration: 0.25, overwrite: true }));
-          clearTimeout(marquee.settle);
-          marquee.settle = setTimeout(() => rows.forEach((row) => gsap.to(row, { timeScale: direction, duration: 1.1, overwrite: true })), 140);
-        },
-      });
-    }
-
-    // Magnetic actions: primary buttons lean toward a fine pointer.
-    const cleanups = [];
-    if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
-      document.querySelectorAll(".button, .intro-contact").forEach((button) => {
-        const toX = gsap.quickTo(button, "x", { duration: 0.45, ease: "power3.out" });
-        const toY = gsap.quickTo(button, "y", { duration: 0.45, ease: "power3.out" });
-        const move = (event) => {
-          const rect = button.getBoundingClientRect();
-          toX((event.clientX - rect.left - rect.width / 2) * 0.28);
-          toY((event.clientY - rect.top - rect.height / 2) * 0.4);
-        };
-        const leave = () => { toX(0); toY(0); };
-        button.addEventListener("pointermove", move);
-        button.addEventListener("pointerleave", leave);
-        cleanups.push(() => { button.removeEventListener("pointermove", move); button.removeEventListener("pointerleave", leave); gsap.set(button, { clearProps: "transform" }); });
-      });
-    }
-    return () => {
-      clearTimeout(energyTimer);
-      clearTimeout(marquee?.settle);
-      cleanups.forEach((cleanup) => cleanup());
-      document.querySelectorAll(".marquee-track").forEach((track) => track.replaceChildren(...[...track.children].slice(0, track.children.length / 2)));
-      gsap.set([...bars, copy, practice].filter(Boolean), { clearProps: "transform,opacity" });
-    };
-  });
-
   // ---- Pointer spotlight on evidence panels (fine pointers only) --------------
   if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
     let spotFrame = 0;
     let spotEvent = null;
     document.addEventListener("pointermove", (event) => {
+      if (!allowed()) return;
       spotEvent = event;
       if (spotFrame) return;
       spotFrame = requestAnimationFrame(() => {

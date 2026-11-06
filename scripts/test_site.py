@@ -219,19 +219,13 @@ class PortfolioTests(unittest.TestCase):
             self.assertIn(text, self.text)
         css = (OUT / 'assets/css/site.css').read_text(encoding='utf-8')
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
-        # Content is never hidden by default. The only exception is the pending opening,
-        # scoped to a class that an inline 3s failsafe (and motion.js) always removes.
+        # Content remains visible while the optional scripts load or if they fail.
         # Decorative ::before/::after overlays (no content) may also start transparent.
-        unscoped = re.sub(r'\.motion-intro [^{]+\{[^}]*\}', '', css)
-        unscoped = re.sub(r'[^{}]*::(?:before|after)\s*\{[^}]*\}', '', unscoped)
+        unscoped = re.sub(r'[^{}]*::(?:before|after)\s*\{[^}]*\}', '', css)
         self.assertNotRegex(unscoped, r'(?<!-)opacity:\s*0\s*[;}]')
-        gate = self.source.split("classList.add('motion-intro')", 1)
-        self.assertEqual(len(gate), 2)
-        self.assertIn("setTimeout(() => root.classList.remove('motion-intro'), 3000)", gate[1].split('</script>', 1)[0])
-        self.assertIn("prefers-reduced-motion: reduce", gate[0].rsplit('<script>', 1)[1])
+        self.assertNotIn('motion-intro', self.source)
         motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
         self.assertIn('prefers-reduced-motion: reduce', motion)
-        self.assertIn('releaseIntro', motion)
 
     def test_motion_libraries_are_vendored_and_ordered(self):
         sources = [attrs['src'] for attrs in self.page.elements('script') if attrs.get('src')]
