@@ -20,6 +20,46 @@ jobs:
       - name: Verify animation in Chromium
         run: |
           npm install --prefix "$RUNNER_TEMP/portfolio-browser" playwright@1.56.1
+          NODE_PATH="$RUNNER_TEMP/portfolio-browser/node_modules" node <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const browser = await chromium.launch({ channel: 'chrome', args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+            try {
+              const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+              await page.goto('https://continuance.ai/', { waitUntil: 'domcontentloaded', timeout: 25000 });
+              await page.waitForTimeout(3200);
+              const read = () => page.evaluate(() => {
+                const inView = el => {
+                  const box = el.getBoundingClientRect(), css = getComputedStyle(el);
+                  return box.width > 0 && box.height > 0 && box.top < innerHeight && box.bottom > 0
+                    && css.visibility === 'visible' && Number(css.opacity) > 0;
+                };
+                return {
+                  screen: [innerWidth, innerHeight], scroll: [scrollY, document.documentElement.scrollHeight],
+                  canvas: [...document.querySelectorAll('canvas,video')].filter(inView).map(el => {
+                    const box = el.getBoundingClientRect();
+                    return [el.tagName, Math.round(box.width), Math.round(box.height), getComputedStyle(el).position];
+                  }),
+                  labels: [...document.querySelectorAll('h1,h2,button,[role="button"],a')].filter(inView).slice(0,18)
+                    .map(el => [el.tagName, (el.innerText || el.getAttribute('aria-label') || '').trim().slice(0,75)]),
+                  styles: [...document.querySelectorAll('body *')].filter(inView).map(el => {
+                    const css = getComputedStyle(el);
+                    return [el.tagName, (el.getAttribute('class') || '').slice(0,75), css.transform, css.animationName, css.position];
+                  }).filter(([, , transform, animation, position]) => transform !== 'none' || animation !== 'none' || position === 'fixed').slice(0,22),
+                };
+              });
+              const initial = await read();
+              const frame = await page.screenshot({ type: 'jpeg', quality: 40 });
+              await page.waitForTimeout(700);
+              const ambient = !frame.equals(await page.screenshot({ type: 'jpeg', quality: 40 }));
+              await page.mouse.wheel(0, 800);
+              await page.waitForTimeout(800);
+              console.log('REFERENCE_MOTION ' + JSON.stringify({ initial, ambient, afterWheel: await read() }));
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => console.log('REFERENCE_MOTION unavailable: ' + error.message));
+          JS
           mkdir -p "$RUNNER_TEMP/portfolio-pages"
           ln -s "$GITHUB_WORKSPACE/_site" "$RUNNER_TEMP/portfolio-pages/Portfolio"
           python -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/portfolio-pages" &
