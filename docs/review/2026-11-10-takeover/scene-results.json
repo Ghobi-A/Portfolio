@@ -1,0 +1,128 @@
+[
+  {
+    "width": 390,
+    "bounds": {
+      "start": 1,
+      "end": 1101,
+      "pin": true
+    },
+    "samples": [
+      {
+        "p": 0,
+        "scatter": 0.8,
+        "headlineX": 0,
+        "takeover": "inset(100% 0% 0%)"
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "headlineX": -104.5455,
+        "takeover": "inset(81.3953% 0% 0%)"
+      },
+      {
+        "p": 1,
+        "scatter": 0,
+        "headlineX": -115,
+        "takeover": "inset(0%)"
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "headlineX": -104.5455,
+        "takeover": "inset(81.3953% 0% 0%)"
+      },
+      {
+        "p": 0,
+        "scatter": 0.8,
+        "headlineX": 0,
+        "takeover": "inset(100% 0% 0%)"
+      }
+    ],
+    "errors": [],
+    "initialLayoutShiftSum": 0
+  },
+  {
+    "width": 768,
+    "bounds": {
+      "start": -1,
+      "end": 1649,
+      "pin": true
+    },
+    "samples": [
+      {
+        "p": 0.000606,
+        "scatter": 0.7995152000000001,
+        "headlineX": -0.1267,
+        "takeover": "inset(100% 0% 0%)"
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "headlineX": -104.5455,
+        "takeover": "inset(81.3953% 0% 0%)"
+      },
+      {
+        "p": 1,
+        "scatter": 0,
+        "headlineX": -115,
+        "takeover": "inset(0%)"
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "headlineX": -104.5455,
+        "takeover": "inset(81.3953% 0% 0%)"
+      },
+      {
+        "p": 0.000606,
+        "scatter": 0.7995152000000001,
+        "headlineX": -0.1267,
+        "takeover": "inset(100% 0% 0%)"
+      }
+    ],
+    "errors": [],
+    "initialLayoutShiftSum": 0.0011746875000000002
+  },
+  {
+    "width": 1440,
+    "bounds": {
+      "start": -1,
+      "end": 1649,
+      "pin": true
+    },
+    "samples": [
+      {
+        "p": 0.000606,
+        "scatter": 0.7995152000000001,
+        "headlineX": -0.1267,
+        "takeover": "inset(100% 0% 0%)"
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "headlineX": -104.5455,
+        "takeover": "inset(81.3953% 0% 0%)"
+      },
+      {
+        "p": 1,
+        "scatter": 0,
+        "headlineX": -115,
+        "takeover": "inset(0%)"
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "headlineX": -104.5455,
+        "takeover": "inset(81.3953% 0% 0%)"
+      },
+      {
+        "p": 0.000606,
+        "scatter": 0.7995152000000001,
+        "headlineX": -0.1267,
+        "takeover": "inset(100% 0% 0%)"
+      }
+    ],
+    "errors": [],
+    "initialLayoutShiftSum": 0.005361896249276621
+  }
+]

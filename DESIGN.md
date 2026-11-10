@@ -230,3 +230,21 @@ Field rendering is capped near 30fps, uses the existing single draw call and low
 renderer, and stops offscreen / when hidden / under reduced motion. Existing point
 budgets and DPR caps remain. The other two proposed scenes are not implemented.
 See docs/MOTION-OVERHAUL-2026-11-10.md for the audit, proposal and verification.
+
+## Signal takeover — 10 November 2026, revision 2
+
+The owner rejected the first pinned scale-down as too static. This revision
+supersedes its choreography: two large headline lines cross out in opposite
+directions, the field expands and rotates through the stage, then a paper wipe
+introduces the first case study with its chart travelling in from the right.
+The stage pins for 165vh on desktop and 110vh on touch-sized/short layouts.
+There is no input interception, snapping or automatic scrolling. Mobile has
+separate typography, compact evidence layout and a shorter scroll duration.
+
+The evidence preview is an inert, aria-hidden facsimile of the authored chart,
+with IDs, controls and data hooks removed. It is presentation only; the original
+interactive chart immediately follows the collection index. The practice block
+now follows the first project. Its links and all project content remain intact.
+Keyboard focus removes the scene and restores normal document flow. Reduced
+motion and no-JS retain the static reading layout. SplitText no longer replaces
+the summary's nodes, which belong to the scroll timeline for its full lifecycle.

@@ -4,7 +4,7 @@
   const root = document.documentElement;
   const { gsap, ScrollTrigger, SplitText, CustomEase } = window;
   if (!gsap || !ScrollTrigger || !SplitText || !CustomEase) {
-    root.classList.remove("has-field");
+    root.classList.remove("has-field", "scene-ready");
     return;
   }
 
@@ -65,10 +65,10 @@
     const summary = hero.querySelector(".recruiter-summary");
     const description = hero.querySelector(".recruiter-description");
     const actions = hero.querySelector(".intro-actions");
-    const practice = hero.querySelector(".intro-practice");
+    const practice = document.querySelector(".intro-practice");
     const index = hero.querySelector(".collection-index");
     const nameSplit = split(name, "lines,chars");
-    const summarySplit = split(summary, "lines");
+    const summarySplit = { instance: { lines: [summary] }, revert: () => {} };
     const bars = practice.querySelectorAll(".practice-signal span");
 
     const tl = gsap.timeline({
@@ -79,7 +79,7 @@
     const lift = { y: 10, opacity: 0.8, clearProps: "transform,opacity" };
     tl.from(role, lift, 0);
     tl.from(nameSplit.instance.chars, { yPercent: 58, opacity: 0.72, duration: timing.line, stagger: 0.016 }, step);
-    tl.from(summarySplit.instance.lines, { yPercent: 45, opacity: 0.78, duration: timing.line, stagger: 0.08 }, step * 2);
+    tl.from(summarySplit.instance.lines, { opacity: 0.78, duration: timing.line, clearProps: "opacity" }, step * 2);
     tl.from(description, lift, step * 3);
     tl.from(actions.children, { ...lift, stagger: 0.04 }, step * 4);
     tl.from(practice, { opacity: 0.8, clearProps: "opacity" }, 0.18);
@@ -108,39 +108,79 @@
   window.portfolioMotion.sceneState = sceneState;
   const sceneMedia = gsap.matchMedia();
   sceneMedia.add({ motion: "(prefers-reduced-motion: no-preference)",
-    desktop: "(min-width: 1100px) and (min-height: 800px)" }, (context) => {
+    desktop: "(min-width: 761px) and (min-height: 620px)" }, (context) => {
     if (!context.conditions.motion || !hero) return;
     const stage = hero.querySelector(".opening-stage");
     const desktop = context.conditions.desktop;
+    // A non-interactive facsimile introduces the real, fully operable chart below.
+    // Derive it from authored evidence, removing every ID and control.
+    const takeover = document.createElement("div");
+    takeover.className = "scene-takeover";
+    takeover.setAttribute("aria-hidden", "true");
+    takeover.inert = true;
+    const heading = document.createElement("div");
+    heading.className = "scene-case-title";
+    const kicker = document.createElement("p");
+    kicker.className = "scene-kicker";
+    kicker.textContent = "01 / Selected research";
+    const title = document.createElement("p");
+    title.className = "scene-project-name";
+    title.textContent = document.querySelector("#dp-title").innerText.replace(/\s+/g, " ");
+    const question = document.createElement("p");
+    question.className = "scene-question";
+    question.textContent = document.querySelector("#file-dp .problem").textContent;
+    heading.append(kicker, title, question);
+    const proof = document.querySelector("#file-dp .frontier").cloneNode(true);
+    proof.className = "scene-proof privacy-chart privacy-enhanced";
+    proof.querySelector(".chart-subtitle").textContent = "Mean ROC-AUC · three measured settings";
+    proof.querySelectorAll("button, input, label, a, .privacy-controls, .privacy-scale").forEach(el => el.remove());
+    [proof, ...proof.querySelectorAll("*")].forEach(el => {
+      [...el.attributes].forEach(attr => {
+        if (attr.name === "id" || attr.name.startsWith("aria-") || attr.name.startsWith("data-") || attr.name === "tabindex") el.removeAttribute(attr.name);
+      });
+    });
+    takeover.append(heading, proof);
+    stage.append(takeover);
+    stage.classList.add("scene-active");
+    root.classList.remove("scene-ready");
     const tl = sceneTimeline(stage, {
-      id: "editorial-opening", pin: desktop ? stage : false,
-      start: desktop ? "top 92px" : "top top",
-      end: desktop ? () => `+=${Math.round(innerHeight * 0.85)}` : "bottom 30%",
-      onUpdate: () => publishScene(),
+      id: "editorial-opening", pin: stage,
+      start: desktop ? "top 92px" : "top 82px",
+      end: () => `+=${Math.round(innerHeight * (desktop ? 1.65 : 1.1))}`,
+      onUpdate: publishScene,
     });
     tl.addLabel("signal", 0)
       .fromTo(sceneState, { progress: 0 }, { progress: 1, duration: 1, onUpdate: publishScene }, 0)
       .fromTo(stage.querySelector(".opening-score i"), { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0)
-      .addLabel("structure", 0.35)
-      .to(stage.querySelector(".recruiter-summary"), { scale: desktop ? 0.76 : 0.94,
-        x: desktop ? 24 : 0, duration: 0.55 }, "structure")
-      .to(stage.querySelector(".signal-field"), { y: desktop ? -30 : -12,
-        scale: desktop ? 1.08 : 1, duration: 0.65 }, 0.2)
-      .addLabel("evidence", 0.9);
-    // Keyboard navigation bypasses the held scene. Native anchors are left alone.
+      .to(stage.querySelector(".scene-line-one"), { xPercent: -115, rotate: -4, duration: 0.55 }, 0)
+      .to(stage.querySelector(".scene-line-two"), { xPercent: 110, rotate: 3, duration: 0.55 }, 0.04)
+      .to(stage.querySelector(".signal-field"), { scale: desktop ? 1.65 : 1.3, yPercent: -12, duration: 0.55 }, 0)
+      .addLabel("structure", 0.3)
+      .fromTo(takeover, { clipPath: "inset(100% 0% 0% 0%)" },
+        { clipPath: "inset(0% 0% 0% 0%)", duration: 0.43 }, 0.42)
+      .fromTo(heading, { y: desktop ? 180 : 90 }, { y: 0, duration: 0.38 }, 0.46)
+      .fromTo(proof, { xPercent: 60, rotate: 12, scale: 0.72 },
+        { xPercent: 0, rotate: 0, scale: 1, duration: 0.45 }, 0.5)
+      .addLabel("evidence", 0.95);
+    // Focus restores the normal document, never an offscreen control or clone.
+    const bypass = () => {
+      tl.scrollTrigger?.kill();
+      tl.revert();
+      takeover.remove();
+      stage.classList.remove("scene-active");
+      sceneState.progress = 1;
+      publishScene();
+    };
     const focus = (event) => {
       if (!stage.contains(event.target)) return;
-      tl.scrollTrigger.getTween()?.progress(1);
-      tl.scrollTrigger.disable(true);
-      tl.progress(1);
-      const rect = event.target.getBoundingClientRect();
-      if (rect.top < 110 || rect.bottom > innerHeight) {
-        event.target.scrollIntoView({ block: "center", behavior: "instant" });
-      }
+      bypass();
+      event.target.scrollIntoView({ block: "center", behavior: "instant" });
     };
     stage.addEventListener("focusin", focus);
     return () => {
       stage.removeEventListener("focusin", focus);
+      takeover.remove();
+      stage.classList.remove("scene-active");
       sceneState.progress = 0;
       publishScene();
     };
@@ -183,7 +223,7 @@
   // ---- Hero field (Three.js), loaded lazily ----------------------------------
   // The host is authored in the page; the head script adds .has-field only when
   // WebGL2 is available and Save-Data is off, so its space is reserved before paint.
-  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261110", document.currentScript.src).href;
+  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261110-takeover", document.currentScript.src).href;
   const fieldHost = document.querySelector(".signal-field");
   const loadField = () => {
     if (!fieldHost || !fieldScript || !root.classList.contains("has-field")) return;

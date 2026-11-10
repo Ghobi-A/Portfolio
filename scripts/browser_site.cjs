@@ -35,6 +35,7 @@ fs.mkdirSync(output, { recursive: true });
       if (field.host) {
         assert.equal(field.hidden, 'true');
         assert(await page.locator('.signal-field').evaluate(el => {
+          if (el.closest(".scene-active")) return el.getAttribute("aria-hidden") === "true";
           const field = el.getBoundingClientRect();
           return [...el.parentElement.querySelectorAll('.intro-copy, .intro-practice')].every(column => {
             const copy = column.getBoundingClientRect();

@@ -1,0 +1,23 @@
+test_assets_work_under_pages_prefix (__main__.PortfolioTests.test_assets_work_under_pages_prefix) ... ok
+test_builder_is_idempotent_and_layout_independent (__main__.PortfolioTests.test_builder_is_idempotent_and_layout_independent) ... ok
+test_content_guardrails_and_motion_fallback (__main__.PortfolioTests.test_content_guardrails_and_motion_fallback) ... ok
+test_evidence_pass (__main__.PortfolioTests.test_evidence_pass) ... ok
+test_explicit_markup_is_balanced (__main__.PortfolioTests.test_explicit_markup_is_balanced) ... ok
+test_external_link_security (__main__.PortfolioTests.test_external_link_security) ... ok
+test_generated_social_assets_and_crawlers (__main__.PortfolioTests.test_generated_social_assets_and_crawlers) ... ok
+test_ids_anchors_and_aria_references (__main__.PortfolioTests.test_ids_anchors_and_aria_references) ... ok
+test_interactive_dossier_uses_authored_evidence (__main__.PortfolioTests.test_interactive_dossier_uses_authored_evidence) ... ok
+test_landmarks_and_headings (__main__.PortfolioTests.test_landmarks_and_headings) ... ok
+test_metadata_singletons_and_valid_jsonld (__main__.PortfolioTests.test_metadata_singletons_and_valid_jsonld) ... ok
+test_motion_libraries_are_vendored_and_ordered (__main__.PortfolioTests.test_motion_libraries_are_vendored_and_ordered) ... ok
+test_nlp_metrics_keep_development_limits (__main__.PortfolioTests.test_nlp_metrics_keep_development_limits) ... ok
+test_no_js_disclosures_and_semantic_visuals (__main__.PortfolioTests.test_no_js_disclosures_and_semantic_visuals) ... ok
+test_observed_aggregate_reconciliation_and_project_order (__main__.PortfolioTests.test_observed_aggregate_reconciliation_and_project_order) ... ok
+test_pbix_provenance_not_promoted (__main__.PortfolioTests.test_pbix_provenance_not_promoted) ... ok
+test_recruiter_routes_and_qualification (__main__.PortfolioTests.test_recruiter_routes_and_qualification) ... ok
+test_restaurant_case_study_assets_and_privacy (__main__.PortfolioTests.test_restaurant_case_study_assets_and_privacy) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.051s
+
+OK

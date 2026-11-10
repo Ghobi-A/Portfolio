@@ -4,7 +4,7 @@ const assert = require("node:assert/strict");
 const fs = require("fs");
 const out = process.env.REVIEW_DIR || "/tmp/portfolio-scene-review";
 fs.mkdirSync(out, { recursive: true });
-const url = process.env.SITE_URL || "http://localhost:8000/_site/";
+const url = process.env.SITE_URL || "http://localhost:8000/";
 (async () => {
   const b = await chromium.launch({
     executablePath: "/usr/bin/chromium",
@@ -40,27 +40,31 @@ const url = process.env.SITE_URL || "http://localhost:8000/_site/";
       let t = ScrollTrigger.getById("editorial-opening");
       return { start: t.start, end: t.end, pin: !!t.pin };
     });
-    assert.equal(bounds.pin, width === 1440);
+    assert.equal(bounds.pin, true);
     let samples = [];
     for (const fraction of [0, 0.5, 1, 0.5, 0]) {
       await p.evaluate(
         (y) => scrollTo({ top: y, behavior: "instant" }),
         Math.max(0, bounds.start + (bounds.end - bounds.start) * fraction),
       );
-      await p.waitForTimeout(550);
+      await p.waitForTimeout(1000);
       samples.push(
         await p.evaluate(() => ({
           p: portfolioMotion.sceneState.progress,
           scatter: portfolioMotion.field?.uniforms.uScatter.value,
-          scale: gsap.getProperty(".recruiter-summary", "scaleX"),
+          headlineX: gsap.getProperty(".scene-line-one", "xPercent"),
+          takeover: getComputedStyle(document.querySelector(".scene-takeover")).clipPath,
         })),
       );
       if (samples.length <= 3)
         await p.screenshot({ path: `${out}/opening-${width}-${fraction}.png` });
     }
+    console.log(width, JSON.stringify(samples));
     assert(Math.abs(samples[1].p - samples[3].p) < 0.02);
     assert(Math.abs(samples[0].p - samples[4].p) < 0.02);
     assert(samples[2].p > 0.98);
+    assert(samples[2].headlineX < -100);
+    assert.equal(samples[2].takeover, "inset(0%)");
     assert(samples[0].scatter > samples[2].scatter);
     assert.equal(
       await p.evaluate(() => document.documentElement.scrollWidth > innerWidth),
@@ -92,7 +96,7 @@ const url = process.env.SITE_URL || "http://localhost:8000/_site/";
     await p.locator(".intro-actions a").first().focus();
     assert.equal(
       await p.evaluate(
-        () => ScrollTrigger.getById("editorial-opening").enabled,
+        () => !!ScrollTrigger.getById("editorial-opening"),
       ),
       false,
     );

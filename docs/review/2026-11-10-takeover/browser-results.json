@@ -1,0 +1,58 @@
+[
+  {
+    "width": 320,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "width": 375,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "width": 390,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "width": 768,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "width": 1024,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "width": 1440,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "width": 1920,
+    "status": "passed",
+    "errors": [],
+    "oneShotReveals": 1
+  },
+  {
+    "reducedMotionLiveChange": "passed",
+    "noJavaScript": "passed",
+    "keyboard": "passed",
+    "deepLinks": [
+      "GA-DP-05",
+      "GA-KH-01",
+      "GA-UA-04",
+      "GA-DI-02",
+      "GA-CD-03",
+      "GA-CA-06",
+      "GA-SD-08"
+    ]
+  }
+]

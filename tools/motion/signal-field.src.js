@@ -360,7 +360,9 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
   const setSceneProgress = (progress) => {
     if (!choreographed || reduced.matches) return;
     uniforms.uScatter.value = (1 - progress) * 0.8;
-    group.rotation.z = -0.22 + progress * 0.34;
+    group.rotation.z = -0.35 + progress * 1.1;
+    group.rotation.x = 0.04 + progress * 0.8;
+    group.scale.setScalar(1 + Math.sin(progress * Math.PI) * 0.45);
     group.position.y = progress * 0.3;
     if (!looping && onScreen) invalidate();
   };
@@ -374,7 +376,7 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
       uniforms.uScatter.value = 0;
       uniforms.uRipple.value.w = 0;
       pointer.strength = 0; uniforms.uPointerStrength.value = 0;
-      group.rotation.set(0.04, -0.28, 0); group.rotation.z = 0; group.position.y = 0; uniforms.uOpacity.value = 1;
+      group.scale.setScalar(1); group.rotation.set(0.04, -0.28, 0); group.rotation.z = 0; group.position.y = 0; uniforms.uOpacity.value = 1;
       scrollTrigger?.disable(false);
     } else scrollTrigger?.enable();
     syncLoop();

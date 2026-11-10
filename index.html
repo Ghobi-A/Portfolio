@@ -12,9 +12,14 @@
     <meta name="theme-color" content="#E8E6DF" />
     <!-- METADATA:END -->
     <link rel="preload" href="assets/fonts/source-serif-4-regular-subset.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="assets/css/site.css?v=20261110-editorial" />
+    <link rel="stylesheet" href="assets/css/site.css?v=20261110-takeover" />
     <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261105-alive" />
     <script>
+      /* Reserve the cinematic composition before first paint; never hide content. */
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('scene-ready');
+        setTimeout(() => document.documentElement.classList.remove('scene-ready'), 3000);
+      }
       /* Reserve space for the field only on devices that can render it. */
       (() => {
         if (navigator.connection?.saveData || (navigator.deviceMemory ?? 8) < 2) return;
@@ -32,7 +37,7 @@
     <script defer src="assets/vendor/gsap/CustomEase.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/ScrollTrigger.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/SplitText.min.js?v=3.15.0"></script>
-    <script defer src="assets/js/motion.js?v=20261110-editorial"></script>
+    <script defer src="assets/js/motion.js?v=20261110-takeover"></script>
   </head>
   <body>
     <a class="skip-link" href="#projects">Skip to selected work</a>
@@ -96,7 +101,7 @@
           <div class="intro-copy">
             <p class="recruiter-role">Applied data science &amp; ML engineering · London</p>
             <h1 id="identity"><span class="headline-line">Ghobikan Aravindan<span class="rust">.</span></span></h1>
-            <p class="recruiter-summary">From messy signals to<br /><em>systems you can interrogate.</em></p>
+            <p class="recruiter-summary"><span class="scene-line scene-line-one">From messy signals</span><em class="scene-line scene-line-two">to systems you can interrogate.</em></p>
             <p class="recruiter-description">I use Python and SQL to investigate operational data, evaluate machine-learning models and build usable data products.</p>
             <div class="actions intro-actions">
               <a class="button primary" href="#projects">Explore selected work <span aria-hidden="true">↓</span></a>
@@ -112,16 +117,7 @@
           </div>
           <div class="opening-score" aria-hidden="true"><span>01 / Signal</span><span>02 / Structure</span><span>03 / Evidence</span><i></i></div>
           </div>
-          <aside class="intro-practice" aria-label="Technical strengths and project routes">
-            <p class="eyebrow">An evidence-led practice</p>
-            <div class="practice-signal" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
-            <p class="recruiter-evidence">Python &amp; SQL / NLP evaluation /<br />Private learning / Data products</p>
-            <div class="intro-routes">
-              <a href="#GA-RA-07"><span>01 / Analytics &amp; engineering</span>Restaurant operations <span aria-hidden="true">↗</span></a>
-              <a href="#file-kh4"><span>02 / Machine learning</span>NLP evaluation <span aria-hidden="true">↗</span></a>
-              <a href="#file-dp"><span>03 / Research &amp; auditing</span>Privacy &amp; utility <span aria-hidden="true">↗</span></a>
-            </div>
-          </aside>
+
         </div>
         <nav class="collection-index" aria-label="Project collection">
           <a href="#file-dp" aria-current="location">Privacy Audit</a>
@@ -359,6 +355,17 @@
             </div>
           </details>
         </article>
+          <aside class="intro-practice" aria-label="Technical strengths and project routes">
+            <p class="eyebrow">An evidence-led practice</p>
+            <div class="practice-signal" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <p class="recruiter-evidence">Python &amp; SQL / NLP evaluation /<br />Private learning / Data products</p>
+            <div class="intro-routes">
+              <a href="#GA-RA-07"><span>01 / Analytics &amp; engineering</span>Restaurant operations <span aria-hidden="true">↗</span></a>
+              <a href="#file-kh4"><span>02 / Machine learning</span>NLP evaluation <span aria-hidden="true">↗</span></a>
+              <a href="#file-dp"><span>03 / Research &amp; auditing</span>Privacy &amp; utility <span aria-hidden="true">↗</span></a>
+            </div>
+          </aside>
+
 <article
           id="file-kh4"
           class="project project-kh"

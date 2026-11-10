@@ -2097,10 +2097,10 @@ h4 { font-family:var(--body);font-size:16px;font-weight:600;letter-spacing:0;tex
 .opening-stage .signal-frame-label { top:12px; }
 .opening-score { position:absolute; bottom:18px; left:0; right:0; display:flex; justify-content:space-between; padding-bottom:16px; font:11px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; border-bottom:1px solid var(--line); color:var(--muted); }
 .opening-score i { position:absolute; bottom:-1px; left:0; width:100%; height:2px; background:var(--pink); transform-origin:left; }
-.hero .intro-practice { display:grid; grid-template-columns:1fr 1.5fr; gap:8px 40px; border-left:0; padding:32px 0 0; }
-.hero .intro-practice .practice-signal { display:none; }
-.hero .intro-practice .intro-routes { grid-column:2; grid-row:1/3; }
-.hero .intro-practice .recruiter-evidence { grid-column:1; }
+.intro-practice { display:grid; grid-template-columns:1fr 1.5fr; gap:8px 40px; border-left:0; padding:32px 0 0; }
+.intro-practice .practice-signal { display:none; }
+.intro-practice .intro-routes { grid-column:2; grid-row:1/3; }
+.intro-practice .recruiter-evidence { grid-column:1; }
 @media(min-width:1100px) and (min-height:800px) {
   .opening-stage { min-height:calc(100svh - 92px); }
 }
@@ -2111,7 +2111,61 @@ h4 { font-family:var(--body);font-size:16px;font-weight:600;letter-spacing:0;tex
   .opening-stage { display:block; padding:30px 0 60px; }
   .hero .opening-stage .signal-field { height:240px; margin-top:24px; }
   .hero .recruiter-summary { font-size:clamp(34px,9vw,52px); }
-  .hero .intro-practice { display:block; padding-top:22px; }
+  .intro-practice { display:block; padding-top:22px; }
   .opening-score { font-size:9px; letter-spacing:.02em; }
 }
 @media print { .opening-stage { display:block;min-height:0; }.opening-score { display:none; } }
+
+/* Signal → evidence: full-stage composition, with a compact touch sequence. */
+.scene-line { display:block; }
+:is(.scene-active, .scene-ready .opening-stage).opening-stage { display:block; height:calc(100svh - 92px); min-height:0; padding:28px 0 70px; overflow:hidden; isolation:isolate; }
+.hero :is(.scene-active, .scene-ready .opening-stage) .intro-copy { position:relative; z-index:3; height:100%; pointer-events:none; }
+.hero :is(.scene-active, .scene-ready .opening-stage) .intro-copy a { pointer-events:auto; }
+.hero :is(.scene-active, .scene-ready .opening-stage) #identity { font-size:clamp(24px,2.4vw,38px); }
+.hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-role { margin-bottom:8px; }
+.hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-summary { position:absolute; top:24%; left:0; width:100%; max-width:none; font-size:clamp(52px,8.8vw,150px); line-height:1.03; letter-spacing:-.055em; }
+:is(.scene-active, .scene-ready .opening-stage) .scene-line-one { white-space:nowrap; }
+:is(.scene-active, .scene-ready .opening-stage) .scene-line-two { margin-top:12px; font-size:.7em; text-align:right; text-shadow:0 2px 16px var(--paper),0 -2px 16px var(--paper); }
+.hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-description { position:absolute; bottom:72px; width:48%; font-size:16px; margin:0; }
+.hero :is(.scene-active, .scene-ready .opening-stage) .intro-actions { position:absolute; bottom:0; margin:0; }
+.hero :is(.scene-active, .scene-ready .opening-stage) .signal-field { position:absolute; z-index:1; inset:9% 0 10%; width:100%; height:auto; margin:0; opacity:.68; }
+:is(.scene-active, .scene-ready .opening-stage) .signal-frame { border:0; }
+:is(.scene-active, .scene-ready .opening-stage) .signal-frame-label,:is(.scene-active, .scene-ready .opening-stage) .signal-frame-caption { display:none; }
+:is(.scene-active, .scene-ready .opening-stage) .opening-score { z-index:5; background:var(--paper); }
+.scene-takeover { position:absolute; z-index:4; inset:0 0 66px; background:var(--paper); display:grid; grid-template-columns:.85fr 1.15fr; align-items:center; gap:5%; padding:30px 0; pointer-events:none; }
+.scene-project-name { font-size:clamp(44px,5.7vw,94px); line-height:1.02; letter-spacing:-.045em; margin:24px 0; }
+.scene-kicker { color:var(--pink); font:12px/1.5 var(--mono); text-transform:uppercase; letter-spacing:.1em; }
+.scene-question { font-size:clamp(20px,2.1vw,32px); line-height:1.3; }
+.scene-proof { margin:0; padding:25px 15px; border-top:2px solid var(--pink); background:var(--panel); transform-origin:center; }
+.scene-proof svg { display:block; width:100%; height:auto; }
+.scene-proof .chart-subtitle { font-size:14px; }
+@media(max-width:760px) {
+ :is(.scene-active, .scene-ready .opening-stage).opening-stage { height:calc(100svh - 82px); padding:18px 0 56px; }
+ .hero :is(.scene-active, .scene-ready .opening-stage) #identity { font-size:25px; }
+ .hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-role { font-size:10px; }
+ .hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-summary { top:25%; font-size:clamp(42px,12vw,82px); }
+ :is(.scene-active, .scene-ready .opening-stage) .scene-line-one { white-space:normal; max-width:8ch; }
+ :is(.scene-active, .scene-ready .opening-stage) .scene-line-two { font-size:.76em; max-width:12ch; margin-left:auto; }
+ .hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-description { display:none; }
+ .hero :is(.scene-active, .scene-ready .opening-stage) .intro-actions { gap:8px; }
+ :is(.scene-active, .scene-ready .opening-stage) .intro-actions .button { font-size:12px; padding:9px; min-height:44px; }
+ .hero :is(.scene-active, .scene-ready .opening-stage) .signal-field { inset:20% -20% 15%; width:140%; }
+ .scene-takeover { inset:0 0 56px; display:flex; flex-direction:column; justify-content:center; gap:14px; padding:12px 0; }
+ .scene-case-title { width:100%; }
+ .scene-project-name { font-size:clamp(32px,9vw,48px); margin:10px 0; }
+ .scene-question { font-size:16px; margin:0; }
+ .scene-proof { width:100%; max-width:380px; padding:10px; }
+ .scene-proof .chart-subtitle { display:none; }
+ .scene-proof .panel-title { font-size:16px; margin:0; }
+}
+@media(max-height:650px) { :is(.scene-active, .scene-ready .opening-stage) .recruiter-description { display:none!important; }.scene-project-name { font-size:36px; }.scene-question { font-size:16px; }.scene-proof { max-height:65svh; }.scene-proof svg { max-height:45svh; } }
+
+#projects > .intro-practice { margin:0 0 60px; padding:28px 0; border-block:1px solid var(--line); }
+
+.scene-proof figcaption { font-size:12px; line-height:1.5; margin-top:12px; }.scene-proof .panel-title { text-align:center; }.scene-proof .frontier-values { display:none; }
+@media(max-width:760px) and (max-height:650px) {
+ .hero :is(.scene-active, .scene-ready .opening-stage) .recruiter-summary { top:22%; font-size:36px; }
+ :is(.scene-active, .scene-ready .opening-stage) .scene-line-two { margin-top:0; font-size:.72em; }
+ .scene-takeover .scene-question { display:none; }
+ .scene-proof figcaption { font-size:10px; }
+}

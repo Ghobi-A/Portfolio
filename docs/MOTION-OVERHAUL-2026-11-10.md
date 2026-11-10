@@ -88,3 +88,39 @@ the hold and kept the focused action inside the viewport (y=262–308px).
 
 Reproduce with `python3 scripts/build_site.py`, serve the repository on port 8000,
 then run `node scripts/browser_scene.cjs` (Playwright and Chromium required).
+
+## Revision 2 — signal takeover
+
+The owner rejected the initial implementation as too static. Rebuilt the opening:
+- `.scene-line-one` exits left by 115%; `.scene-line-two` exits right by 110%.
+- Full-stage field expands to 1.65x desktop / 1.3x mobile; its surface rotates and
+  resolves in sync with the same progress clock.
+- At 42% a paper wipe enters; the first project title rises and its evidence chart
+  slides from 60% offset, rotates 12°→0° and expands .72→1.
+- At completion the actual project follows the index. Practice routes moved below
+  the first project so they no longer interrupt that handoff.
+- Mobile uses its own stacked typography and project composition, with 110vh pin
+  duration instead of desktop 165vh. Keyboard focus removes the pin and transient
+  presentation. Reduced motion removes the entire takeover and restores static flow.
+
+The preview derives title, question, SVG and interpretation caveat from existing
+content. It is inert and aria-hidden, with duplicate IDs and data hooks stripped.
+Its chart values are never animated. The real chart retains all interactions.
+
+Validation during development caught and fixed SplitText reverting scroll-target
+nodes, missing chart-scoping CSS on the facsimile, and stale tests that assumed
+practice links lived inside the hero. The dedicated regression checks both headline
+travel and the completed wipe, in addition to forward/reverse, bookmarks, keyboard,
+reduced motion, no-JS and console errors. GPU-heavy headless runs allow a full second
+for the .35s scrub to settle before comparing reverse samples.
+
+New evidence is in `review/2026-11-10-takeover/`; prior screenshots describe revision 1.
+
+Revision 2 final checks: all 18 structural tests and all dedicated scene checks passed.
+Measured load layout-shift sums after reserving the composition were 0 at 390px,
+.0012 at 768px and .0054 at 1440px. All three widths returned to identical timeline
+states on reverse scrolling, with no console errors. See the
+[desktop scroll recording](review/2026-11-10-takeover/desktop-scroll.webm),
+[desktop opening](review/2026-11-10-takeover/opening-1440-top.png),
+[desktop project takeover](review/2026-11-10-takeover/opening-1440-1.png), and
+[phone takeover](review/2026-11-10-takeover/opening-390-1.png).

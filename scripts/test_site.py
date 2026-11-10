@@ -111,8 +111,10 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn('Restaurant operations', self.text)
         self.assertIn('NLP evaluation', self.text)
         intro = self.html.split('class="recruiter-intro"', 1)[1].split('<nav class="collection-index"', 1)[0]
-        for target in ('#GA-RA-07', '#file-kh4', 'mailto:ghobikan15@hotmail.co.uk'):
-            self.assertIn(target, intro)
+        self.assertIn('mailto:ghobikan15@hotmail.co.uk', intro)
+        practice = self.html.split('class="intro-practice"', 1)[1].split('</aside>', 1)[0]
+        for target in ('#GA-RA-07', '#file-kh4', '#file-dp'):
+            self.assertIn(target, practice)
 
     def test_nlp_metrics_keep_development_limits(self):
         kh = self.html.split('id="file-kh4"', 1)[1].split('id="GA-RA-07"', 1)[0]
