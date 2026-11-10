@@ -1,0 +1,113 @@
+[
+  {
+    "width": 390,
+    "bounds": {
+      "start": 83,
+      "end": 579,
+      "pin": false
+    },
+    "samples": [
+      {
+        "p": 0,
+        "scatter": 0.8,
+        "scale": 1
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "scale": 0.9836
+      },
+      {
+        "p": 1,
+        "scatter": 0,
+        "scale": 0.94
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "scale": 0.9836
+      },
+      {
+        "p": 0,
+        "scatter": 0.8,
+        "scale": 1
+      }
+    ],
+    "errors": [],
+    "initialLayoutShiftSum": 0.0003947948717948718
+  },
+  {
+    "width": 768,
+    "bounds": {
+      "start": 91,
+      "end": 310,
+      "pin": false
+    },
+    "samples": [
+      {
+        "p": 0,
+        "scatter": 0.8,
+        "scale": 1
+      },
+      {
+        "p": 0.502283,
+        "scatter": 0.3981736,
+        "scale": 0.9834
+      },
+      {
+        "p": 1,
+        "scatter": 0,
+        "scale": 0.94
+      },
+      {
+        "p": 0.502283,
+        "scatter": 0.3981736,
+        "scale": 0.9834
+      },
+      {
+        "p": 0,
+        "scatter": 0.8,
+        "scale": 1
+      }
+    ],
+    "errors": [],
+    "initialLayoutShiftSum": 0.00012559895833333333
+  },
+  {
+    "width": 1440,
+    "bounds": {
+      "start": -1,
+      "end": 849,
+      "pin": true
+    },
+    "samples": [
+      {
+        "p": 0.001177,
+        "scatter": 0.7990584000000001,
+        "scale": 1
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "scale": 0.9345
+      },
+      {
+        "p": 1,
+        "scatter": 0,
+        "scale": 0.76
+      },
+      {
+        "p": 0.5,
+        "scatter": 0.4,
+        "scale": 0.9345
+      },
+      {
+        "p": 0.001176,
+        "scatter": 0.7990592000000001,
+        "scale": 1
+      }
+    ],
+    "errors": [],
+    "initialLayoutShiftSum": 0.0005501060956790123
+  }
+]

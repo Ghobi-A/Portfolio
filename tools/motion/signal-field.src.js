@@ -186,7 +186,7 @@ function buildGeometry(cols, rows) {
  * @param {HTMLElement} container decorative, aria-hidden host
  * @param {{ gsap: any, ScrollTrigger?: any, reduced: MediaQueryList, intro: boolean, surface: HTMLElement, compact?: boolean }} options
  */
-export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intro, surface: pointerSurface, compact = false }) {
+export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intro, surface: pointerSurface, compact = false, choreographed = false }) {
   let renderer;
   try {
     renderer = new WebGLRenderer({ alpha: true, antialias: false, powerPreference: "low-power", premultipliedAlpha: false });
@@ -247,10 +247,11 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
   // Continuous loop, only while it can be seen and motion is welcome.
   let clock = 0;
   let looping = false;
+  let lastDraw = 0;
   const tick = (_time, deltaMs) => {
     clock += Math.min(deltaMs, 50) / 1000;
     uniforms.uTime.value = clock;
-    draw();
+    if (clock - lastDraw >= 1 / 30) { draw(); lastDraw = clock; }
   };
   const shouldLoop = () => onScreen && !document.hidden && !reduced.matches;
   const syncLoop = () => {
@@ -340,7 +341,7 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
 
   // ---- Scroll: the system scatters back toward noise as the evidence takes over -
   let scrollTrigger = null;
-  if (ScrollTrigger) {
+  if (ScrollTrigger && !choreographed) {
     scrollTrigger = ScrollTrigger.create({
       trigger: pointerSurface, start: "top top", end: "bottom top", scrub: 0.8,
       onUpdate: (self) => {
@@ -353,6 +354,16 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
       },
     });
   }
+
+  // The editorial scene resolves noise into an inspectable plane, then turns it
+  // toward the evidence. No second ScrollTrigger competes with this clock.
+  const setSceneProgress = (progress) => {
+    if (!choreographed || reduced.matches) return;
+    uniforms.uScatter.value = (1 - progress) * 0.8;
+    group.rotation.z = -0.22 + progress * 0.34;
+    group.position.y = progress * 0.3;
+    if (!looping && onScreen) invalidate();
+  };
 
   // ---- Preferences, visibility and teardown -----------------------------------
   const settle = () => {
@@ -394,5 +405,5 @@ export function mountSignalField(container, { gsap, ScrollTrigger, reduced, intr
     container.remove();
   }
   // `frames` and `looping` let the browser regression check when it renders.
-  return { destroy, invalidate, uniforms, get frames() { return frames; }, get looping() { return looping; } };
+  return { destroy, invalidate, uniforms, setSceneProgress, get frames() { return frames; }, get looping() { return looping; } };
 }

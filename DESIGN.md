@@ -204,3 +204,29 @@ The signal field occupies a dedicated desktop column, sits below the intro copy 
 
 The project index leads directly into the work. GSAP handles brief, one-shot entrances, chart guide drawing, and control feedback. Project panels stay in their grid slots, and the opening copy is visible while scripts load. The Three.js field supplies continuous movement while visible and draws a still frame for reduced motion.
 
+
+## Editorial motion direction — 10 November 2026 (supersedes prior motion restrictions)
+
+The owner explicitly requested expressive, connected scroll choreography. The earlier
+ban on reverse playback and the 6 November entrance-only repair no longer constrain
+new scenes. Native scrolling, readable evidence and the existing palette still do.
+
+The opening is now a two-column editorial stage with a large thesis and signal field;
+practice routes follow it rather than competing in a third column. Scene 1 holds the
+stage only at >=1100px width and >=800px height, below the 92px desktop header. Its
+normalised timeline has signal / structure / evidence labels (normalised time
+0 / .35 / .9); native scroll supplies the clock over .85 viewport heights. Typography
+contracts to 76%, the field lifts and resolves into a plane, and a pink rule crosses
+the stage into the following project index. There is no scroll interception or snap.
+
+`sceneTimeline` owns shared scrub (.35s), linear interpolation and refresh behaviour.
+The field receives the same normalised progress through `setSceneProgress`; it has no
+competing scroll trigger in this mode. Interactive actions and case-study data never
+transform. Keyboard focus inside the stage removes the pin and completes the scene.
+Reduced motion reverts the scene and its spacing; small/short viewports use an
+unpinned 94% type contraction and 12px field lift. No-JS retains all authored content.
+
+Field rendering is capped near 30fps, uses the existing single draw call and low-power
+renderer, and stops offscreen / when hidden / under reduced motion. Existing point
+budgets and DPR caps remain. The other two proposed scenes are not implemented.
+See docs/MOTION-OVERHAUL-2026-11-10.md for the audit, proposal and verification.

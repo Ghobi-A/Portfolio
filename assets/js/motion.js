@@ -96,6 +96,56 @@
 
   if (playIntro && hero) runIntro();
 
+  // One clock owns composition and WebGL. Scrub timelines are never settled by
+  // the finite-entrance registry; matchMedia reverts their styles and pin spacing.
+  const sceneState = { progress: 0 };
+  const publishScene = () => window.portfolioMotion.field?.setSceneProgress(sceneState.progress);
+  const sceneTimeline = (trigger, options = {}) => gsap.timeline({
+    defaults: { ease: "none" },
+    scrollTrigger: { trigger, start: "top 92px", end: "+=700", scrub: 0.35,
+      invalidateOnRefresh: true, ...options },
+  });
+  window.portfolioMotion.sceneState = sceneState;
+  const sceneMedia = gsap.matchMedia();
+  sceneMedia.add({ motion: "(prefers-reduced-motion: no-preference)",
+    desktop: "(min-width: 1100px) and (min-height: 800px)" }, (context) => {
+    if (!context.conditions.motion || !hero) return;
+    const stage = hero.querySelector(".opening-stage");
+    const desktop = context.conditions.desktop;
+    const tl = sceneTimeline(stage, {
+      id: "editorial-opening", pin: desktop ? stage : false,
+      start: desktop ? "top 92px" : "top top",
+      end: desktop ? () => `+=${Math.round(innerHeight * 0.85)}` : "bottom 30%",
+      onUpdate: () => publishScene(),
+    });
+    tl.addLabel("signal", 0)
+      .fromTo(sceneState, { progress: 0 }, { progress: 1, duration: 1, onUpdate: publishScene }, 0)
+      .fromTo(stage.querySelector(".opening-score i"), { scaleX: 0 }, { scaleX: 1, duration: 1 }, 0)
+      .addLabel("structure", 0.35)
+      .to(stage.querySelector(".recruiter-summary"), { scale: desktop ? 0.76 : 0.94,
+        x: desktop ? 24 : 0, duration: 0.55 }, "structure")
+      .to(stage.querySelector(".signal-field"), { y: desktop ? -30 : -12,
+        scale: desktop ? 1.08 : 1, duration: 0.65 }, 0.2)
+      .addLabel("evidence", 0.9);
+    // Keyboard navigation bypasses the held scene. Native anchors are left alone.
+    const focus = (event) => {
+      if (!stage.contains(event.target)) return;
+      tl.scrollTrigger.getTween()?.progress(1);
+      tl.scrollTrigger.disable(true);
+      tl.progress(1);
+      const rect = event.target.getBoundingClientRect();
+      if (rect.top < 110 || rect.bottom > innerHeight) {
+        event.target.scrollIntoView({ block: "center", behavior: "instant" });
+      }
+    };
+    stage.addEventListener("focusin", focus);
+    return () => {
+      stage.removeEventListener("focusin", focus);
+      sceneState.progress = 0;
+      publishScene();
+    };
+  });
+
   // Preview the native project links in the decorative field frame.
   const bindSceneSelector = (frame, signal) => {
     const caption = frame.querySelector(".signal-frame-caption");
@@ -133,7 +183,7 @@
   // ---- Hero field (Three.js), loaded lazily ----------------------------------
   // The host is authored in the page; the head script adds .has-field only when
   // WebGL2 is available and Save-Data is off, so its space is reserved before paint.
-  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261105", document.currentScript.src).href;
+  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261110", document.currentScript.src).href;
   const fieldHost = document.querySelector(".signal-field");
   const loadField = () => {
     if (!fieldHost || !fieldScript || !root.classList.contains("has-field")) return;
@@ -149,9 +199,10 @@
       .then(({ mountSignalField }) => {
         const field = mountSignalField(fieldHost, {
           gsap, ScrollTrigger, reduced, intro: playIntro && scrollY < 100,
-          surface: hero, compact: innerWidth < 1200,
+          surface: hero, compact: innerWidth < 1200, choreographed: true,
         });
         window.portfolioMotion.field = field;
+        publishScene();
         if (!field) { hideField(); return; }
         const frame = fieldHost.querySelector(".signal-frame");
         bindSceneSelector(frame, selectorEvents.signal);
@@ -275,7 +326,7 @@
   // A focused control and its ancestors must stop moving immediately.
   document.addEventListener("focusin", (event) => {
     for (let element = event.target; element && element !== document.body; element = element.parentElement) {
-      gsap.getTweensOf(element).forEach((tween) => { if (!tween.scrollTrigger && !tween.vars.repeat) tween.progress(1); });
+      gsap.getTweensOf(element).forEach((tween) => { if (!tween.scrollTrigger && !tween.parent?.scrollTrigger && !tween.vars.repeat) tween.progress(1); });
     }
   });
   reduced.addEventListener("change", () => { if (reduced.matches) settleAll(); });
@@ -283,7 +334,16 @@
   window.addEventListener("pagehide", settleAll);
   // Restored from the back/forward cache: layout may have changed while away.
   window.addEventListener("pageshow", (event) => { if (event.persisted) ScrollTrigger.refresh(); });
-  document.fonts?.ready.then(() => ScrollTrigger.refresh());
+  document.fonts?.ready.then(() => {
+    ScrollTrigger.refresh();
+    // Native hash positioning can precede fonts and pin-spacer measurement.
+    // Correct the initial bookmark once, after both have their final geometry.
+    if (location.hash) requestAnimationFrame(() => {
+      let target;
+      try { target = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch { return; }
+      target?.scrollIntoView({ block: "start", behavior: "instant" });
+    });
+  });
   // Disclosures change the page height; re-measure once their 240ms height animation ends.
   let refreshTimer = 0;
   document.addEventListener("toggle", () => { clearTimeout(refreshTimer); refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 300); }, true);
