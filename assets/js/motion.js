@@ -1,161 +1,139 @@
-/* Optional GSAP entrances and feedback. Only the decorative hero field loops. */
+/* Motion layer for the Interactive Lab homepage.
+ *
+ * GSAP + ScrollTrigger + SplitText choreograph the page, Lenis smooths the
+ * scroll, and the Three.js sculpture (lab-scene.js) is imported lazily after
+ * first paint. Everything here is optional: content is complete and visible
+ * without it, and reduced motion reverts every effect through gsap.matchMedia.
+ *
+ * Rules carried over from DESIGN.md: final states live in CSS, figures never
+ * count up (no invented intermediate values), focus settles moving ancestors.
+ */
 (() => {
   "use strict";
   const root = document.documentElement;
-  const { gsap, ScrollTrigger, SplitText, CustomEase } = window;
+  const { gsap, ScrollTrigger, SplitText, CustomEase, Lenis } = window;
   if (!gsap || !ScrollTrigger || !SplitText || !CustomEase) {
     root.classList.remove("has-field");
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
-  CustomEase.create("portfolio-out", "0.23, 1, 0.32, 1");
-  CustomEase.create("portfolio-in-out", "0.77, 0, 0.175, 1");
-  gsap.defaults({ ease: "portfolio-out", duration: 0.5 });
+  CustomEase.create("lab-out", "0.23, 1, 0.32, 1");
+  CustomEase.create("lab-in-out", "0.77, 0, 0.175, 1");
+  CustomEase.create("lab-expo", "0.16, 1, 0.3, 1");
+  gsap.defaults({ ease: "lab-out", duration: 0.7 });
   ScrollTrigger.config({ ignoreMobileResize: true });
 
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
-  const timing = { feedback: 0.22, reveal: 0.5, line: 0.65, chart: 0.8, stagger: 0.085 };
-  const log = [];
-  window.portfolioMotion = { log, timing };
-
-  // ---- Bookkeeping: everything finite, everything interruptible ---------------
-  const running = new Set();
-  const splits = new Set();
-  const track = (tween, label) => {
-    running.add(tween);
-    if (label) log.push({ target: label, delay: Math.round(tween.delay() * 1000) });
-    tween.then(() => running.delete(tween));
-  };
-  const settleAll = () => {
-    running.forEach((tween) => tween.progress(1));
-    running.clear();
-    splits.forEach((split) => split.revert());
-    splits.clear();
-  };
-  const scanScene = (element, delay) => {
-    track(gsap.fromTo(element, { "--scene-scan": "-35%" }, {
-      "--scene-scan": "132%",
-      duration: 0.9,
-      delay,
-      ease: "portfolio-in-out",
-      onComplete: () => element.style.removeProperty("--scene-scan"),
-    }));
-  };
-  const describe = (element) => element.id || [...element.classList].join(" ") || element.tagName.toLowerCase();
+  const fine = matchMedia("(hover: hover) and (pointer: fine)");
   const allowed = () => !reduced.matches && !document.hidden;
+  const log = [];
+  window.portfolioMotion = { log };
 
-  // A split is presentation only: revert it the moment its animation ends.
-  const split = (element, type) => {
-    const instance = SplitText.create(element, { type, mask: type.includes("lines") ? "lines" : undefined, linesClass: "split-line", charsClass: "split-char", aria: "auto" });
-    splits.add(instance);
-    const revert = () => { instance.revert(); splits.delete(instance); };
-    return { instance, revert };
-  };
-
-  // ---- Opening ----------------------------------------------------------------
+  const stage = document.querySelector(".stage");
   const playIntro = !location.hash && scrollY < 100
     && performance.getEntriesByType("navigation")[0]?.type !== "back_forward"
     && allowed();
-  const hero = document.querySelector(".hero");
 
+  // ---- Smooth scrolling (Lenis on GSAP's ticker) ---------------------------------
+  let lenis = null;
+  const startLenis = () => {
+    if (!Lenis || lenis || reduced.matches) return;
+    lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 0.9, autoRaf: false });
+    lenis.on("scroll", ScrollTrigger.update);
+    gsap.ticker.add(raf);
+    gsap.ticker.lagSmoothing(0);
+    window.portfolioMotion.lenis = lenis;
+  };
+  const stopLenis = () => {
+    if (!lenis) return;
+    gsap.ticker.remove(raf);
+    lenis.destroy();
+    lenis = null;
+    window.portfolioMotion.lenis = null;
+  };
+  function raf(time) { lenis?.raf(time * 1000); }
+  startLenis();
+  reduced.addEventListener("change", () => (reduced.matches ? stopLenis() : startLenis()));
+  // In-page links glide; case-study links (native <details>) keep main.js's open-and-jump.
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest?.('a[href^="#"]');
+    if (!lenis || !link || event.defaultPrevented || event.metaKey || event.ctrlKey) return;
+    let target;
+    try { target = document.getElementById(decodeURIComponent(link.hash.slice(1))); } catch { return; }
+    if (!target || target.matches("details")) return;
+    event.preventDefault();
+    history.pushState(null, "", link.hash);
+    const offset = target.id === "top" ? 0 : -(document.querySelector(".header")?.offsetHeight || 64) - 56;
+    lenis.scrollTo(target.id === "top" ? 0 : target, { offset, duration: 1.4, easing: (t) => 1 - Math.pow(1 - t, 4) });
+  });
+  // Disclosures and deep links change the page height under Lenis.
+  document.addEventListener("toggle", () => { lenis?.resize(); }, true);
+
+  // ---- Helpers ----------------------------------------------------------------
+  const splits = new Set();
+  const split = (element, type, options = {}) => {
+    const instance = SplitText.create(element, {
+      type, aria: "auto", autoSplit: false,
+      mask: type.includes("chars") ? "lines" : type.includes("words") ? "words" : "lines",
+      linesClass: "split-line", wordsClass: "split-word", charsClass: "split-char",
+      ...options,
+    });
+    splits.add(instance);
+    return instance;
+  };
+  const revert = (instance) => { instance.revert(); splits.delete(instance); };
+
+  // ---- Opening ----------------------------------------------------------------
   const runIntro = () => {
-    const role = hero.querySelector(".recruiter-role");
-    const name = hero.querySelector("#identity .headline-line");
-    const summary = hero.querySelector(".recruiter-summary");
-    const description = hero.querySelector(".recruiter-description");
-    const actions = hero.querySelector(".intro-actions");
-    const practice = hero.querySelector(".intro-practice");
-    const index = hero.querySelector(".collection-index");
-    const nameSplit = split(name, "lines,chars");
-    const summarySplit = split(summary, "lines");
-    const bars = practice.querySelectorAll(".practice-signal span");
-
+    const kicker = stage.querySelector(".stage-top");
+    const names = stage.querySelectorAll(".name-line");
+    const thesis = stage.querySelector(".stage-thesis");
+    const description = stage.querySelector(".stage-description");
+    const actions = stage.querySelector(".intro-actions");
+    const lab = stage.querySelector(".lab");
+    const legend = stage.querySelector(".stage-legend");
+    const nameSplits = [...names].map((line) => split(line, "chars"));
+    const thesisSplit = split(thesis, "words");
     const tl = gsap.timeline({
-      defaults: { ease: "portfolio-out", duration: timing.reveal },
-      onComplete: () => { nameSplit.revert(); summarySplit.revert(); },
+      onComplete: () => { nameSplits.forEach(revert); revert(thesisSplit); },
     });
-    const step = timing.stagger;
-    const lift = { y: 10, opacity: 0.8, clearProps: "transform,opacity" };
-    tl.from(role, lift, 0);
-    tl.from(nameSplit.instance.chars, { yPercent: 58, opacity: 0.72, duration: timing.line, stagger: 0.016 }, step);
-    tl.from(summarySplit.instance.lines, { yPercent: 45, opacity: 0.78, duration: timing.line, stagger: 0.08 }, step * 2);
-    tl.from(description, lift, step * 3);
-    tl.from(actions.children, { ...lift, stagger: 0.04 }, step * 4);
-    tl.from(practice, { opacity: 0.8, clearProps: "opacity" }, 0.18);
-    tl.from(bars, { scaleY: 0.35, duration: 0.65, stagger: 0.05, clearProps: "transform" }, 0.24);
-    tl.from(index.children, { opacity: 0.75, stagger: 0.03, clearProps: "opacity" }, 0.36);
-    track(tl);
-    // Record when each of the five beats actually starts on the timeline (read by the browser regression).
-    const beats = [[role, "recruiter-role"], [nameSplit.instance.chars[0], "headline-line"], [summarySplit.instance.lines[0], "recruiter-summary"], [description, "recruiter-description"], [actions.children[0], "actions intro-actions"]];
-    beats.forEach(([element, target]) => {
-      const tween = tl.getChildren(false, true, false).find((child) => child.targets().includes(element));
-      if (tween) log.push({ target, delay: Math.round(tween.startTime() * 1000) });
-    });
+    tl.from(stage, { clipPath: "inset(6% 4% 6% 4% round 40px)", duration: 1.3, ease: "lab-expo", clearProps: "clipPath" }, 0)
+      .from(kicker, { y: 14, opacity: 0, duration: 0.6, clearProps: "all" }, 0.35)
+      .from(nameSplits.flatMap((s) => s.chars), { yPercent: 110, rotate: 4, duration: 1.1, ease: "lab-expo", stagger: 0.028 }, 0.4)
+      .from(thesisSplit.words, { yPercent: 100, duration: 0.8, ease: "lab-expo", stagger: 0.035 }, 0.85)
+      .from(description, { y: 16, opacity: 0, clearProps: "all" }, 1.05)
+      .from(actions.children, { y: 16, opacity: 0, stagger: 0.06, clearProps: "all" }, 1.15)
+      .from(lab, { x: 40, opacity: 0, duration: 1, ease: "lab-expo", clearProps: "all" }, 0.95)
+      .from(lab.querySelectorAll(".lab-tabs button, .lab-panel:not([hidden]) > *"), { y: 12, opacity: 0, stagger: 0.04, clearProps: "all" }, 1.2);
+    if (legend) tl.from(legend, { opacity: 0, x: -12, clearProps: "all" }, 1.5);
+    log.push({ target: "intro", duration: Math.round(tl.duration() * 1000) });
   };
+  if (playIntro && stage) runIntro();
 
-  if (playIntro && hero) runIntro();
-
-  // Preview the native project links in the decorative field frame.
-  const bindSceneSelector = (frame, signal) => {
-    const caption = frame.querySelector(".signal-frame-caption");
-    const defaultCaption = caption.textContent;
-    let hovered = null;
-    let focused = null;
-    let transition;
-    const preview = () => {
-      const label = (hovered || focused)?.textContent.trim() || defaultCaption;
-      if (caption.textContent === label) return;
-      transition?.progress(1);
-      caption.textContent = label;
-      if (!allowed()) return;
-      transition = gsap.fromTo(caption, { y: 5, opacity: 0.6 }, {
-        y: 0, opacity: 1, duration: timing.feedback, clearProps: "transform,opacity",
-      });
-      track(transition);
-    };
-    hero.querySelectorAll(".collection-index a").forEach((link) => {
-      link.addEventListener("pointerenter", (event) => {
-        if (event.pointerType === "touch") return;
-        hovered = link;
-        preview();
-      }, { signal });
-      link.addEventListener("pointerleave", () => {
-        if (hovered !== link) return;
-        hovered = null;
-        preview();
-      }, { signal });
-      link.addEventListener("focus", () => { focused = link; preview(); }, { signal });
-      link.addEventListener("blur", () => { focused = null; preview(); }, { signal });
-    });
+  // ---- Sculpture (Three.js), loaded lazily ---------------------------------------
+  // The head script adds .has-field only when WebGL2 is available and Save-Data is off.
+  const fieldScript = document.currentScript && new URL("lab-scene.js?v=20261123-lab", document.currentScript.src).href;
+  const host = document.querySelector(".lab-scene");
+  let scene = null;
+  const applyState = () => {
+    if (!scene || !stage) return;
+    const data = stage.dataset;
+    scene.setMode(data.mode || "research");
+    if (data.noise) scene.setNoise(Number(data.noise));
+    scene.setRanked(data.order !== "random");
+    scene.setStep(Number(data.step || 0));
   };
-
-  // ---- Hero field (Three.js), loaded lazily ----------------------------------
-  // The host is authored in the page; the head script adds .has-field only when
-  // WebGL2 is available and Save-Data is off, so its space is reserved before paint.
-  const fieldScript = document.currentScript && new URL("signal-field.js?v=20261105", document.currentScript.src).href;
-  const fieldHost = document.querySelector(".signal-field");
   const loadField = () => {
-    if (!fieldHost || !fieldScript || !root.classList.contains("has-field")) return;
-    const selectorEvents = new AbortController();
-    const hideField = () => {
-      selectorEvents.abort();
-      root.classList.remove("has-field");
-      fieldHost.remove();
-      ScrollTrigger.refresh();
-    };
-    fieldHost.addEventListener("webglcontextlost", hideField, { capture: true, once: true });
+    if (!host || !fieldScript || !root.classList.contains("has-field")) return;
+    const hideField = () => { scene?.dispose(); scene = null; root.classList.remove("has-field"); };
+    host.addEventListener("webglcontextlost", hideField, { capture: true, once: true });
     import(fieldScript)
-      .then(({ mountSignalField }) => {
-        const field = mountSignalField(fieldHost, {
-          gsap, ScrollTrigger, reduced, intro: playIntro && scrollY < 100,
-          surface: hero, compact: innerWidth < 1200,
-        });
-        window.portfolioMotion.field = field;
-        if (!field) { hideField(); return; }
-        const frame = fieldHost.querySelector(".signal-frame");
-        bindSceneSelector(frame, selectorEvents.signal);
-        if (playIntro && scrollY < 100 && allowed()) scanScene(frame, 0.2);
+      .then(({ mountLabScene }) => {
+        scene = mountLabScene(host, { gsap, reduced, compact: innerWidth < 900 || (navigator.hardwareConcurrency || 8) <= 4 });
+        window.portfolioMotion.scene = scene;
+        if (!scene) return hideField();
+        applyState();
       })
       .catch(hideField);
   };
@@ -163,128 +141,236 @@
   if (document.readyState === "complete") idle(loadField, { timeout: 800 });
   else window.addEventListener("load", () => idle(loadField, { timeout: 800 }), { once: true });
 
-  // ---- Scroll reveals: once, at the moment of entry ---------------------------
-  const revealed = new WeakSet();
-  const reveal = (element, order = 0, offset = 0) => {
-    if (revealed.has(element)) return;
-    revealed.add(element);
+  // ---- The bench: mode changes, selections ----------------------------------------
+  document.addEventListener("labchange", (event) => {
+    const { kind, panel, target } = event.detail || {};
+    if (scene) {
+      if (kind === "mode") scene.setMode(event.detail.mode);
+      if (kind === "epsilon") scene.setNoise(event.detail.noise);
+      if (kind === "order") scene.setRanked(event.detail.ranked);
+      if (kind === "step") scene.setStep(event.detail.step);
+    }
     if (!allowed()) return;
-    const label = describe(element);
-    const delay = offset + Math.min(order * 0.06, 0.24);
+    if (kind === "mode" && panel) {
+      gsap.fromTo(panel.children, { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, stagger: 0.045, overwrite: true, clearProps: "all" });
+      const count = stage.querySelector("[data-lab-count]");
+      if (count) gsap.fromTo(count, { yPercent: 60, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.4, clearProps: "all" });
+    }
+    if (kind === "epsilon") {
+      const value = stage.querySelector("[data-lab-auc]");
+      gsap.fromTo(value, { yPercent: 35, opacity: 0.2 }, { yPercent: 0, opacity: 1, duration: 0.45, clearProps: "all" });
+    }
+    if (kind === "step" && target) gsap.fromTo(target, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, clearProps: "all" });
+  });
 
-    if (element.matches(".project-grid > .evidence-panel")) {
-      scanScene(element, delay);
-      if (!element.matches(".frontier")) return;
-    }
-    if (element.matches(".project-copy > h3, .audio-lab > div > h3, .semantic-lab h2")) {
-      const { instance, revert } = split(element, "lines");
-      track(gsap.from(instance.lines, {
-        yPercent: 58, opacity: 0.74, delay, duration: timing.line, stagger: 0.07, onComplete: revert,
-      }), label);
-      return;
-    }
-    if (element.matches(".partition-chart, .frontier")) {
-      element.querySelectorAll(".draw-line, .privacy-fit").forEach((line) => {
-        const length = line.hasAttribute("pathLength") ? Number(line.getAttribute("pathLength")) : line.getTotalLength();
-        track(gsap.fromTo(line, { strokeDasharray: length, strokeDashoffset: length },
-          { strokeDashoffset: 0, duration: timing.chart, ease: "portfolio-in-out", delay: delay + 0.1, clearProps: "strokeDasharray,strokeDashoffset" }), label);
+  // ---- Scroll choreography ----------------------------------------------------------
+  const mm = gsap.matchMedia();
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    const once = { start: "top 86%", once: true };
+
+    // The stage recedes like a card being set down as the work arrives.
+    if (stage) {
+      gsap.to(stage, {
+        scale: 0.94, yPercent: 4, borderRadius: 44, ease: "none",
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
       });
-      return;
+      gsap.to(stage.querySelector(".stage-copy"), {
+        yPercent: -18, opacity: 0.35, ease: "none",
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+      });
     }
-    if (element.matches(".signal-system, .token-flow, .method-rail, .semantic-chain, .simulation-branches, .order-flow")) {
-      const items = element.matches(".signal-system") ? element.querySelectorAll(".system-node") : element.children;
-      const stages = [...items].filter((item) => !item.matches(".evidence-inspector"));
-      track(gsap.from(stages, { y: 8, opacity: 0.78, stagger: { amount: 0.26 }, delay, clearProps: "transform,opacity" }), label);
-      return;
+
+    // Headings reveal word by word from behind a mask.
+    gsap.utils.toArray(".work-heading h2, .section-heading h2, .project-copy > h3, .audio-lab h3, .semantic-lab h2, .about h2, .research-question").forEach((heading) => {
+      const instance = split(heading, "words");
+      gsap.from(instance.words, {
+        yPercent: 110, duration: 1, ease: "lab-expo", stagger: 0.06,
+        scrollTrigger: { trigger: heading, ...once },
+        onComplete: () => revert(instance),
+      });
+    });
+
+    // Project numbers rise, then drift slower than the page.
+    gsap.utils.toArray(".project-number").forEach((number) => {
+      gsap.from(number, { yPercent: 70, opacity: 0, duration: 1.1, ease: "lab-expo", scrollTrigger: { trigger: number, ...once } });
+      gsap.to(number, { yPercent: -30, ease: "none", scrollTrigger: { trigger: number.closest(".project"), start: "top bottom", end: "bottom top", scrub: true } });
+    });
+
+    // Supporting copy fades and lifts, staggered within each block.
+    gsap.utils.toArray(".project-copy, .audio-lab > div:first-child, .about-copy, .semantic-design, .contact-invitation").forEach((block) => {
+      const items = [...block.querySelectorAll(":scope > p, :scope > .metrics, :scope > .tags, :scope > .text-links, :scope > .actions, :scope > .education, :scope > .source-link, :scope > dl, :scope > ol, :scope > h3, :scope > h4, :scope > .semantic-legend")]
+        .filter((item) => !item.matches("h3") || !block.matches(".project-copy"));
+      if (!items.length) return;
+      gsap.from(items, { y: 28, opacity: 0, duration: 0.9, stagger: 0.07, clearProps: "transform,opacity", scrollTrigger: { trigger: block, start: "top 82%", once: true } });
+    });
+
+    // Scroll-linked reading: words brighten as the paragraph passes through view.
+    gsap.utils.toArray(".work-heading > p:last-child, .about-copy > p:first-of-type, .contact-question").forEach((paragraph) => {
+      const instance = split(paragraph, "words", { mask: false });
+      gsap.fromTo(instance.words, { opacity: 0.18 }, {
+        opacity: 1, stagger: 0.1, ease: "none",
+        scrollTrigger: { trigger: paragraph, start: "top 88%", end: "bottom 55%", scrub: true },
+      });
+    });
+
+    // Evidence panels rise into place and settle while their story stays sticky.
+    gsap.utils.toArray(".project-grid > .evidence-panel, .research-sidebar, .audio-scope").forEach((panel) => {
+      gsap.from(panel, {
+        y: 90, scale: 0.96, opacity: 0.4, ease: "none", transformOrigin: "50% 0%",
+        scrollTrigger: { trigger: panel, start: "top bottom", end: "top 62%", scrub: 0.6 },
+      });
+    });
+
+    // Images expand from an inset frame and settle their zoom.
+    gsap.utils.toArray(".gameplay-shot, .paper-study, .evidence-panel > a > img").forEach((frame) => {
+      const image = frame.matches("img") ? frame : frame.querySelector("img");
+      gsap.fromTo(frame, { clipPath: "inset(14% 10% 14% 10% round 18px)" }, {
+        clipPath: "inset(0% 0% 0% 0% round 10px)", ease: "none",
+        scrollTrigger: { trigger: frame, start: "top 95%", end: "top 45%", scrub: 0.5 },
+      });
+      if (image && image !== frame) {
+        gsap.fromTo(image, { scale: 1.18 }, { scale: 1, ease: "none", scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: true } });
+      }
+    });
+
+    // Measured bars grow from zero once (the printed value never changes).
+    gsap.utils.toArray(".bar-track i").forEach((bar, index) => {
+      gsap.from(bar, { scaleX: 0, duration: 1.1, ease: "lab-expo", delay: (index % 2) * 0.12, scrollTrigger: { trigger: bar, start: "top 90%", once: true } });
+    });
+
+    // Chart guides draw; their measured points stay where they are.
+    gsap.utils.toArray(".partition-chart .draw-line").forEach((line) => {
+      gsap.fromTo(line, { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 1.2, ease: "lab-in-out", scrollTrigger: { trigger: line, start: "top 85%", once: true }, clearProps: "strokeDasharray,strokeDashoffset" });
+    });
+    gsap.utils.toArray(".frontier").forEach((figure) => {
+      ScrollTrigger.create({
+        trigger: figure, start: "top 80%", once: true,
+        onEnter: () => {
+          const fit = figure.querySelector(".privacy-fit");
+          if (!fit) return;
+          const length = fit.getTotalLength();
+          gsap.fromTo(fit, { strokeDasharray: length, strokeDashoffset: length }, { strokeDashoffset: 0, duration: 1.2, ease: "lab-in-out", clearProps: "strokeDasharray,strokeDashoffset" });
+          gsap.from(figure.querySelectorAll(".privacy-measure"), { opacity: 0, y: 10, stagger: 0.18, delay: 0.35, duration: 0.5, clearProps: "all" });
+        },
+      });
+    });
+
+    // Headline figures rise behind their own mask.
+    gsap.utils.toArray(".metrics dd, .panel-metrics dd").forEach((figure) => {
+      gsap.from(figure, { yPercent: 60, opacity: 0, duration: 0.9, ease: "lab-expo", scrollTrigger: { trigger: figure, start: "top 92%", once: true }, clearProps: "all" });
+    });
+
+    // Ordered diagrams play in reading order.
+    gsap.utils.toArray(".signal-system, .order-flow, .method-rail, .semantic-chain, .simulation-branches, .token-flow, .audit-grid").forEach((diagram) => {
+      const items = diagram.matches(".signal-system") ? diagram.querySelectorAll(".system-node, .flow-line, .split-rail") : diagram.children;
+      gsap.from([...items].filter((item) => !item.matches(".evidence-inspector")), {
+        y: 16, opacity: 0, duration: 0.6, stagger: 0.07, clearProps: "transform,opacity",
+        scrollTrigger: { trigger: diagram, start: "top 85%", once: true },
+      });
+    });
+
+    // Navy chambers open out of the page.
+    gsap.utils.toArray(".capabilities, .contact").forEach((chamber) => {
+      gsap.from(chamber, {
+        scale: 0.93, borderRadius: 64, ease: "none", transformOrigin: "50% 0%",
+        scrollTrigger: { trigger: chamber, start: "top bottom", end: "top 35%", scrub: true },
+      });
+    });
+    gsap.utils.toArray(".capability-grid a").forEach((card, index) => {
+      gsap.from(card, { y: 50, opacity: 0, duration: 0.9, delay: index * 0.08, clearProps: "transform,opacity", scrollTrigger: { trigger: ".capability-grid", start: "top 85%", once: true } });
+    });
+
+    // The contact line arrives letter by letter.
+    const contact = document.querySelector(".contact h2");
+    if (contact) {
+      const instance = split(contact, "chars");
+      gsap.from(instance.chars, {
+        yPercent: 110, rotate: 6, duration: 1.1, ease: "lab-expo", stagger: 0.035,
+        scrollTrigger: { trigger: contact, start: "top 85%", once: true },
+        onComplete: () => revert(instance),
+      });
     }
-    track(gsap.from(element, { y: 8, opacity: 0.8, delay, clearProps: "transform,opacity" }), label);
-  };
 
-  const targets = [...document.querySelectorAll([
-    ".project-copy > h3", ".project-copy > .problem", ".project-copy > .metrics", ".project-copy > .tags",
-    ".project-copy > p:not(.problem):not(.evidence-note):not(.study-context)",
-    ".section-heading h2", ".section-heading > p", ".audio-lab > div > h3", ".semantic-lab h2", ".semantic-design",
-    ".contact h2", ".contact-invitation",
-    ".project-grid > .evidence-panel", ".partition-chart", ".signal-system", ".token-flow", ".method-rail", ".semantic-chain", ".simulation-branches", ".order-flow",
-  ].join(","))].filter((element) => !element.closest(".hero"));
-
-  // Anything already above the fold on a restored or deep-linked view stays put.
-  // On a fresh visit they join the opening, just after the hero's five beats.
-  const inView = (element) => {
-    const { top, bottom } = element.getBoundingClientRect();
-    return bottom > 0 && top < innerHeight - 36;
-  };
-  const start = () => {
-    targets.filter(inView).forEach((element, order) => {
-      if (playIntro) reveal(element, order, 0.45);
-      else revealed.add(element);
+    // Skill tags drift in one after another.
+    gsap.utils.toArray(".tags").forEach((list) => {
+      gsap.from(list.children, { x: -10, opacity: 0, duration: 0.5, stagger: 0.04, clearProps: "all", scrollTrigger: { trigger: list, start: "top 92%", once: true } });
     });
-    ScrollTrigger.batch(targets.filter((element) => !revealed.has(element)), {
-      start: "top bottom-=36", once: true, interval: 0.08,
-      onEnter: (batch) => batch.forEach((element, order) => reveal(element, order)),
-    });
-  };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
-  else start();
 
-  // ---- Pointer spotlight on evidence panels (fine pointers only) --------------
-  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
-    let spotFrame = 0;
-    let spotEvent = null;
-    document.addEventListener("pointermove", (event) => {
-      if (!allowed()) return;
-      spotEvent = event;
-      if (spotFrame) return;
-      spotFrame = requestAnimationFrame(() => {
-        spotFrame = 0;
-        const panel = spotEvent.target.closest?.(".evidence-panel");
+    return () => { splits.forEach((instance) => instance.revert()); splits.clear(); };
+  });
+
+  // ---- Magnetic actions and panel spotlight (fine pointers only) --------------------
+  mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
+    const magnets = gsap.utils.toArray(".button, .case-symbol, .panel-link");
+    const handlers = magnets.map((element) => {
+      const xTo = gsap.quickTo(element, "x", { duration: 0.5, ease: "lab-out" });
+      const yTo = gsap.quickTo(element, "y", { duration: 0.5, ease: "lab-out" });
+      const move = (event) => {
+        const rect = element.getBoundingClientRect();
+        xTo((event.clientX - rect.left - rect.width / 2) * 0.25);
+        yTo((event.clientY - rect.top - rect.height / 2) * 0.35);
+      };
+      const leave = () => { xTo(0); yTo(0); };
+      element.addEventListener("pointermove", move);
+      element.addEventListener("pointerleave", leave);
+      return () => { element.removeEventListener("pointermove", move); element.removeEventListener("pointerleave", leave); gsap.set(element, { clearProps: "x,y" }); };
+    });
+
+    let frame = 0;
+    let last = null;
+    const spotlight = (event) => {
+      last = event;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const panel = last.target.closest?.(".evidence-panel");
         if (!panel) return;
         const rect = panel.getBoundingClientRect();
-        panel.style.setProperty("--spot-x", `${spotEvent.clientX - rect.left}px`);
-        panel.style.setProperty("--spot-y", `${spotEvent.clientY - rect.top}px`);
+        panel.style.setProperty("--spot-x", `${last.clientX - rect.left}px`);
+        panel.style.setProperty("--spot-y", `${last.clientY - rect.top}px`);
       });
-    }, { passive: true });
-  }
+    };
+    document.addEventListener("pointermove", spotlight, { passive: true });
+    return () => { handlers.forEach((dispose) => dispose()); document.removeEventListener("pointermove", spotlight); };
+  });
 
-  // ---- Interaction feedback (<= 220ms) ----------------------------------------
+  // ---- Interaction feedback (<= 220ms) ---------------------------------------------
   document.addEventListener("privacyselect", (event) => {
     if (!allowed()) return;
     const chart = event.target;
     const guide = chart.querySelector(".privacy-selection-guide");
-    if (guide) track(gsap.fromTo(guide, { x: event.detail?.offsetX || 0 }, { x: 0, duration: timing.feedback, ease: "portfolio-in-out", clearProps: "transform" }));
+    if (guide) gsap.fromTo(guide, { x: event.detail?.offsetX || 0 }, { x: 0, duration: 0.22, ease: "lab-in-out", clearProps: "transform" });
     const dot = chart.querySelector(".is-selected .privacy-dot");
-    if (dot) track(gsap.fromTo(dot, { strokeWidth: 6 }, { strokeWidth: 2, duration: timing.feedback, clearProps: "strokeWidth" }));
-    const panel = chart.querySelector(".privacy-selection");
-    if (panel) track(gsap.fromTo(panel, { backgroundColor: "#fbd4e7" }, { backgroundColor: "#fff0f6", duration: timing.feedback, clearProps: "backgroundColor" }));
+    if (dot) gsap.fromTo(dot, { strokeWidth: 6 }, { strokeWidth: 2, duration: 0.22, clearProps: "strokeWidth" });
   });
   document.addEventListener("evidenceinspect", (event) => {
     if (!allowed() || !event.detail?.target) return;
-    track(gsap.fromTo(event.detail.target, { y: 4, opacity: 0.55 }, { y: 0, opacity: 1, duration: timing.feedback, clearProps: "transform,opacity" }));
+    gsap.fromTo(event.detail.target, { y: 4, opacity: 0.55 }, { y: 0, opacity: 1, duration: 0.22, clearProps: "transform,opacity" });
   });
-  // Origin-aware: the menu grows from the button that opened it. Closing is instant.
   document.addEventListener("portfolio:menu", (event) => {
     const nav = document.querySelector("#primary-nav");
     gsap.killTweensOf(nav);
     if (event.detail.open && allowed()) {
-      track(gsap.fromTo(nav, { opacity: 0, y: -6, scale: 0.97, transformOrigin: "100% 0%" },
-        { opacity: 1, y: 0, scale: 1, duration: 0.2, clearProps: "all" }));
+      gsap.fromTo(nav, { opacity: 0, y: -6, scale: 0.97, transformOrigin: "100% 0%" }, { opacity: 1, y: 0, scale: 1, duration: 0.2, clearProps: "all" });
     } else gsap.set(nav, { clearProps: "all" });
   });
 
-  // ---- Settling -----------------------------------------------------------------
-  // A focused control and its ancestors must stop moving immediately.
+  // ---- Settling ----------------------------------------------------------------------
+  const settle = () => {
+    gsap.globalTimeline.getChildren(true, true, false).forEach((tween) => {
+      if (!tween.scrollTrigger || tween.scrollTrigger.vars.once) tween.progress(1);
+    });
+  };
+  // A focused control and its ancestors stop moving at once.
   document.addEventListener("focusin", (event) => {
     for (let element = event.target; element && element !== document.body; element = element.parentElement) {
-      gsap.getTweensOf(element).forEach((tween) => { if (!tween.scrollTrigger && !tween.vars.repeat) tween.progress(1); });
+      gsap.getTweensOf(element).forEach((tween) => { if (!tween.scrollTrigger?.vars.scrub) tween.progress(1); });
     }
   });
-  reduced.addEventListener("change", () => { if (reduced.matches) settleAll(); });
-  document.addEventListener("visibilitychange", () => { if (document.hidden) settleAll(); });
-  window.addEventListener("pagehide", settleAll);
-  // Restored from the back/forward cache: layout may have changed while away.
+  reduced.addEventListener("change", () => { if (reduced.matches) settle(); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) settle(); });
   window.addEventListener("pageshow", (event) => { if (event.persisted) ScrollTrigger.refresh(); });
   document.fonts?.ready.then(() => ScrollTrigger.refresh());
-  // Disclosures change the page height; re-measure once their 240ms height animation ends.
   let refreshTimer = 0;
   document.addEventListener("toggle", () => { clearTimeout(refreshTimer); refreshTimer = setTimeout(() => ScrollTrigger.refresh(), 300); }, true);
 })();

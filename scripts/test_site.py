@@ -107,12 +107,23 @@ class PortfolioTests(unittest.TestCase):
             self.assertIn(project['item']['url'].split('#')[1], self.ids)
 
     def test_recruiter_routes_and_qualification(self):
-        self.assertIn('class="recruiter-intro"', self.html)
+        self.assertRegex(self.html, r'class="[^"]*\brecruiter-intro\b')
         self.assertIn('Restaurant operations', self.text)
         self.assertIn('NLP evaluation', self.text)
-        intro = self.html.split('class="recruiter-intro"', 1)[1].split('<nav class="collection-index"', 1)[0]
+        intro = self.html.split('recruiter-intro"', 1)[1].split('<nav class="collection-index"', 1)[0]
         for target in ('#GA-RA-07', '#file-kh4', 'mailto:ghobikan15@hotmail.co.uk'):
             self.assertIn(target, intro)
+
+    def test_lab_bench_uses_measured_values(self):
+        lab = self.html.split('data-lab ', 1)[1].split('<nav class="collection-index"', 1)[0]
+        text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', lab))
+        for value in ('.933', '.909–.957', 'ε 2', 'ε 6', '1,338', '0.65', '0.30', '2.5×', '2.1–3.3', 'Expected counts', 'not a transaction-volume claim'):
+            self.assertIn(value, text)
+        for tab in ('tab-research', 'tab-applications', 'tab-systems'):
+            self.assertIn(tab, self.ids)
+        main = (OUT / 'assets/js/main.js').read_text(encoding='utf-8')
+        for value in ('0.933', '0.944', '0.945', '0.909', '0.927', '0.928', '0.957', '0.960', '0.961'):
+            self.assertIn(value, main)
 
     def test_nlp_metrics_keep_development_limits(self):
         kh = self.html.split('id="file-kh4"', 1)[1].split('id="GA-RA-07"', 1)[0]
@@ -138,7 +149,7 @@ class PortfolioTests(unittest.TestCase):
 
     def test_builder_is_idempotent_and_layout_independent(self):
         self.assertEqual(polish_html(self.html), self.html)
-        changed = self.source.replace('<section class="hero wrap"', '<section data-test="changed" class="hero wrap"')
+        changed = self.source.replace('<section class="hero"', '<section data-test="changed" class="hero"')
         self.assertIn('data-test="changed"', polish_html(changed))
         with self.assertRaisesRegex(RuntimeError, 'METADATA'):
             polish_html(self.source.replace('<!-- METADATA:START -->', ''))
@@ -217,7 +228,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertNotIn('crestbound-duelists.streamlit.app', self.html)
         for text in ('single-runner measurements', 'Implemented / demo-only forecasts', 'synthetic bootstrap', 'not membership-inference'):
             self.assertIn(text, self.text)
-        css = (OUT / 'assets/css/site.css').read_text(encoding='utf-8')
+        css = (OUT / 'assets/css/lab.css').read_text(encoding='utf-8')
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
         # Content remains visible while the optional scripts load or if they fail.
         # Decorative ::before/::after overlays (no content) may also start transparent.
@@ -235,24 +246,27 @@ class PortfolioTests(unittest.TestCase):
         for library in ('gsap.min.js', 'CustomEase.min.js', 'ScrollTrigger.min.js', 'SplitText.min.js'):
             self.assertLess(names.index(library), names.index('motion.js'))
             self.assertTrue((OUT / 'assets/vendor/gsap' / library).is_file())
+        self.assertLess(names.index('lenis.min.js'), names.index('motion.js'))
+        self.assertTrue((OUT / 'assets/vendor/lenis/LICENSE').is_file())
         self.assertTrue((OUT / 'assets/vendor/gsap/LICENSE.md').is_file())
         # Three.js is never parsed on the critical path: motion.js imports it lazily.
-        self.assertNotIn('signal-field.js', ' '.join(sources))
-        field = (OUT / 'assets/js/signal-field.js').read_text(encoding='utf-8')
+        self.assertNotIn('lab-scene.js', ' '.join(sources))
+        field = (OUT / 'assets/js/lab-scene.js').read_text(encoding='utf-8')
         self.assertIn('export', field)
         self.assertIn('three.js', field.split('*/', 1)[0])
         motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
         self.assertIn('import(fieldScript)', motion)
         self.assertIn('has-field', motion)
+        self.assertIn('lab-scene.js', motion)
         # The capability check runs before paint so the field's space is reserved (no layout shift).
         head = self.source.split('</head>', 1)[0]
         for guard in ("classList.add('has-field')", 'saveData', "getContext('webgl2')"):
             self.assertIn(guard, head)
-        self.assertEqual(self.html.count('class="signal-field" aria-hidden="true"'), 1)
+        self.assertEqual(self.html.count('class="lab-scene signal-field" aria-hidden="true"'), 1)
         # The loop only runs while visible, on screen and without reduced motion (checked in source;
         # the bundle is minified).
-        source = (ROOT / 'tools/motion/signal-field.src.js').read_text(encoding='utf-8')
-        for guard in ('reduced.matches', 'IntersectionObserver', 'document.hidden', 'gsap.ticker.remove(tick)'):
+        source = (ROOT / 'tools/motion/lab-scene.src.js').read_text(encoding='utf-8')
+        for guard in ('reduced.matches', 'IntersectionObserver', 'document.hidden', 'running = false'):
             self.assertIn(guard, source)
 
 

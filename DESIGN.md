@@ -204,3 +204,30 @@ The signal field occupies a dedicated desktop column, sits below the intro copy 
 
 The project index leads directly into the work. GSAP handles brief, one-shot entrances, chart guide drawing, and control feedback. Project panels stay in their grid slots, and the opening copy is visible while scripts load. The Three.js field supplies continuous movement while visible and draws a still frame for reduced motion.
 
+
+## Interactive Lab — 23 November 2026
+
+The homepage was redesigned around one idea: a sophisticated creative page at first glance, the depth of a research engineer's work on interaction. It supersedes the hero and motion sections above; the evidence rules still apply.
+
+- **Palette.** Ivory surround (`#fdfcfa`), navy interior (`#102449`), fuchsia as the single luminous accent (`#bd005f` on ivory, `#f2569f` on navy for AA contrast), blue for depth (`#435c85`, `#9aadcd` on navy), pale blue rules (`#d8dfe9`). Yellow stays reserved for a selected measured point.
+- **Stage.** The hero is a navy, rounded "stage" inset in the ivory page. An oversized serif name sits bottom-left, the bench floats right, and a Three.js sculpture sits between them. It recedes like a card being set down as you scroll.
+- **The bench.** Three ARIA tabs, each a real experiment with real numbers:
+  - Research: pick ε 0.49 / 2 / 6 and read the measured AUC, interval and gap.
+  - Applications: random order versus the model's ranking across the first 20 of 200 comments. The expected counts, 6 and 15, come from prevalence 0.30 × Lift@10% 2.5.
+  - Systems: step through the four-stage order lifecycle.
+  Without JavaScript all three panels are shown in full.
+- **Sculpture.** A noise-displaced, lacquered core inside a ~14k-point shell that morphs per mode:
+  - Research: a sphere whose turbulence follows the selected ε.
+  - Applications: ten decile rings whose pink share matches the queue.
+  - Systems: a loop that crowds toward the active lifecycle step.
+  It is labelled as illustration, not data. Rendering stops off screen, in hidden tabs and with reduced motion.
+- **Motion.**
+  - Lenis smooth scroll runs on GSAP's ticker.
+  - Headings reveal word by word behind masks, and the name and contact line letter by letter.
+  - Some paragraphs brighten word by word with scroll.
+  - Images expand from an inset frame.
+  - Evidence panels rise as their sticky story stays put, and navy chambers open out of the page.
+  - Bars grow from zero and chart guides draw. Figures never count up.
+  - Buttons are magnetic for fine pointers.
+  Everything is registered in `gsap.matchMedia` so reduced motion reverts it, and Lenis is not started.
+- **Project index.** A sticky numbered index follows the reader through the work, with a pink reading-progress rule under the header.

@@ -205,6 +205,145 @@
     select(0, false);
   }
 
+  // ---- The bench: three measured experiments beside the sculpture ------------
+  // State lives on the stage's data attributes so the optional sculpture can
+  // pick it up whenever it finishes loading; every change also fires "labchange".
+  const lab = document.querySelector("[data-lab]");
+  if (lab) {
+    const allowMotion = () => !reduced.matches && !document.hidden;
+    const announce = (kind, detail = {}) =>
+      lab.dispatchEvent(new CustomEvent("labchange", { bubbles: true, detail: { kind, ...detail } }));
+    const tween = (element, attributes) => {
+      if (window.gsap && allowMotion()) window.gsap.to(element, { attr: attributes, duration: 0.6, ease: "power3.out", overwrite: true });
+      else Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+    };
+    lab.classList.add("lab-enhanced");
+
+    // Modes: an ARIA tab set with automatic activation.
+    const tablist = lab.querySelector('[role="tablist"]');
+    const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+    const panels = tabs.map((tab) => document.getElementById(tab.getAttribute("aria-controls")));
+    const count = lab.querySelector("[data-lab-count]");
+    panels.forEach((panel, index) => {
+      panel.setAttribute("role", "tabpanel");
+      panel.setAttribute("aria-labelledby", tabs[index].id);
+    });
+    let modeIndex = 0;
+    const firstVisit = new Set();
+    const selectMode = (index, notify = true) => {
+      modeIndex = index;
+      tabs.forEach((tab, i) => {
+        tab.setAttribute("aria-selected", String(i === index));
+        tab.tabIndex = i === index ? 0 : -1;
+      });
+      panels.forEach((panel, i) => { panel.hidden = i !== index; });
+      const mode = tabs[index].dataset.mode;
+      lab.dataset.mode = mode;
+      if (count) count.textContent = String(index + 1).padStart(2, "0");
+      if (notify) announce("mode", { mode, panel: panels[index] });
+      if (notify && !firstVisit.has(mode)) {
+        firstVisit.add(mode);
+        if (mode === "applications") demoQueue();
+      }
+    };
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectMode(index));
+      tab.addEventListener("keydown", (event) => {
+        const keys = { ArrowRight: 1, ArrowLeft: -1, Home: "first", End: "last" };
+        if (!(event.key in keys)) return;
+        event.preventDefault();
+        const step = keys[event.key];
+        const next = step === "first" ? 0 : step === "last" ? tabs.length - 1 : (modeIndex + step + tabs.length) % tabs.length;
+        selectMode(next);
+        tabs[next].focus();
+      });
+    });
+    tablist.hidden = false;
+
+    // Research: the three measured privacy budgets.
+    const budgets = [
+      { epsilon: "0.49", auc: 0.933, low: 0.909, high: 0.957, noise: 1 },
+      { epsilon: "2", auc: 0.944, low: 0.927, high: 0.960, noise: 0.42 },
+      { epsilon: "6", auc: 0.945, low: 0.928, high: 0.961, noise: 0.16 },
+    ];
+    const strip = (value) => 10 + (value - 0.9) / 0.07 * 300;
+    const three = (value) => value.toFixed(3).replace(/^0/, "");
+    const epsButtons = [...lab.querySelectorAll("[data-lab-epsilon]")];
+    const field = (name) => lab.querySelector(`[data-lab-${name}]`);
+    const selectBudget = (index, notify = true) => {
+      const budget = budgets[index];
+      epsButtons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
+      field("auc").textContent = three(budget.auc);
+      field("eps").textContent = budget.epsilon;
+      field("interval").textContent = `${three(budget.low)}–${three(budget.high)}`;
+      field("gap").textContent = three(0.953 - budget.auc);
+      tween(field("band"), { x: strip(budget.low).toFixed(1), width: (strip(budget.high) - strip(budget.low)).toFixed(1) });
+      tween(field("dot"), { cx: strip(budget.auc).toFixed(1) });
+      lab.dataset.noise = String(budget.noise);
+      if (notify) {
+        field("status").textContent = `ε ${budget.epsilon}: mean ROC-AUC ${three(budget.auc)}, 95% t interval ${three(budget.low)} to ${three(budget.high)}, ${three(0.953 - budget.auc)} below the non-private reference.`;
+        announce("epsilon", { noise: budget.noise });
+      }
+    };
+    epsButtons.forEach((button, index) => button.addEventListener("click", () => selectBudget(index)));
+    wireArrowKeys(epsButtons, selectBudget);
+    epsButtons[0].parentElement.hidden = false;
+    selectBudget(0, false);
+
+    // Applications: the first 20 of a 200-comment review queue.
+    // Expected counts: random order finds prevalence 0.30 x 20 = 6 actionable;
+    // the model's top decile finds 0.30 x Lift@10% 2.5 x 20 = 15.
+    const cells = [...lab.querySelectorAll("[data-lab-queue] i")];
+    const hits = {
+      random: [1, 4, 8, 11, 15, 18],
+      ranked: [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 13, 15, 17, 19],
+    };
+    const copy = {
+      random: ["≈6 of 20", "actionable when the first 10% of a 200-comment queue is read in random order."],
+      ranked: ["≈15 of 20", "actionable in the first 10% of a 200-comment queue, ranked by the model."],
+    };
+    const orderButtons = [...lab.querySelectorAll("[data-lab-order]")];
+    let orderTouched = false;
+    const selectOrder = (index, notify = true) => {
+      const order = orderButtons[index].dataset.labOrder;
+      orderButtons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
+      cells.forEach((cell, i) => {
+        cell.style.transitionDelay = allowMotion() ? `${i * 22}ms` : "";
+        cell.classList.toggle("is-hit", hits[order].includes(i));
+      });
+      field("queue-count").textContent = copy[order][0];
+      field("queue-text").textContent = copy[order][1];
+      lab.dataset.order = order;
+      if (notify) announce("order", { ranked: order === "ranked" });
+    };
+    orderButtons.forEach((button, index) => button.addEventListener("click", () => { orderTouched = true; selectOrder(index); }));
+    wireArrowKeys(orderButtons, (index) => { orderTouched = true; selectOrder(index); });
+    orderButtons[0].parentElement.hidden = false;
+    selectOrder(1, false);
+    // On a first visit, show the change once: random order, then the ranking.
+    function demoQueue() {
+      if (!allowMotion() || orderTouched) return;
+      selectOrder(0);
+      setTimeout(() => { if (!orderTouched && lab.dataset.mode === "applications") selectOrder(1); }, 1100);
+    }
+
+    // Systems: four lifecycle steps.
+    const steps = [...lab.querySelectorAll("[data-lab-step]")];
+    const stepButtons = steps.map((step) => step.querySelector("button"));
+    const selectStep = (index, notify = true) => {
+      steps.forEach((step, i) => step.classList.toggle("is-active", i === index));
+      stepButtons.forEach((button, i) => button.setAttribute("aria-pressed", String(i === index)));
+      lab.dataset.step = String(index);
+      if (notify) announce("step", { step: index, target: steps[index].querySelector("p") });
+    };
+    stepButtons.forEach((button, index) => button.addEventListener("click", () => selectStep(index)));
+    wireArrowKeys(stepButtons, selectStep);
+    selectStep(0, false);
+
+    selectMode(0, false);
+    firstVisit.add("research");
+  }
+
   const collectionLinks = [...document.querySelectorAll(".collection-index a")];
   const selectCollection = (id) => collectionLinks.forEach((link) => {
     if (link.hash === "#" + id) link.setAttribute("aria-current", "location");
