@@ -231,3 +231,30 @@ The homepage was redesigned around one idea: a sophisticated creative page at fi
   - Buttons are magnetic for fine pointers.
   Everything is registered in `gsap.matchMedia` so reduced motion reverts it, and Lenis is not started.
 - **Project index.** A sticky numbered index follows the reader through the work, with a pink reading-progress rule under the header.
+
+## Noir Lab — 23 November 2026 (same day, supersedes the Interactive Lab palette and hero)
+
+The owner asked for black and fuchsia, no sphere, and an editorial, technical direction. Focus Industries was the reference for its design language, not its content or brand.
+
+- **Palette.**
+  - Ground: black `#0a0a0b`, panels `#131315`, hairlines `#242428` / `#34343a`.
+  - Type: warm white `#f2f0ec`, with `#a3a2a8` and `#75747b` for secondary text.
+  - Accent: luminous fuchsia `#ff3d9a`. The brand pink `#bd005f` fills the methods band and the research sidebar.
+  - Navy and blue are retired from the homepage.
+- **Type.** Inter Tight variable, self-hosted (latin, latin italic, greek for ε/δ; OFL in `assets/fonts/OFL-inter-tight.txt`):
+  - The name, the "Work" word and "Let's talk." are set at extreme scale, tight (-0.07em).
+  - Labels are 11px uppercase with 0.16em tracking.
+- **Technical grammar.**
+  - Spec lines: `LABEL ——— LABEL`, where the rule draws in on scroll.
+  - Bold-italic verb rows: the first verb is fuchsia.
+  - Project codes in a sticky left rail (DP—05, KH—01…), and "+" links.
+  - The verbs describe each project's method; they are not results.
+- **Slat field (replaces the sphere).** A single Three.js shader draws a grid of capsules inside the hero "instrument":
+  - Research: flicker follows ε.
+  - Applications: the columns sort into the ranked queue, with fuchsia shares of 30% overall, 75% in the top decile and 25% elsewhere.
+  - Systems: four bands light up to the active lifecycle step, and the webhook step turns fuchsia.
+  - The pointer lifts slats and a click sends a ripple.
+  - The figure is labelled as illustration, not data.
+- **Motion.** As before, plus:
+  - The name's two lines drift apart on scroll, and the giant "Work" slides across.
+  - The methods band opens from a slit.

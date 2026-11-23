@@ -30,7 +30,7 @@
   const log = [];
   window.portfolioMotion = { log };
 
-  const stage = document.querySelector(".stage");
+  const stage = document.querySelector("[data-lab]");
   const playIntro = !location.hash && scrollY < 100
     && performance.getEntriesByType("navigation")[0]?.type !== "back_forward"
     && allowed();
@@ -86,27 +86,20 @@
 
   // ---- Opening ----------------------------------------------------------------
   const runIntro = () => {
-    const kicker = stage.querySelector(".stage-top");
+    const meta = stage.querySelectorAll(".hero-meta p");
     const names = stage.querySelectorAll(".name-line");
     const thesis = stage.querySelector(".stage-thesis");
-    const description = stage.querySelector(".stage-description");
-    const actions = stage.querySelector(".intro-actions");
-    const lab = stage.querySelector(".lab");
-    const legend = stage.querySelector(".stage-legend");
     const nameSplits = [...names].map((line) => split(line, "chars"));
     const thesisSplit = split(thesis, "words");
-    const tl = gsap.timeline({
-      onComplete: () => { nameSplits.forEach(revert); revert(thesisSplit); },
-    });
-    tl.from(stage, { clipPath: "inset(6% 4% 6% 4% round 40px)", duration: 1.3, ease: "lab-expo", clearProps: "clipPath" }, 0)
-      .from(kicker, { y: 14, opacity: 0, duration: 0.6, clearProps: "all" }, 0.35)
-      .from(nameSplits.flatMap((s) => s.chars), { yPercent: 110, rotate: 4, duration: 1.1, ease: "lab-expo", stagger: 0.028 }, 0.4)
-      .from(thesisSplit.words, { yPercent: 100, duration: 0.8, ease: "lab-expo", stagger: 0.035 }, 0.85)
-      .from(description, { y: 16, opacity: 0, clearProps: "all" }, 1.05)
-      .from(actions.children, { y: 16, opacity: 0, stagger: 0.06, clearProps: "all" }, 1.15)
-      .from(lab, { x: 40, opacity: 0, duration: 1, ease: "lab-expo", clearProps: "all" }, 0.95)
-      .from(lab.querySelectorAll(".lab-tabs button, .lab-panel:not([hidden]) > *"), { y: 12, opacity: 0, stagger: 0.04, clearProps: "all" }, 1.2);
-    if (legend) tl.from(legend, { opacity: 0, x: -12, clearProps: "all" }, 1.5);
+    const tl = gsap.timeline({ onComplete: () => { nameSplits.forEach(revert); revert(thesisSplit); } });
+    tl.from(meta, { y: 12, opacity: 0, duration: 0.6, stagger: 0.06, clearProps: "all" }, 0)
+      .from(nameSplits[0].chars, { yPercent: 105, duration: 1.15, ease: "lab-expo", stagger: 0.035 }, 0.15)
+      .from(nameSplits[1].chars, { yPercent: 105, duration: 1.15, ease: "lab-expo", stagger: { each: 0.035, from: "end" } }, 0.3)
+      .from(stage.querySelectorAll(".hero-thesis .spec-line, .hero-thesis .verbs em"), { y: 14, opacity: 0, stagger: 0.06, clearProps: "all" }, 0.75)
+      .from(thesisSplit.words, { yPercent: 100, duration: 0.8, ease: "lab-expo", stagger: 0.03 }, 0.85)
+      .from(stage.querySelectorAll(".stage-description, .intro-actions > a"), { y: 16, opacity: 0, stagger: 0.06, clearProps: "all" }, 1.05)
+      .from(stage.querySelector(".instrument"), { clipPath: "inset(0 0 100% 0)", duration: 1.2, ease: "lab-expo", clearProps: "clipPath" }, 0.7)
+      .from(stage.querySelector(".lab"), { y: 40, opacity: 0, duration: 1, ease: "lab-expo", clearProps: "all" }, 0.9);
     log.push({ target: "intro", duration: Math.round(tl.duration() * 1000) });
   };
   if (playIntro && stage) runIntro();
@@ -168,20 +161,29 @@
   mm.add("(prefers-reduced-motion: no-preference)", () => {
     const once = { start: "top 86%", once: true };
 
-    // The stage recedes like a card being set down as the work arrives.
+    // The name's two lines drift apart as the work arrives.
     if (stage) {
-      gsap.to(stage, {
-        scale: 0.94, yPercent: 4, borderRadius: 44, ease: "none",
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
-      });
-      gsap.to(stage.querySelector(".stage-copy"), {
-        yPercent: -18, opacity: 0.35, ease: "none",
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
-      });
+      const [first, second] = stage.querySelectorAll(".name-line");
+      const drift = { trigger: stage, start: "top top", end: "bottom top", scrub: true };
+      gsap.to(first, { xPercent: -8, ease: "none", scrollTrigger: drift });
+      gsap.to(second, { xPercent: 6, ease: "none", scrollTrigger: drift });
     }
+    // The giant section word slides across as you read past it.
+    gsap.utils.toArray(".giant").forEach((word) => {
+      gsap.fromTo(word, { xPercent: 6 }, { xPercent: -6, ease: "none", scrollTrigger: { trigger: word, start: "top bottom", end: "bottom top", scrub: true } });
+    });
+    // LABEL ——— LABEL: the rule draws once its line arrives.
+    root.classList.add("js-rules");
+    gsap.utils.toArray(".spec-line").forEach((line) => {
+      ScrollTrigger.create({ trigger: line, start: "top 90%", once: true, onEnter: () => line.classList.add("is-drawn") });
+    });
+    // Verbs step in one after another.
+    gsap.utils.toArray(".verbs").forEach((row) => {
+      gsap.from(row.children, { y: 18, opacity: 0, duration: 0.6, stagger: 0.09, clearProps: "all", scrollTrigger: { trigger: row, start: "top 90%", once: true } });
+    });
 
     // Headings reveal word by word from behind a mask.
-    gsap.utils.toArray(".work-heading h2, .section-heading h2, .project-copy > h3, .audio-lab h3, .semantic-lab h2, .about h2, .research-question").forEach((heading) => {
+    gsap.utils.toArray(".section-heading h2, .project-copy > h3, .audio-lab h3, .semantic-lab h2, .about h2, .research-question").forEach((heading) => {
       const instance = split(heading, "words");
       gsap.from(instance.words, {
         yPercent: 110, duration: 1, ease: "lab-expo", stagger: 0.06,
@@ -190,22 +192,21 @@
       });
     });
 
-    // Project numbers rise, then drift slower than the page.
+    // Project numbers rise into place.
     gsap.utils.toArray(".project-number").forEach((number) => {
       gsap.from(number, { yPercent: 70, opacity: 0, duration: 1.1, ease: "lab-expo", scrollTrigger: { trigger: number, ...once } });
-      gsap.to(number, { yPercent: -30, ease: "none", scrollTrigger: { trigger: number.closest(".project"), start: "top bottom", end: "bottom top", scrub: true } });
     });
 
     // Supporting copy fades and lifts, staggered within each block.
     gsap.utils.toArray(".project-copy, .audio-lab > div:first-child, .about-copy, .semantic-design, .contact-invitation").forEach((block) => {
       const items = [...block.querySelectorAll(":scope > p, :scope > .metrics, :scope > .tags, :scope > .text-links, :scope > .actions, :scope > .education, :scope > .source-link, :scope > dl, :scope > ol, :scope > h3, :scope > h4, :scope > .semantic-legend")]
-        .filter((item) => !item.matches("h3") || !block.matches(".project-copy"));
+        .filter((item) => !item.matches(".verbs") && (!item.matches("h3") || !block.matches(".project-copy")));
       if (!items.length) return;
       gsap.from(items, { y: 28, opacity: 0, duration: 0.9, stagger: 0.07, clearProps: "transform,opacity", scrollTrigger: { trigger: block, start: "top 82%", once: true } });
     });
 
     // Scroll-linked reading: words brighten as the paragraph passes through view.
-    gsap.utils.toArray(".work-heading > p:last-child, .about-copy > p:first-of-type, .contact-question").forEach((paragraph) => {
+    gsap.utils.toArray(".work-intro > p:last-child, .about-copy > p:first-of-type, .contact-question").forEach((paragraph) => {
       const instance = split(paragraph, "words", { mask: false });
       gsap.fromTo(instance.words, { opacity: 0.18 }, {
         opacity: 1, stagger: 0.1, ease: "none",
@@ -269,11 +270,11 @@
       });
     });
 
-    // Navy chambers open out of the page.
-    gsap.utils.toArray(".capabilities, .contact").forEach((chamber) => {
-      gsap.from(chamber, {
-        scale: 0.93, borderRadius: 64, ease: "none", transformOrigin: "50% 0%",
-        scrollTrigger: { trigger: chamber, start: "top bottom", end: "top 35%", scrub: true },
+    // The fuchsia band opens from a slit as it scrolls in.
+    gsap.utils.toArray(".capabilities").forEach((band) => {
+      gsap.fromTo(band, { clipPath: "inset(18% 6% 18% 6%)" }, {
+        clipPath: "inset(0% 0% 0% 0%)", ease: "none",
+        scrollTrigger: { trigger: band, start: "top bottom", end: "top 30%", scrub: true },
       });
     });
     gsap.utils.toArray(".capability-grid a").forEach((card, index) => {
@@ -301,7 +302,7 @@
 
   // ---- Magnetic actions and panel spotlight (fine pointers only) --------------------
   mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
-    const magnets = gsap.utils.toArray(".button, .case-symbol, .panel-link");
+    const magnets = gsap.utils.toArray(".button, .case-symbol, .panel-link, .plus-link, .nav-contact");
     const handlers = magnets.map((element) => {
       const xTo = gsap.quickTo(element, "x", { duration: 0.5, ease: "lab-out" });
       const yTo = gsap.quickTo(element, "y", { duration: 0.5, ease: "lab-out" });

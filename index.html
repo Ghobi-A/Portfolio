@@ -9,11 +9,11 @@
       name="description"
       content="Applied data science by Ghobikan Aravindan, London. Python, SQL, NLP and data engineering: from messy signals to evaluated, usable systems."
     />
-    <meta name="theme-color" content="#FDFCFA" />
+    <meta name="theme-color" content="#0A0A0B" />
     <!-- METADATA:END -->
-    <link rel="preload" href="assets/fonts/source-serif-4-regular-subset.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="stylesheet" href="assets/css/lab.css?v=20261123-lab" />
-    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261123-lab" />
+        <link rel="preload" href="assets/fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="assets/css/privacy-chart.css?v=20261123-noir" />
+    <link rel="stylesheet" href="assets/css/lab.css?v=20261123-noir" />
     <script>
       /* Reserve the sculpture only on devices that can render it. */
       (() => {
@@ -26,21 +26,21 @@
         } catch {}
       })();
     </script>
-    <script defer src="assets/js/privacy-chart.js?v=20261123-lab"></script>
-    <script defer src="assets/js/main.js?v=20261123-lab"></script>
+    <script defer src="assets/js/privacy-chart.js?v=20261123-noir"></script>
+    <script defer src="assets/js/main.js?v=20261123-noir"></script>
     <script defer src="assets/vendor/gsap/gsap.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/CustomEase.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/ScrollTrigger.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/SplitText.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/lenis/lenis.min.js?v=1.3.28"></script>
-    <script defer src="assets/js/motion.js?v=20261123-lab"></script>
+    <script defer src="assets/js/motion.js?v=20261123-noir"></script>
   </head>
   <body>
     <a class="skip-link" href="#projects">Skip to selected work</a>
     <header class="header">
-      <div class="header-inner wrap">
+      <div class="header-inner">
         <a class="brand" href="#top" aria-label="Ghobikan Aravindan, back to top"
-          ><span class="brand-mark" aria-hidden="true">GA</span><span class="brand-wordmark">Ghobikan Aravindan</span><span class="brand-caption">Applied data science · London</span></a
+          ><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span class="brand-wordmark">Ghobikan Aravindan</span></a
         >
         <button
           class="menu-button"
@@ -55,7 +55,7 @@
           <a href="#projects">Work</a><a href="#GA-DP-05">Research</a
           ><a href="#about">About</a
           ><a href="assets/Ghobikan-Aravindan-CV.pdf">CV ↗</a
-          ><a href="#contact">Contact</a>
+          ><a class="nav-contact" href="#contact"><span aria-hidden="true">+</span> Get in touch</a>
         </nav>
       </div>
     </header>
@@ -88,109 +88,118 @@
       })();
     </script>
     <main id="top">
-      <section class="hero" aria-labelledby="identity">
-        <div class="stage recruiter-intro" data-lab data-mode="research">
-          <div class="lab-scene signal-field" aria-hidden="true"><div class="scene-fallback"></div></div>
-          <div class="stage-inner">
-            <div class="stage-top">
-              <p class="stage-kicker">Applied data science &amp; ML engineering · London</p>
-              <p class="stage-index" aria-hidden="true"><span data-lab-count>01</span> / 03</p>
-            </div>
-            <div class="stage-copy">
-              <h1 id="identity" class="stage-name"><span class="name-line">Ghobikan</span> <span class="name-line"><em>Aravindan</em><span class="name-dot">.</span></span></h1>
-              <p class="stage-thesis">From messy signals to <em>systems you can interrogate.</em></p>
-              <p class="stage-description">I use Python and SQL to investigate operational data, evaluate machine-learning models and build usable data products.</p>
-              <div class="actions intro-actions">
-                <a class="button primary" href="#projects">Explore selected work <span aria-hidden="true">↓</span></a>
-                <a class="button ghost" href="assets/Ghobikan-Aravindan-CV.pdf">Download CV <span aria-hidden="true">↗</span></a>
-                <a class="intro-contact" href="mailto:ghobikan15@hotmail.co.uk">Let’s talk <span aria-hidden="true">↗</span></a>
-              </div>
-            </div>
-            <div class="lab" aria-labelledby="lab-title">
-              <div class="lab-head">
-                <p id="lab-title" class="lab-title">The bench <span>Three experiments from the work below. Every number is measured.</span></p>
-                <div class="lab-tabs" role="tablist" aria-labelledby="lab-title" hidden>
-                  <button type="button" role="tab" id="tab-research" aria-selected="true" aria-controls="lab-research" data-mode="research"><span aria-hidden="true">01</span>Research</button>
-                  <button type="button" role="tab" id="tab-applications" aria-selected="false" aria-controls="lab-applications" data-mode="applications" tabindex="-1"><span aria-hidden="true">02</span>Applications</button>
-                  <button type="button" role="tab" id="tab-systems" aria-selected="false" aria-controls="lab-systems" data-mode="systems" tabindex="-1"><span aria-hidden="true">03</span>Systems</button>
-                </div>
-              </div>
-
-              <section class="lab-panel" id="lab-research" data-panel="research" aria-labelledby="lab-research-title">
-                <p class="panel-kicker">Research · differential privacy</p>
-                <h2 id="lab-research-title">How much accuracy survives a formal privacy guarantee?</h2>
-                <div class="lab-choice eps-controls" role="group" aria-label="Privacy budget" hidden>
-                  <button type="button" data-lab-epsilon="0" aria-pressed="true">ε 0.49</button>
-                  <button type="button" data-lab-epsilon="1" aria-pressed="false">ε 2</button>
-                  <button type="button" data-lab-epsilon="2" aria-pressed="false">ε 6</button>
-                </div>
-                <div class="eps-readout">
-                  <p class="eps-value"><span data-lab-auc>.933</span><small>mean ROC-AUC at ε <span data-lab-eps>0.49</span></small></p>
-                  <dl class="eps-facts">
-                    <div><dt>95% t interval</dt><dd data-lab-interval>.909–.957</dd></div>
-                    <div><dt>Below non-private HGB</dt><dd data-lab-gap>.020</dd></div>
-                  </dl>
-                </div>
-                <svg class="eps-strip" viewBox="0 0 320 58" aria-hidden="true">
-                  <path class="eps-axis" d="M10 40H310" />
-                  <path class="eps-ticks" d="M10 36V44M52.9 36V44M95.7 36V44M138.6 36V44M181.4 36V44M224.3 36V44M267.1 36V44M310 36V44" />
-                  <text x="10" y="56">.90</text><text x="295" y="56">.97</text>
-                  <path class="eps-ref" d="M237.1 4V40" /><text class="eps-ref-label" x="233" y="10" text-anchor="end">non-private .953</text>
-                  <rect class="eps-interval" data-lab-band x="48.6" y="20" width="205.7" height="10" rx="5" />
-                  <circle class="eps-dot" data-lab-dot cx="151.4" cy="25" r="6" />
-                </svg>
-                <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-lab-status></p>
-                <p class="panel-note">Five seeds on 1,338 public teaching records, δ 10⁻⁵. Lower ε is stronger privacy: watch the sculpture’s noise follow your choice.</p>
-                <a class="panel-link" href="#file-dp">Privacy &amp; utility audit <span aria-hidden="true">→</span></a>
-              </section>
-
-              <section class="lab-panel" id="lab-applications" data-panel="applications" aria-labelledby="lab-applications-title">
-                <p class="panel-kicker">Applications · NLP ranking</p>
-                <h2 id="lab-applications-title">Which fan comments deserve a human reviewer first?</h2>
-                <div class="lab-choice queue-controls" role="group" aria-label="Review order" hidden>
-                  <button type="button" data-lab-order="random" aria-pressed="false">Random order</button>
-                  <button type="button" data-lab-order="ranked" aria-pressed="true">Model ranking</button>
-                </div>
-                <div class="queue" data-lab-queue aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                <p class="queue-readout" role="status" aria-live="polite" aria-atomic="true"><strong data-lab-queue-count>≈15 of 20</strong> <span data-lab-queue-text>actionable in the top 10% of a 200-comment queue, ranked by the model.</span></p>
-                <dl class="panel-metrics">
-                  <div><dt>Actionable PR-AUC</dt><dd>0.65 <small>prevalence 0.30</small></dd></div>
-                  <div><dt>Lift at top 10%</dt><dd>2.5× <small>interval 2.1–3.3</small></dd></div>
-                </dl>
-                <p class="panel-note">Expected counts: prevalence × Lift@10%. Out-of-fold development evaluation on 200 labels from one annotator.</p>
-                <a class="panel-link" href="#file-kh4">NLP evaluation <span aria-hidden="true">→</span></a>
-              </section>
-
-              <section class="lab-panel" id="lab-systems" data-panel="systems" aria-labelledby="lab-systems-title">
-                <p class="panel-kicker">Systems · production ordering</p>
-                <h2 id="lab-systems-title">When does a restaurant order become a paid order?</h2>
-                <ol class="lifecycle">
-                  <li data-lab-step="0" class="is-active"><button type="button" aria-pressed="true"><span aria-hidden="true">01</span>Validate</button><p>Server pricing, opening hours and delivery area. The browser never sets the price.</p></li>
-                  <li data-lab-step="1"><button type="button" aria-pressed="false"><span aria-hidden="true">02</span>Pay</button><p>Stripe checkout with idempotent requests, so a retried click cannot charge twice.</p></li>
-                  <li data-lab-step="2" class="is-critical"><button type="button" aria-pressed="false"><span aria-hidden="true">03</span>Confirm</button><p>A signed webhook confirms payment. The browser returning from checkout is not proof.</p></li>
-                  <li data-lab-step="3"><button type="button" aria-pressed="false"><span aria-hidden="true">04</span>Kitchen</button><p>Realtime updates reach a staff-only kitchen view once the server has confirmed.</p></li>
-                </ol>
-                <p class="panel-note">Implemented architecture of a deployed site, not a transaction-volume claim.</p>
-                <a class="panel-link" href="#GA-RA-07">Restaurant operations <span aria-hidden="true">→</span></a>
-              </section>
+      <section class="hero recruiter-intro" data-lab data-mode="research" aria-labelledby="identity">
+        <div class="hero-meta">
+          <p><span>Index</span>GA—00</p>
+          <p><span>Practice</span>Applied data science &amp; ML engineering</p>
+          <p><span>Based</span>London, UK</p>
+          <p><span>Evidence</span>Reviewed 19 Oct 2026</p>
+        </div>
+        <h1 id="identity" class="hero-name"><span class="name-line">Ghobikan</span> <span class="name-line">Aravindan<span class="name-dot">.</span></span></h1>
+        <div class="hero-brief">
+          <div class="hero-thesis">
+            <p class="spec-line" aria-hidden="true"><span>Signal</span><span>System</span></p>
+            <p class="verbs"><em>Collect</em> <em>Evaluate</em> <em>Ship</em></p>
+            <p class="stage-thesis">From messy signals to systems you can interrogate.</p>
+            <p class="stage-description">I use Python and SQL to investigate operational data, evaluate machine-learning models and build usable data products.</p>
+            <div class="actions intro-actions">
+              <a class="plus-link" href="#projects"><span aria-hidden="true">+</span> Explore selected work</a>
+              <a class="plus-link" href="assets/Ghobikan-Aravindan-CV.pdf"><span aria-hidden="true">+</span> Download CV</a>
+              <a class="plus-link" href="mailto:ghobikan15@hotmail.co.uk"><span aria-hidden="true">+</span> Let’s talk</a>
             </div>
           </div>
-          <p class="stage-legend" aria-hidden="true"><span></span>Sculpture driven by the bench. It illustrates; it is not data.</p>
+          <div class="instrument" aria-hidden="true">
+            <div class="instrument-head"><span>Fig. 00 / Live bench</span><span><span data-lab-count>01</span> / 03</span></div>
+            <div class="lab-scene signal-field"><div class="scene-fallback"></div></div>
+            <p class="instrument-legend">Every slat follows the bench. It illustrates; it is not data. Click to send a pulse.</p>
+          </div>
+          <div class="lab" aria-labelledby="lab-title">
+            <div class="lab-head">
+              <p id="lab-title" class="lab-title">The bench <span>Three experiments from the work below. Every number is measured; the field beside it follows your choice.</span></p>
+              <div class="lab-tabs" role="tablist" aria-labelledby="lab-title" hidden>
+                <button type="button" role="tab" id="tab-research" aria-selected="true" aria-controls="lab-research" data-mode="research"><span aria-hidden="true">01</span>Research</button>
+                <button type="button" role="tab" id="tab-applications" aria-selected="false" aria-controls="lab-applications" data-mode="applications" tabindex="-1"><span aria-hidden="true">02</span>Applications</button>
+                <button type="button" role="tab" id="tab-systems" aria-selected="false" aria-controls="lab-systems" data-mode="systems" tabindex="-1"><span aria-hidden="true">03</span>Systems</button>
+              </div>
+            </div>
+
+            <section class="lab-panel" id="lab-research" data-panel="research" aria-labelledby="lab-research-title">
+              <p class="panel-kicker">Research · differential privacy</p>
+              <h2 id="lab-research-title">How much accuracy survives a formal privacy guarantee?</h2>
+              <div class="lab-choice eps-controls" role="group" aria-label="Privacy budget" hidden>
+                <button type="button" data-lab-epsilon="0" aria-pressed="true">ε 0.49</button>
+                <button type="button" data-lab-epsilon="1" aria-pressed="false">ε 2</button>
+                <button type="button" data-lab-epsilon="2" aria-pressed="false">ε 6</button>
+              </div>
+              <div class="eps-readout">
+                <p class="eps-value"><span data-lab-auc>.933</span><small>mean ROC-AUC at ε <span data-lab-eps>0.49</span></small></p>
+                <dl class="eps-facts">
+                  <div><dt>95% t interval</dt><dd data-lab-interval>.909–.957</dd></div>
+                  <div><dt>Below non-private HGB</dt><dd data-lab-gap>.020</dd></div>
+                </dl>
+              </div>
+              <svg class="eps-strip" viewBox="0 0 320 58" aria-hidden="true">
+                <path class="eps-axis" d="M10 40H310" />
+                <path class="eps-ticks" d="M10 36V44M52.9 36V44M95.7 36V44M138.6 36V44M181.4 36V44M224.3 36V44M267.1 36V44M310 36V44" />
+                <text x="10" y="56">.90</text><text x="295" y="56">.97</text>
+                <path class="eps-ref" d="M237.1 4V40" /><text class="eps-ref-label" x="233" y="10" text-anchor="end">non-private .953</text>
+                <rect class="eps-interval" data-lab-band x="48.6" y="20" width="205.7" height="10" rx="5" />
+                <circle class="eps-dot" data-lab-dot cx="151.4" cy="25" r="6" />
+              </svg>
+              <p class="sr-only" role="status" aria-live="polite" aria-atomic="true" data-lab-status></p>
+              <p class="panel-note">Five seeds on 1,338 public teaching records, δ 10⁻⁵. Lower ε is stronger privacy, so the field gets noisier.</p>
+              <a class="panel-link" href="#file-dp">Privacy &amp; utility audit <span aria-hidden="true">→</span></a>
+            </section>
+
+            <section class="lab-panel" id="lab-applications" data-panel="applications" aria-labelledby="lab-applications-title">
+              <p class="panel-kicker">Applications · NLP ranking</p>
+              <h2 id="lab-applications-title">Which fan comments deserve a human reviewer first?</h2>
+              <div class="lab-choice queue-controls" role="group" aria-label="Review order" hidden>
+                <button type="button" data-lab-order="random" aria-pressed="false">Random order</button>
+                <button type="button" data-lab-order="ranked" aria-pressed="true">Model ranking</button>
+              </div>
+              <div class="queue" data-lab-queue aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <p class="queue-readout" role="status" aria-live="polite" aria-atomic="true"><strong data-lab-queue-count>≈15 of 20</strong> <span data-lab-queue-text>actionable in the top 10% of a 200-comment queue, ranked by the model.</span></p>
+              <dl class="panel-metrics">
+                <div><dt>Actionable PR-AUC</dt><dd>0.65 <small>prevalence 0.30</small></dd></div>
+                <div><dt>Lift at top 10%</dt><dd>2.5× <small>interval 2.1–3.3</small></dd></div>
+              </dl>
+              <p class="panel-note">Expected counts: prevalence × Lift@10%. Out-of-fold development evaluation on 200 labels from one annotator.</p>
+              <a class="panel-link" href="#file-kh4">NLP evaluation <span aria-hidden="true">→</span></a>
+            </section>
+
+            <section class="lab-panel" id="lab-systems" data-panel="systems" aria-labelledby="lab-systems-title">
+              <p class="panel-kicker">Systems · production ordering</p>
+              <h2 id="lab-systems-title">When does a restaurant order become a paid order?</h2>
+              <ol class="lifecycle">
+                <li data-lab-step="0" class="is-active"><button type="button" aria-pressed="true"><span aria-hidden="true">01</span>Validate</button><p>Server pricing, opening hours and delivery area. The browser never sets the price.</p></li>
+                <li data-lab-step="1"><button type="button" aria-pressed="false"><span aria-hidden="true">02</span>Pay</button><p>Stripe checkout with idempotent requests, so a retried click cannot charge twice.</p></li>
+                <li data-lab-step="2" class="is-critical"><button type="button" aria-pressed="false"><span aria-hidden="true">03</span>Confirm</button><p>A signed webhook confirms payment. The browser returning from checkout is not proof.</p></li>
+                <li data-lab-step="3"><button type="button" aria-pressed="false"><span aria-hidden="true">04</span>Kitchen</button><p>Realtime updates reach a staff-only kitchen view once the server has confirmed.</p></li>
+              </ol>
+              <p class="panel-note">Implemented architecture of a deployed site, not a transaction-volume claim.</p>
+              <a class="panel-link" href="#GA-RA-07">Restaurant operations <span aria-hidden="true">→</span></a>
+            </section>
+          </div>
         </div>
       </section>
+      <div class="work-layout">
       <nav class="collection-index" aria-label="Project collection">
-        <a href="#file-dp" aria-current="location"><span>01</span>Privacy Audit</a>
-        <a href="#file-kh4"><span>02</span>Demand Intelligence</a>
-        <a href="#GA-RA-07"><span>03</span>Restaurant Operations</a>
-        <a href="#file-di"><span>04</span>Image ML</a>
-        <a href="#file-cd"><span>05</span>Crestbound</a>
-        <a href="#experimental"><span>06</span>Audio Lab</a>
+        <a href="#file-dp" aria-current="location"><b>DP—05</b>Privacy audit</a>
+        <a href="#file-kh4"><b>KH—01</b>Demand intelligence</a>
+        <a href="#GA-RA-07"><b>RA—07</b>Restaurant operations</a>
+        <a href="#file-di"><b>DI—02</b>Image ML</a>
+        <a href="#file-cd"><b>CD—03</b>Crestbound</a>
+        <a href="#experimental"><b>CA—06</b>Audio lab</a>
       </nav>
-      <section id="projects" class="section wrap" aria-labelledby="work-title">
+      <section id="projects" class="section" aria-labelledby="work-title">
         <div class="work-heading">
-          <p class="eyebrow">Selected work</p>
-          <h2 id="work-title">Five projects, <em>each with its evidence open.</em></h2>
-          <p>Every figure below links to the repository it came from. Limits sit beside results, not in the footnotes.</p>
+          <h2 id="work-title" class="giant">Work<span class="sr-only">: selected projects and research</span></h2>
+          <div class="work-intro">
+            <p class="spec-line" aria-hidden="true"><span>Claim</span><span>Evidence</span></p>
+            <p class="verbs"><em>Measure</em> <em>Caveat</em> <em>Link</em></p>
+            <p>Five projects, each with its evidence open. Every figure links to the repository it came from, and limits sit beside results, not in the footnotes.</p>
+          </div>
         </div>
         <article
           id="file-dp"
@@ -203,7 +212,7 @@
           </div>
           <div class="project-grid privacy-chart" data-privacy-chart>
             <div class="project-copy">
-              <h3 id="dp-title"><span class="headline-line">Privacy–Utility</span><br /><span class="headline-line">and Fairness Audit</span></h3>
+              <h3 id="dp-title"><span class="headline-line">Privacy–Utility</span><br /><span class="headline-line">and Fairness Audit</span></h3><p class="spec-line" aria-hidden="true"><span>Privacy</span><span>Utility</span></p><p class="verbs"><em>Train</em> <em>Account</em> <em>Audit</em></p>
               <p class="problem">
                 How much predictive utility survives a formal privacy
                 constraint?
@@ -434,7 +443,7 @@
             <div class="project-copy">
               <h3 id="kh-title">
                 Behavioural Demand<br /><em>Intelligence.</em>
-              </h3>
+              </h3><p class="spec-line" aria-hidden="true"><span>Comment</span><span>Decision</span></p><p class="verbs"><em>Label</em> <em>Rank</em> <em>Review</em></p>
               <div class="paper-study" aria-hidden="true"><img src="assets/images/text-study.webp" alt="" width="1536" height="1024" loading="lazy" /></div>
               <p class="problem">
                 Separating actionable interest from general fan discussion.
@@ -612,11 +621,11 @@
         </article>
 <article id="GA-RA-07" class="project project-restaurant-analytics" aria-labelledby="ra-title">
 <div class="project-top eyebrow"><span><span class="project-number" aria-hidden="true">03</span>GA-RA-07 / End-to-end product, SQL &amp; BI</span><span class="badge">Operational aggregates</span></div>
-<div class="project-grid"><div class="project-copy"><h3 id="ra-title">UK Asia Grill<br /><em>Data &amp; Operations Platform.</em></h3><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A deployed restaurant ordering and kitchen-operations platform, complemented by a read-only PostgreSQL analytical layer, four-page Power BI report with DAX measures, and a separate interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. A supplied PBIX has been structurally inspected (four pages, 55 visuals); its embedded data provenance, Desktop rendering and KPI reconciliation remain unverified. Scale scenarios are estimates.</p><p><strong>My contribution:</strong> I built the ordering platform and read-only analytics layer, defined order/item/notification grains and investigated payment and timestamp quality. The recommendation is to reconcile payments and improve lifecycle measurement before treating recorded order value as revenue or interpreting preparation-time averages.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>SQL &amp; BI</li><li>Power BI / DAX</li><li>TypeScript</li><li>Supabase</li><li>Stripe</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore the separate browser dashboard and clearly labelled scale scenario. The native PBIX is structurally inspected but not engine-validated.</figcaption></figure></div><div id="file-uag" class="restaurant-engineering"><h4>Production ordering &amp; kitchen operations</h4><div class="project-grid">
+<div class="project-grid"><div class="project-copy"><h3 id="ra-title">UK Asia Grill<br /><em>Data &amp; Operations Platform.</em></h3><p class="spec-line" aria-hidden="true"><span>Order</span><span>Revenue</span></p><p class="verbs"><em>Validate</em> <em>Reconcile</em> <em>Report</em></p><p class="problem">When does an order become revenue—and when is a delay a data problem?</p><p>A deployed restaurant ordering and kitchen-operations platform, complemented by a read-only PostgreSQL analytical layer, four-page Power BI report with DAX measures, and a separate interactive browser report. Payment provenance, grain, timestamp quality and defensible recommendations come before attractive headline numbers.</p><dl class="metrics"><div><dt>SQL analyses</dt><dd>15</dd></div><div><dt>Report pages</dt><dd>4</dd></div><div><dt>Recorded source orders</dt><dd>53</dd></div></dl><p class="evidence-note">Real aggregate observations from 53 mixed-status operational records. No customer rows are published. A supplied PBIX has been structurally inspected (four pages, 55 visuals); its embedded data provenance, Desktop rendering and KPI reconciliation remain unverified. Scale scenarios are estimates.</p><p><strong>My contribution:</strong> I built the ordering platform and read-only analytics layer, defined order/item/notification grains and investigated payment and timestamp quality. The recommendation is to reconcile payments and improve lifecycle measurement before treating recorded order value as revenue or interpreting preparation-time averages.</p><ul class="tags" aria-label="Technologies"><li>PostgreSQL</li><li>SQL &amp; BI</li><li>Power BI / DAX</li><li>TypeScript</li><li>Supabase</li><li>Stripe</li></ul><div class="text-links"><a href="projects/restaurant-analytics/index.html">Read dedicated case study ↗</a><a href="projects/restaurant-analytics/dashboard/index.html">Explore operations dashboard ↗</a></div></div><figure class="evidence-panel"><div class="panel-title eyebrow">Fig. 07 / Observed revenue &amp; operations</div><a href="projects/restaurant-analytics/dashboard/index.html" aria-label="Open the restaurant analytics dashboard"><img src="projects/restaurant-analytics/observed-summary.svg" alt="Observed order value and preparation metrics from 53 operational records" width="1086" height="936" style="max-width:100%;height:auto" loading="lazy"></a><figcaption>Observed SQL aggregates. Explore the separate browser dashboard and clearly labelled scale scenario. The native PBIX is structurally inspected but not engine-validated.</figcaption></figure></div><div id="file-uag" class="restaurant-engineering"><h4>Production ordering &amp; kitchen operations</h4><div class="project-grid">
             <div class="project-copy">
               <h3 id="uag-title">
                 An order is more<br />than <em>a checkout.</em>
-              </h3>
+              </h3><p class="spec-line" aria-hidden="true"><span>Browser</span><span>Kitchen</span></p><p class="verbs"><em>Price</em> <em>Confirm</em> <em>Prepare</em></p>
               <p><strong>New: local AI incident investigator.</strong> A real browser → API → PostgreSQL → Qwen3 proof of concept, with saved explanations and staff-controlled decisions. <a href="projects/restaurant-ai/index.html">View the verified AI case study and execution evidence ↗</a></p>
               <p class="problem">
                 Keep the customer, payment provider and kitchen in agreement.
@@ -768,7 +777,7 @@
           </div>
           <div class="project-grid">
             <div class="project-copy">
-              <h3 id="di-title">Distributed<br /><em>Image ML Pipeline.</em></h3>
+              <h3 id="di-title">Distributed<br /><em>Image ML Pipeline.</em></h3><p class="spec-line" aria-hidden="true"><span>Input</span><span>Epoch</span></p><p class="verbs"><em>Partition</em> <em>Encode</em> <em>Measure</em></p>
               <p class="problem">
                 Where does an image-learning pipeline actually spend its time?
               </p>
@@ -959,7 +968,7 @@
           </div>
           <div class="project-grid">
             <div class="project-copy">
-              <h3 id="cd-title">Crestbound<br /><em>Duelists.</em></h3>
+              <h3 id="cd-title">Crestbound<br /><em>Duelists.</em></h3><p class="spec-line" aria-hidden="true"><span>Rules</span><span>Play</span></p><p class="verbs"><em>Simulate</em> <em>Balance</em> <em>Play</em></p>
               <p class="problem">
                 Testing combat balance before making design decisions.
               </p>
@@ -1111,6 +1120,7 @@
           </details>
         </article>
 </section>
+      </div>
       <section
         id="capabilities"
         class="section capabilities"

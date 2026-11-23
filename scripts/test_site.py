@@ -149,7 +149,7 @@ class PortfolioTests(unittest.TestCase):
 
     def test_builder_is_idempotent_and_layout_independent(self):
         self.assertEqual(polish_html(self.html), self.html)
-        changed = self.source.replace('<section class="hero"', '<section data-test="changed" class="hero"')
+        changed = self.source.replace('<section class="hero recruiter-intro"', '<section data-test="changed" class="hero recruiter-intro"')
         self.assertIn('data-test="changed"', polish_html(changed))
         with self.assertRaisesRegex(RuntimeError, 'METADATA'):
             polish_html(self.source.replace('<!-- METADATA:START -->', ''))
@@ -262,7 +262,8 @@ class PortfolioTests(unittest.TestCase):
         head = self.source.split('</head>', 1)[0]
         for guard in ("classList.add('has-field')", 'saveData', "getContext('webgl2')"):
             self.assertIn(guard, head)
-        self.assertEqual(self.html.count('class="lab-scene signal-field" aria-hidden="true"'), 1)
+        self.assertEqual(self.html.count('<div class="instrument" aria-hidden="true">'), 1)
+        self.assertEqual(self.html.count('class="lab-scene signal-field"'), 1)
         # The loop only runs while visible, on screen and without reduced motion (checked in source;
         # the bundle is minified).
         source = (ROOT / 'tools/motion/lab-scene.src.js').read_text(encoding='utf-8')
