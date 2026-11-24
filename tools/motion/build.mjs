@@ -28,7 +28,7 @@ await build({
 
 const vendor = join(root, "assets/vendor/gsap");
 mkdirSync(vendor, { recursive: true });
-for (const file of ["gsap.min.js", "CustomEase.min.js", "ScrollTrigger.min.js", "SplitText.min.js"]) {
+for (const file of ["gsap.min.js", "CustomEase.min.js", "ScrollTrigger.min.js", "SplitText.min.js", "ScrambleTextPlugin.min.js"]) {
   copyFileSync(join(here, "node_modules/gsap/dist", file), join(vendor, file));
 }
 writeFileSync(join(vendor, "LICENSE.md"),
@@ -41,7 +41,7 @@ copyFileSync(join(here, "node_modules/lenis/dist/lenis.min.js"), join(lenisDir, 
 copyFileSync(join(here, "node_modules/lenis/LICENSE"), join(lenisDir, "LICENSE"));
 writeFileSync(join(lenisDir, "VERSION"), `lenis ${lenisVersion}\n`);
 
-for (const file of [field, join(lenisDir, "lenis.min.js"), ...["gsap.min.js", "CustomEase.min.js", "ScrollTrigger.min.js", "SplitText.min.js"].map((f) => join(vendor, f))]) {
+for (const file of [field, join(lenisDir, "lenis.min.js"), ...["gsap.min.js", "CustomEase.min.js", "ScrollTrigger.min.js", "SplitText.min.js", "ScrambleTextPlugin.min.js"].map((f) => join(vendor, f))]) {
   const bytes = readFileSync(file);
   console.log(`${file.replace(root + "/", "").padEnd(40)} ${(statSync(file).size / 1024).toFixed(1).padStart(7)} KB  ${(gzipSync(bytes).length / 1024).toFixed(1).padStart(6)} KB gzip`);
 }

@@ -344,6 +344,43 @@
     firstVisit.add("research");
   }
 
+  // ---- Featured index: each title drives a live preview of that project ----
+  // Hover or keyboard focus previews; on touch the first tap previews and the
+  // second opens the project. motion.js animates "featuredchange" when allowed.
+  const featured = document.querySelector("[data-featured]");
+  if (featured) {
+    const links = [...featured.querySelectorAll("[data-preview]")];
+    const panels = new Map([...featured.querySelectorAll("[data-preview-panel]")].map((panel) => [panel.dataset.previewPanel, panel]));
+    const counter = featured.querySelector("[data-preview-index]");
+    let current = null;
+    const show = (link, notify = true) => {
+      if (!link || link === current) return;
+      const previous = current && panels.get(current.dataset.preview);
+      current = link;
+      const panel = panels.get(link.dataset.preview);
+      links.forEach((item) => item.classList.toggle("is-current", item === link));
+      panels.forEach((item) => item.classList.remove("is-leaving"));
+      if (previous && previous !== panel) previous.classList.add("is-leaving");
+      panels.forEach((item) => item.classList.toggle("is-active", item === panel));
+      if (counter) counter.textContent = String(links.indexOf(link) + 1).padStart(2, "0");
+      const detail = { panel, previous, handled: false };
+      if (notify) featured.dispatchEvent(new CustomEvent("featuredchange", { bubbles: true, detail }));
+      if (!detail.handled) previous?.classList.remove("is-leaving");
+    };
+    links.forEach((link) => {
+      link.addEventListener("pointerenter", (event) => { if (event.pointerType !== "touch") show(link); });
+      let touched = false;
+      link.addEventListener("pointerdown", (event) => { touched = event.pointerType === "touch"; });
+      // A tap focuses the link before its click; leave touch to the click handler.
+      link.addEventListener("focus", () => { if (!touched) show(link); });
+      link.addEventListener("click", (event) => {
+        if (touched && link !== current) { event.preventDefault(); show(link); }
+        touched = false;
+      });
+    });
+    show(links[0], false);
+  }
+
   const collectionLinks = [...document.querySelectorAll(".collection-index a")];
   const selectCollection = (id) => collectionLinks.forEach((link) => {
     if (link.hash === "#" + id) link.setAttribute("aria-current", "location");

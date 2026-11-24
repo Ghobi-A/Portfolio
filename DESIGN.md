@@ -267,3 +267,22 @@ The owner asked for black and fuchsia, no sphere, and an editorial, technical di
 - **Leaving the opening.** The brief drifts up and dims, and the meta row fades out.
 - **Lean.** Big type (the name, "Work", "Let's talk.", section headings, project numbers) leans up to 3.5° with scroll speed, then springs upright.
 - **Verified in Chromium.** One wheel flick eases over ~700ms. After a full scroll, no heading or paragraph is left faded or blurred, and only the three scroll-linked paragraphs keep their word wrappers.
+
+### Kinetic layer — 24 November 2026
+
+These are the three pieces the owner's research recommended next. GSAP owns all choreography.
+
+- **Kinetic marquee.** Two rows run in opposite directions below the opening, one filled and one outlined italic:
+  - One row lists the methods used in the projects; the other lists verbs.
+  - Speed scales with scroll speed, and direction flips with scroll direction.
+  - It is `aria-hidden` and stays still under reduced motion.
+- **Featured index.** Six large project rows sit beside a live preview of each project's real figures:
+  - Figures: ε 0.49 / .933 with the three measured intervals; 2.5× lift with PR-AUC 0.65 vs prevalence 0.30 and the 15/20 queue; 53 orders, 15 SQL analyses and 4 report pages with the lifecycle; 4.58× input with 8.68 s → 8.54 s epochs; Crestbound with 6 classes and 100k simulations; the MIDI pipeline.
+  - Hover or keyboard focus previews a project. On touch, the first tap previews and the second opens it. On phones the preview pins above the titles.
+  - Panels wipe in, then draw their bars and lines. Figures never count up.
+- **Labels decode once.** Uppercase technical labels decode with ScrambleText (vendored from GSAP 3.15). Only letters are used as scramble characters, and the text always ends on the real label.
+- **Fine pointers only:**
+  - Nav and "+" links roll their letters on hover. The copy is `content: attr(data-text) / ""`, so assistive technology hears the name once.
+  - A fuchsia cursor companion becomes a labelled ring ("View", "Play", "Pulse"). The system cursor stays visible.
+  - The preview tilts up to 7° toward the pointer, and its glow follows.
+- **Hero layers.** The name's lines rise faster than the brief as you scroll (parallax at different rates).

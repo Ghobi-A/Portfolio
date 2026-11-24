@@ -32,6 +32,7 @@
     <script defer src="assets/vendor/gsap/CustomEase.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/ScrollTrigger.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/gsap/SplitText.min.js?v=3.15.0"></script>
+    <script defer src="assets/vendor/gsap/ScrambleTextPlugin.min.js?v=3.15.0"></script>
     <script defer src="assets/vendor/lenis/lenis.min.js?v=1.3.28"></script>
     <script defer src="assets/js/motion.js?v=20261123-noir"></script>
   </head>
@@ -110,7 +111,7 @@
           </div>
           <div class="instrument" aria-hidden="true">
             <div class="instrument-head"><span>Fig. 00 / Live bench</span><span><span data-lab-count>01</span> / 03</span></div>
-            <div class="lab-scene signal-field"><div class="scene-fallback"></div></div>
+            <div class="lab-scene signal-field" data-cursor="Pulse"><div class="scene-fallback"></div></div>
             <p class="instrument-legend">Every slat follows the bench. It illustrates; it is not data. Click to send a pulse.</p>
           </div>
           <div class="lab" aria-labelledby="lab-title">
@@ -183,6 +184,10 @@
           </div>
         </div>
       </section>
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee-row" data-marquee="1"><div class="marquee-track"><span>Differential privacy</span><span>NLP ranking</span><span>PySpark</span><span>Power BI &amp; DAX</span><span>PostgreSQL</span><span>Monte Carlo</span><span>TensorFlow</span><span>Calibration</span></div></div>
+        <div class="marquee-row is-outline" data-marquee="-1"><div class="marquee-track"><span>Measure</span><span>Audit</span><span>Rank</span><span>Reconcile</span><span>Benchmark</span><span>Simulate</span><span>Ship</span><span>Caveat</span></div></div>
+      </div>
       <div class="work-layout">
       <nav class="collection-index" aria-label="Project collection">
         <a href="#file-dp" aria-current="location"><b>DP—05</b>Privacy audit</a>
@@ -199,6 +204,66 @@
             <p class="spec-line" aria-hidden="true"><span>Claim</span><span>Evidence</span></p>
             <p class="verbs"><em>Measure</em> <em>Caveat</em> <em>Link</em></p>
             <p>Five projects, each with its evidence open. Every figure links to the repository it came from, and limits sit beside results, not in the footnotes.</p>
+          </div>
+        </div>
+        <div class="featured" data-featured>
+          <ol class="featured-list">
+            <li><a href="#file-dp" data-preview="dp" data-cursor="View"><span class="f-code">DP—05</span><span class="f-title">Privacy–Utility Audit</span><span class="f-kind">Research</span><span class="f-arrow" aria-hidden="true">→</span></a></li>
+            <li><a href="#file-kh4" data-preview="kh" data-cursor="View"><span class="f-code">KH—01</span><span class="f-title">Demand Intelligence</span><span class="f-kind">NLP</span><span class="f-arrow" aria-hidden="true">→</span></a></li>
+            <li><a href="#GA-RA-07" data-preview="ra" data-cursor="View"><span class="f-code">RA—07</span><span class="f-title">Restaurant Operations</span><span class="f-kind">SQL &amp; BI</span><span class="f-arrow" aria-hidden="true">→</span></a></li>
+            <li><a href="#file-di" data-preview="di" data-cursor="View"><span class="f-code">DI—02</span><span class="f-title">Image ML Pipeline</span><span class="f-kind">Data engineering</span><span class="f-arrow" aria-hidden="true">→</span></a></li>
+            <li><a href="#file-cd" data-preview="cd" data-cursor="View"><span class="f-code">CD—03</span><span class="f-title">Crestbound Duelists</span><span class="f-kind">Simulation</span><span class="f-arrow" aria-hidden="true">→</span></a></li>
+            <li><a href="#file-ca" data-preview="ca" data-cursor="View"><span class="f-code">CA—06</span><span class="f-title">Creative Audio Lab</span><span class="f-kind">Experiment</span><span class="f-arrow" aria-hidden="true">→</span></a></li>
+          </ol>
+          <div class="featured-preview" aria-hidden="true">
+            <div class="preview-frame">
+              <div class="preview is-active" data-preview-panel="dp">
+                <p class="preview-kicker">DP—05 / Privacy vs utility</p>
+                <p class="preview-figure">.933<small>mean ROC-AUC at ε 0.49, the strongest privacy setting</small></p>
+                <svg class="preview-chart" viewBox="0 0 300 120" aria-hidden="true">
+                  <path class="pc-grid" d="M20 10H280M20 60H280M20 110H280" />
+                  <path class="pc-ref" d="M20 34.3H280" /><text x="280" y="29" text-anchor="end">non-private .953</text>
+                  <path class="pc-whisker" d="M70.5 28.6V97.1M176 24.3V71.4M258.4 22.9V70" />
+                  <path class="pc-line" d="M70.5 62.9L176 47.1L258.4 45.7" />
+                  <circle class="pc-dot is-key" cx="70.5" cy="62.9" r="5" /><circle class="pc-dot" cx="176" cy="47.1" r="4" /><circle class="pc-dot" cx="258.4" cy="45.7" r="4" />
+                  <text x="70.5" y="119" text-anchor="middle">ε 0.49</text><text x="176" y="119" text-anchor="middle">ε 2</text><text x="258.4" y="119" text-anchor="middle">ε 6</text>
+                </svg>
+                <p class="preview-note">Five seeds · 1,338 public records · 95% t intervals</p>
+              </div>
+              <div class="preview" data-preview-panel="kh">
+                <p class="preview-kicker">KH—01 / Review ranking</p>
+                <p class="preview-figure">2.5×<small>lift in the top 10% of a ranked review queue</small></p>
+                <div class="pv-bars"><p><span>Actionable PR-AUC</span><b>0.65</b><i style="--w:65%"></i></p><p><span>Positive prevalence</span><b>0.30</b><i class="is-dim" style="--w:30%"></i></p></div>
+                <div class="pv-queue"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i class="on"></i><i></i><i class="on"></i><i></i><i class="on"></i><i></i><i class="on"></i></div>
+                <p class="preview-note">Out-of-fold development evaluation · 200 labels · one annotator</p>
+              </div>
+              <div class="preview" data-preview-panel="ra">
+                <p class="preview-kicker">RA—07 / Order to revenue</p>
+                <p class="preview-figure">53<small>recorded source orders behind the published aggregates</small></p>
+                <ol class="pv-steps"><li>Validate</li><li>Pay</li><li class="is-key">Webhook</li><li>Kitchen</li></ol>
+                <p class="pv-pair"><span><b>15</b> SQL analyses</span><span><b>4</b> report pages</span></p>
+                <p class="preview-note">Deployed platform · payment confirmed at the server, not the browser</p>
+              </div>
+              <div class="preview" data-preview-panel="di">
+                <p class="preview-kicker">DI—02 / Follow the bottleneck</p>
+                <p class="preview-figure">4.58×<small>faster TensorFlow input with TFRecord</small></p>
+                <div class="pv-bars"><p><span>Raw JPEG</span><b>2,179.1</b><i class="is-dim" style="--w:21.84%"></i></p><p><span>TFRecord</span><b>9,978.1</b><i style="--w:100%"></i></p></div>
+                <p class="pv-pair"><span>Epoch <b>8.68 s</b> → <b>8.54 s</b></span><span>barely moves</span></p>
+                <p class="preview-note">Samples per second · 3,670 images · one runner, not multi-worker</p>
+              </div>
+              <div class="preview" data-preview-panel="cd">
+                <p class="preview-kicker">CD—03 / One model, two consumers</p>
+                <img src="assets/images/crestbound-battle.webp" alt="" width="1701" height="925" loading="lazy" />
+                <p class="pv-pair"><span><b>6</b> playable classes</span><span><b>100k</b> simulations per matchup</span></p>
+              </div>
+              <div class="preview" data-preview-panel="ca">
+                <p class="preview-kicker">CA—06 / Active experiment</p>
+                <p class="preview-figure is-word">MIDI<small>editable stems from prompt-conditioned rules</small></p>
+                <p class="pv-flow"><span>Prompt</span><span>Note events</span><span>MIDI stems</span></p>
+                <p class="preview-note">n-gram baseline on synthetic bootstrap data · real-corpus evaluation pending</p>
+              </div>
+            </div>
+            <p class="preview-hint"><span data-preview-index>01</span> / 06 · hover, tab or tap a title</p>
           </div>
         </div>
         <article
@@ -1004,7 +1069,7 @@
               <div class="panel-title eyebrow">
                 Fig. 03 / One combat model, two consumers
               </div>
-              <a class="gameplay-shot" href="https://ghobi-a.github.io/Crestbound-Duelists/" aria-label="Play the Crestbound Duelists prototype">
+              <a class="gameplay-shot" data-cursor="Play" href="https://ghobi-a.github.io/Crestbound-Duelists/" aria-label="Play the Crestbound Duelists prototype">
                 <img src="assets/images/crestbound-battle.webp" width="1701" height="925" alt="Crestbound Duelists: Kai, Almyra and Liora Sen face their opponents in Hollow Court" loading="lazy" />
               </a>
               <div class="system-node shared-node">

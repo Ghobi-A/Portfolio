@@ -11,13 +11,14 @@
 (() => {
   "use strict";
   const root = document.documentElement;
-  const { gsap, ScrollTrigger, SplitText, CustomEase, Lenis } = window;
+  const { gsap, ScrollTrigger, SplitText, CustomEase, Lenis, ScrambleTextPlugin } = window;
   if (!gsap || !ScrollTrigger || !SplitText || !CustomEase) {
     root.classList.remove("has-field");
     return;
   }
 
   gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
+  if (ScrambleTextPlugin) gsap.registerPlugin(ScrambleTextPlugin);
   CustomEase.create("lab-out", "0.23, 1, 0.32, 1");
   CustomEase.create("lab-in-out", "0.77, 0, 0.175, 1");
   CustomEase.create("lab-expo", "0.16, 1, 0.3, 1");
@@ -71,6 +72,11 @@
     const offset = target.id === "top" ? 0 : -(document.querySelector(".header")?.offsetHeight || 64) - 56;
     lenis.scrollTo(target.id === "top" ? 0 : target, { offset, duration: 1.4, easing: (t) => 1 - Math.pow(1 - t, 4) });
   });
+  // Scroll speed for kinetic effects: Lenis reports it; without Lenis (touch,
+  // or before it starts) ScrollTrigger's velocity stands in, settling to zero.
+  const emitVelocity = (velocity) => velocityListeners.forEach((listen) => listen(velocity));
+  const settleVelocity = gsap.delayedCall(0.15, () => { if (!lenis) emitVelocity(0); }).pause();
+  ScrollTrigger.create({ onUpdate: (self) => { if (lenis) return; emitVelocity(self.getVelocity() / 60); settleVelocity.restart(true); } });
   // Disclosures and deep links change the page height under Lenis.
   document.addEventListener("toggle", () => { lenis?.resize(); }, true);
 
@@ -169,8 +175,8 @@
     if (stage) {
       const [first, second] = stage.querySelectorAll(".name-line");
       const drift = { trigger: stage, start: "top top", end: "bottom top", scrub: true };
-      gsap.to(first, { xPercent: -8, ease: "none", scrollTrigger: drift });
-      gsap.to(second, { xPercent: 6, ease: "none", scrollTrigger: drift });
+      gsap.to(first, { xPercent: -8, yPercent: -22, ease: "none", scrollTrigger: drift });
+      gsap.to(second, { xPercent: 6, yPercent: -12, ease: "none", scrollTrigger: drift });
     }
     // Leaving the opening: the brief drifts up and dims, so the work takes over smoothly.
     if (stage) {
@@ -186,9 +192,51 @@
       const skew = gsap.quickTo(leaners, "skewY", { duration: 0.6, ease: "power3.out" });
       const lean = (velocity) => skew(gsap.utils.clamp(-3.5, 3.5, velocity * -0.12));
       velocityListeners.add(lean);
-      // Without Lenis (e.g. touch-only), read speed from ScrollTrigger instead.
-      const settle = gsap.delayedCall(0.15, () => skew(0)).pause();
-      ScrollTrigger.create({ onUpdate: (self) => { if (lenis) return; lean(self.getVelocity() / 300); settle.restart(true); } });
+    }
+
+    // ---- Kinetic marquee: speed follows scroll speed, direction follows scroll direction.
+    gsap.utils.toArray("[data-marquee]").forEach((row) => {
+      const track = row.querySelector(".marquee-track");
+      const copy = track.cloneNode(true);
+      copy.classList.add("is-copy");
+      row.append(copy);
+      const base = Number(row.dataset.marquee) || 1;
+      const loop = gsap.to([track, copy], { xPercent: -100, ease: "none", duration: 34, repeat: -1 });
+      loop.totalTime(loop.duration() * 400); // headroom so it can also run backwards
+      let direction = base;
+      velocityListeners.add((velocity) => {
+        if (Math.abs(velocity) > 0.4) direction = Math.sign(velocity) * base;
+        gsap.to(loop, { timeScale: direction * (1 + Math.min(Math.abs(velocity) * 0.35, 9)), duration: 0.6, ease: "power2.out", overwrite: true });
+      });
+      loop.timeScale(base);
+      row._marqueeCleanup = () => { loop.kill(); copy.remove(); };
+    });
+
+    // ---- Featured index rows arrive one by one; the preview frame rises.
+    const featured = document.querySelector("[data-featured]");
+    if (featured) {
+      gsap.from(featured.querySelectorAll(".featured-list a"), {
+        yPercent: 60, opacity: 0, duration: 0.9, ease: "lab-expo", stagger: 0.07, clearProps: "transform,opacity",
+        scrollTrigger: { trigger: featured, start: "top 80%", once: true },
+      });
+      gsap.from(featured.querySelector(".preview-frame"), {
+        clipPath: "inset(18% 12% 18% 12%)", opacity: 0.4, duration: 1.2, ease: "lab-expo", clearProps: "clipPath,opacity",
+        scrollTrigger: { trigger: featured, start: "top 75%", once: true },
+      });
+    }
+
+    // ---- Technical labels decode once as they arrive (letters only; figures are never scrambled).
+    if (ScrambleTextPlugin) {
+      const labels = gsap.utils.toArray(".hero-meta span, .spec-line span, .panel-title, .instrument-head > span:first-child, .panel-kicker, .preview-hint")
+        .filter((label) => !label.children.length && !/\d/.test(label.textContent) || label.matches(".panel-title, .panel-kicker"));
+      labels.filter((label) => !label.children.length).forEach((label) => {
+        const text = label.textContent;
+        gsap.to(label, {
+          duration: Math.min(1.4, 0.4 + text.length * 0.03), ease: "none",
+          scrambleText: { text, chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", speed: 0.6, revealDelay: 0.2 },
+          scrollTrigger: { trigger: label, start: "top 92%", once: true },
+        });
+      });
     }
     // The giant section word slides across as you read past it.
     gsap.utils.toArray(".giant").forEach((word) => {
@@ -344,11 +392,76 @@
       gsap.from(list.children, { x: -10, opacity: 0, duration: 0.5, stagger: 0.04, clearProps: "all", scrollTrigger: { trigger: list, start: "top 92%", once: true } });
     });
 
-    return () => { splits.forEach((instance) => instance.revert()); splits.clear(); velocityListeners.clear(); };
+    return () => {
+      splits.forEach((instance) => instance.revert()); splits.clear(); velocityListeners.clear();
+      document.querySelectorAll("[data-marquee]").forEach((row) => row._marqueeCleanup?.());
+    };
   });
 
   // ---- Magnetic actions and panel spotlight (fine pointers only) --------------------
   mm.add("(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine)", () => {
+    // Letter roll: wrap plain link labels so CSS can slide in a fuchsia copy.
+    const rolled = [];
+    document.querySelectorAll("#primary-nav a:not(.nav-contact), .plus-link, .collection-index a").forEach((link) => {
+      [...link.childNodes].filter((node) => node.nodeType === 3 && node.textContent.trim()).forEach((node) => {
+        const text = node.textContent.trim();
+        const outer = document.createElement("span");
+        outer.className = "roll";
+        const inner = document.createElement("span");
+        inner.dataset.text = text;
+        inner.textContent = text;
+        outer.append(inner);
+        const lead = node.textContent.match(/^\s*/)[0];
+        node.replaceWith(lead, outer);
+        rolled.push([outer, text]);
+      });
+    });
+
+    // Cursor companion: a fuchsia dot that grows into a labelled ring.
+    const cursor = document.createElement("div");
+    cursor.className = "cursor is-hidden";
+    cursor.setAttribute("aria-hidden", "true");
+    cursor.innerHTML = "<span></span>";
+    document.body.append(cursor);
+    const cx = gsap.quickTo(cursor, "x", { duration: 0.35, ease: "power3.out" });
+    const cy = gsap.quickTo(cursor, "y", { duration: 0.35, ease: "power3.out" });
+    const label = cursor.firstChild;
+    const moveCursor = (event) => {
+      cx(event.clientX); cy(event.clientY);
+      cursor.classList.remove("is-hidden");
+      const hint = event.target.closest?.("[data-cursor]");
+      const interactive = event.target.closest?.("a, button, summary, [role='button'], [role='tab'], label");
+      if (hint) label.textContent = hint.dataset.cursor;
+      cursor.classList.toggle("is-label", !!hint);
+      cursor.classList.toggle("is-hover", !hint && !!interactive);
+    };
+    const hideCursor = () => cursor.classList.add("is-hidden");
+    document.addEventListener("pointermove", moveCursor, { passive: true });
+    document.documentElement.addEventListener("pointerleave", hideCursor);
+
+    // The preview tilts toward the pointer and its glow follows.
+    const previewArea = document.querySelector(".featured-preview");
+    const tiltFrame = previewArea?.querySelector(".preview-frame");
+    let tiltCleanup = () => {};
+    if (tiltFrame) {
+      const rx = gsap.quickTo(tiltFrame, "rotationX", { duration: 0.6, ease: "power3.out" });
+      const ry = gsap.quickTo(tiltFrame, "rotationY", { duration: 0.6, ease: "power3.out" });
+      const featuredBlock = document.querySelector("[data-featured]");
+      const tilt = (event) => {
+        const rect = tiltFrame.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        ry(gsap.utils.clamp(-7, 7, x * 10));
+        rx(gsap.utils.clamp(-7, 7, -y * 10));
+        tiltFrame.style.setProperty("--px", `${(x + 0.5) * 100}%`);
+        tiltFrame.style.setProperty("--py", `${(y + 0.5) * 100}%`);
+      };
+      const untilt = () => { rx(0); ry(0); };
+      featuredBlock.addEventListener("pointermove", tilt);
+      featuredBlock.addEventListener("pointerleave", untilt);
+      tiltCleanup = () => { featuredBlock.removeEventListener("pointermove", tilt); featuredBlock.removeEventListener("pointerleave", untilt); gsap.set(tiltFrame, { clearProps: "transform" }); };
+    }
+
     const magnets = gsap.utils.toArray(".button, .case-symbol, .panel-link, .plus-link, .nav-contact");
     const handlers = magnets.map((element) => {
       const xTo = gsap.quickTo(element, "x", { duration: 0.5, ease: "lab-out" });
@@ -379,7 +492,40 @@
       });
     };
     document.addEventListener("pointermove", spotlight, { passive: true });
-    return () => { handlers.forEach((dispose) => dispose()); document.removeEventListener("pointermove", spotlight); };
+    return () => {
+      handlers.forEach((dispose) => dispose());
+      document.removeEventListener("pointermove", spotlight);
+      document.removeEventListener("pointermove", moveCursor);
+      document.documentElement.removeEventListener("pointerleave", hideCursor);
+      cursor.remove();
+      tiltCleanup();
+      rolled.forEach(([outer, text]) => outer.replaceWith(text));
+    };
+  });
+
+  // ---- Featured preview: wipe the new project in over the old one ------------------
+  document.addEventListener("featuredchange", (event) => {
+    const { panel, previous } = event.detail || {};
+    if (!panel || !allowed()) return;
+    event.detail.handled = true;
+    const parts = [...panel.children];
+    gsap.killTweensOf([panel, ...parts]);
+    gsap.fromTo(panel, { clipPath: "inset(100% 0% 0% 0%)" }, {
+      clipPath: "inset(0% 0% 0% 0%)", duration: 0.75, ease: "lab-expo",
+      onComplete: () => { previous?.classList.remove("is-leaving"); gsap.set(panel, { clearProps: "clipPath" }); },
+    });
+    gsap.from(parts, { y: 26, opacity: 0, duration: 0.6, ease: "lab-out", stagger: 0.05, delay: 0.08, clearProps: "transform,opacity" });
+    const figure = panel.querySelector(".preview-figure");
+    if (figure) gsap.from(figure, { yPercent: 30, duration: 0.8, ease: "lab-expo", clearProps: "transform" });
+    gsap.from(panel.querySelectorAll(".pv-bars i"), { scaleX: 0, duration: 0.9, ease: "lab-expo", stagger: 0.1, delay: 0.2, clearProps: "transform" });
+    gsap.from(panel.querySelectorAll(".pv-queue i, .pv-steps li, .pv-flow span"), { scale: 0.6, opacity: 0, duration: 0.45, stagger: 0.025, delay: 0.2, clearProps: "all" });
+    const line = panel.querySelector(".pc-line");
+    if (line) {
+      const length = line.getTotalLength();
+      gsap.fromTo(line, { strokeDasharray: length, strokeDashoffset: length }, { strokeDashoffset: 0, duration: 0.9, delay: 0.2, ease: "lab-in-out", clearProps: "strokeDasharray,strokeDashoffset" });
+    }
+    const kicker = panel.querySelector(".preview-kicker");
+    if (kicker && ScrambleTextPlugin) gsap.to(kicker, { duration: 0.6, scrambleText: { text: kicker.textContent, chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ", speed: 0.8 } });
   });
 
   // ---- Interaction feedback (<= 220ms) ---------------------------------------------
