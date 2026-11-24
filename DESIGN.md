@@ -258,3 +258,12 @@ The owner asked for black and fuchsia, no sphere, and an editorial, technical di
 - **Motion.** As before, plus:
   - The name's two lines drift apart on scroll, and the giant "Work" slides across.
   - The methods band opens from a slit.
+
+### Smoothness pass — 24 November 2026
+
+- **Lenis** glides longer and softer (`lerp` 0.075). Touch keeps native momentum.
+- **Paragraphs** fade in line by line, each line lifting 22px out of an 8px blur. Splits revert when the animation ends.
+- **Headings.** Project titles rise word by word behind a mask. Other headings come into focus word by word out of a 12px blur.
+- **Leaving the opening.** The brief drifts up and dims, and the meta row fades out.
+- **Lean.** Big type (the name, "Work", "Let's talk.", section headings, project numbers) leans up to 3.5° with scroll speed, then springs upright.
+- **Verified in Chromium.** One wheel flick eases over ~700ms. After a full scroll, no heading or paragraph is left faded or blurred, and only the three scroll-linked paragraphs keep their word wrappers.

@@ -37,10 +37,14 @@
 
   // ---- Smooth scrolling (Lenis on GSAP's ticker) ---------------------------------
   let lenis = null;
+  const velocityListeners = new Set();
   const startLenis = () => {
     if (!Lenis || lenis || reduced.matches) return;
-    lenis = new Lenis({ lerp: 0.11, wheelMultiplier: 0.9, autoRaf: false });
+    // Low lerp = a longer, softer glide after each wheel or trackpad flick.
+    // Touch keeps native momentum (syncTouch off), which feels right on phones.
+    lenis = new Lenis({ lerp: 0.075, wheelMultiplier: 0.95, smoothWheel: true, autoRaf: false });
     lenis.on("scroll", ScrollTrigger.update);
+    lenis.on("scroll", ({ velocity }) => velocityListeners.forEach((listen) => listen(velocity)));
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
     window.portfolioMotion.lenis = lenis;
@@ -168,6 +172,24 @@
       gsap.to(first, { xPercent: -8, ease: "none", scrollTrigger: drift });
       gsap.to(second, { xPercent: 6, ease: "none", scrollTrigger: drift });
     }
+    // Leaving the opening: the brief drifts up and dims, so the work takes over smoothly.
+    if (stage) {
+      gsap.to(stage.querySelectorAll(".hero-brief > *"), {
+        y: (index) => -40 - index * 30, opacity: 0.25, ease: "none", stagger: 0,
+        scrollTrigger: { trigger: stage.querySelector(".hero-brief"), start: "bottom 45%", end: "bottom top", scrub: 0.8 },
+      });
+      gsap.to(stage.querySelector(".hero-meta"), { opacity: 0, y: -30, ease: "none", scrollTrigger: { trigger: stage, start: "top top", end: "30% top", scrub: 0.6 } });
+    }
+    // Big type leans a little with scroll speed, then springs back upright.
+    const leaners = gsap.utils.toArray(".hero-name, .giant, .contact h2, .section-heading h2, .project-number");
+    if (leaners.length) {
+      const skew = gsap.quickTo(leaners, "skewY", { duration: 0.6, ease: "power3.out" });
+      const lean = (velocity) => skew(gsap.utils.clamp(-3.5, 3.5, velocity * -0.12));
+      velocityListeners.add(lean);
+      // Without Lenis (e.g. touch-only), read speed from ScrollTrigger instead.
+      const settle = gsap.delayedCall(0.15, () => skew(0)).pause();
+      ScrollTrigger.create({ onUpdate: (self) => { if (lenis) return; lean(self.getVelocity() / 300); settle.restart(true); } });
+    }
     // The giant section word slides across as you read past it.
     gsap.utils.toArray(".giant").forEach((word) => {
       gsap.fromTo(word, { xPercent: 6 }, { xPercent: -6, ease: "none", scrollTrigger: { trigger: word, start: "top bottom", end: "bottom top", scrub: true } });
@@ -182,11 +204,21 @@
       gsap.from(row.children, { y: 18, opacity: 0, duration: 0.6, stagger: 0.09, clearProps: "all", scrollTrigger: { trigger: row, start: "top 90%", once: true } });
     });
 
-    // Headings reveal word by word from behind a mask.
-    gsap.utils.toArray(".section-heading h2, .project-copy > h3, .audio-lab h3, .semantic-lab h2, .about h2, .research-question").forEach((heading) => {
+    // Project titles rise word by word from behind a mask.
+    gsap.utils.toArray(".project-copy > h3, .audio-lab h3").forEach((heading) => {
       const instance = split(heading, "words");
       gsap.from(instance.words, {
-        yPercent: 110, duration: 1, ease: "lab-expo", stagger: 0.06,
+        yPercent: 110, duration: 1.1, ease: "lab-expo", stagger: 0.07,
+        scrollTrigger: { trigger: heading, ...once },
+        onComplete: () => revert(instance),
+      });
+    });
+    // Other headings come into focus: each word fades up out of a blur.
+    gsap.utils.toArray(".section-heading h2, .semantic-lab h2, .about h2, .research-question, .lab-panel h2, .stage-thesis").forEach((heading) => {
+      if (heading.closest(".hero") && heading.matches(".stage-thesis")) return; // handled by the opening
+      const instance = split(heading, "words", { mask: false });
+      gsap.from(instance.words, {
+        opacity: 0, yPercent: 35, filter: "blur(12px)", duration: 1.2, ease: "lab-out", stagger: 0.06,
         scrollTrigger: { trigger: heading, ...once },
         onComplete: () => revert(instance),
       });
@@ -197,12 +229,27 @@
       gsap.from(number, { yPercent: 70, opacity: 0, duration: 1.1, ease: "lab-expo", scrollTrigger: { trigger: number, ...once } });
     });
 
-    // Supporting copy fades and lifts, staggered within each block.
+    // Paragraphs fade in line by line, each line lifting out of a soft blur.
+    const scrubbed = ".work-intro > p:last-child, .about-copy > p:first-of-type, .contact-question";
+    const prose = gsap.utils.toArray([
+      ".project-copy > p:not(.spec-line):not(.verbs)", ".audio-lab > div > p:not(.eyebrow)", ".semantic-lab .audio-lab > div > p",
+      ".semantic-design > p", ".about-copy > p", ".contact-invitation > p", ".capability-grid p", ".section-heading > p",
+      ".research-explanation", ".research-caveat", ".audio-scope li p", ".result-statement",
+    ].join(",")).filter((paragraph) => !paragraph.matches(scrubbed) && !paragraph.closest(".case-study"));
+    [...new Set(prose)].forEach((paragraph) => {
+      const instance = split(paragraph, "lines", { mask: false });
+      gsap.from(instance.lines, {
+        opacity: 0, y: 22, filter: "blur(8px)", duration: 1.1, ease: "lab-out", stagger: 0.09,
+        scrollTrigger: { trigger: paragraph, start: "top 90%", once: true },
+        onComplete: () => revert(instance),
+      });
+    });
+    // Everything else in a story block lifts and fades in sequence.
     gsap.utils.toArray(".project-copy, .audio-lab > div:first-child, .about-copy, .semantic-design, .contact-invitation").forEach((block) => {
-      const items = [...block.querySelectorAll(":scope > p, :scope > .metrics, :scope > .tags, :scope > .text-links, :scope > .actions, :scope > .education, :scope > .source-link, :scope > dl, :scope > ol, :scope > h3, :scope > h4, :scope > .semantic-legend")]
-        .filter((item) => !item.matches(".verbs") && (!item.matches("h3") || !block.matches(".project-copy")));
+      const items = [...block.querySelectorAll(":scope > .metrics, :scope > .tags, :scope > .text-links, :scope > .actions, :scope > .education, :scope > .source-link, :scope > dl, :scope > ol, :scope > h3, :scope > h4, :scope > .semantic-legend, :scope > .paper-study, :scope > a")]
+        .filter((item) => !item.matches("h3") || !block.matches(".project-copy"));
       if (!items.length) return;
-      gsap.from(items, { y: 28, opacity: 0, duration: 0.9, stagger: 0.07, clearProps: "transform,opacity", scrollTrigger: { trigger: block, start: "top 82%", once: true } });
+      gsap.from(items, { y: 30, opacity: 0, duration: 1, stagger: 0.08, clearProps: "transform,opacity", scrollTrigger: { trigger: block, start: "top 80%", once: true } });
     });
 
     // Scroll-linked reading: words brighten as the paragraph passes through view.
@@ -297,7 +344,7 @@
       gsap.from(list.children, { x: -10, opacity: 0, duration: 0.5, stagger: 0.04, clearProps: "all", scrollTrigger: { trigger: list, start: "top 92%", once: true } });
     });
 
-    return () => { splits.forEach((instance) => instance.revert()); splits.clear(); };
+    return () => { splits.forEach((instance) => instance.revert()); splits.clear(); velocityListeners.clear(); };
   });
 
   // ---- Magnetic actions and panel spotlight (fine pointers only) --------------------
