@@ -692,6 +692,7 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 
 .distort { position: relative; display: block; overflow: hidden; }
 .distort > img { display: block; width: 100%; }
-.distort .distort-canvas { opacity: 0; transition: opacity .25s var(--out); }
-.distort.is-ready .distort-canvas { opacity: 1; }
+/* The overlay stays hidden until its texture has loaded; the <img> beneath is the content. */
+.distort .distort-canvas { visibility: hidden; }
+.distort.is-ready .distort-canvas { visibility: visible; }
 .paper-study .distort > img { height: 190px; object-fit: cover; filter: grayscale(1) contrast(1.1) brightness(.8); }

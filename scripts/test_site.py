@@ -237,7 +237,8 @@ class PortfolioTests(unittest.TestCase):
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
         # Content remains visible while the optional scripts load or if they fail.
         # Decorative ::before/::after overlays (no content) may also start transparent.
-        unscoped = re.sub(r'[^{}]*::(?:before|after)\s*\{[^}]*\}', '', css)
+        # (Minified CSS writes pseudo-elements with a single colon: :before / :after.)
+        unscoped = re.sub(r'[^{}]*:{1,2}(?:before|after)\s*\{[^}]*\}', '', css)
         self.assertNotRegex(unscoped, r'(?<!-)opacity:\s*0\s*[;}]')
         self.assertNotIn('motion-intro', self.source)
         choreography = (self.web / 'src/components/Choreography.tsx').read_text(encoding='utf-8')
