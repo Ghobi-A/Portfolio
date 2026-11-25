@@ -141,6 +141,20 @@ class PortfolioTests(unittest.TestCase):
         self.assertNotIn('real-data, de-identified PBIX', case)
         self.assertIn('embedded data provenance is not independently verified', case)
 
+    def test_power_bi_report_is_click_to_load_and_consistent(self):
+        # One report URL: the homepage figure and the case-study page embed the same report.
+        lib = (self.web / 'src/lib/powerbi.ts').read_text(encoding='utf-8')
+        embed = (OUT / 'projects/restaurant-analytics/powerbi-embed.js').read_text(encoding='utf-8')
+        pattern = r'https://app\.powerbi\.com/view\?r=[A-Za-z0-9=_-]+'
+        self.assertEqual(re.findall(pattern, lib), re.findall(pattern, embed))
+        # The homepage never auto-loads the third-party report: no iframe until a visitor asks.
+        self.assertEqual(self.page.elements('iframe'), [])
+        ra = self.html.split('id="GA-RA-07"', 1)[1].split('id="file-uag"', 1)[0]
+        text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', ra))
+        for value in ('Power BI report', '53', '£1.03K', '£373.77', '22.6%', 'not audited revenue', 'not independently reconciled'):
+            self.assertIn(value, text)
+        self.assertIn('observed-summary.svg', ra)  # the SQL snapshot stays available without JavaScript
+
     def test_explicit_markup_is_balanced(self):
         self.assertEqual(self.page.nesting_errors, [])
         self.assertEqual(self.page.stack, [])

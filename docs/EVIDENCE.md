@@ -1,5 +1,15 @@
 # Project evidence ledger
 
+## Published Power BI report — 25 November 2026
+
+The owner enabled a public Power BI "Publish to web" embed for the UK Asia Grill case study on 20 October 2026 (commit `efc62a0`). It is configured in `projects/restaurant-analytics/powerbi-embed.js` and, on the homepage, `web/src/lib/powerbi.ts`. The report was loaded and read on 25 November 2026.
+
+- **Pages.** It has four pages: Executive overview; Menu & customer demand; Kitchen operations; Payments & data quality. Each carries the banner "PRIVATE | Observed export: 53 orders | Mixed test/live status | Gross order value is not audited revenue".
+- **Reconciliation.** The six Executive-overview cards match the observed SQL snapshot already published here: 53 orders, £1.03K gross order value, £19.47 average order value, £373.77 confirmed card value, 22.6% cancellation rate and 7.5% payment failure rate. DAX measures beyond those cards were not independently reconciled.
+- **No personal or payment data.** No customer names, contact details, addresses or payment identifiers were found on any page. This rests on a text pattern scan and a visual review.
+- **Order references are visible.** The Kitchen operations page has a "Kitchen exceptions" table that lists **four original order references** with their raw preparation minutes. The date, order-type and status slicers also allow narrowing to individual days. Both go further than the browser dashboard's aggregate-only publication rule.
+- **Homepage embed.** The homepage figure is click-to-load, so no third-party request is made until a visitor asks. The owner was asked to confirm the order references may stay public before the homepage embed was published.
+
 ## Local restaurant AI integration — 25 October 2026
 
 The `projects/restaurant-ai/` case study records a locally executed integration from PR #70's source snapshot `bd8aa1219f398ec9e6fc56fdf254db7dc9b5b06e`, extended on `codex/local-ai-poc`. Actual Qwen3 4B inference ran through Ollama 0.40.11 on an RTX 2070 with PostgreSQL 17.6, PostgREST 16.5 and Chromium. The captured run completed at 2026-10-25T16:12:46.832Z, took 6761 ms in the browser proof, used 945 input / 262 output tokens and recorded zero provider cost. The answer appeared in the browser and was persisted with status `completed`; order acknowledgement was unchanged. Zero synthetic Gateway requests and zero page errors were recorded. The 51 focused regression tests passed. App/contract/E2E typechecks and focused lint were checked separately.
