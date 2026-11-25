@@ -13,7 +13,9 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT / "index.html"
+# The homepage is the React app in web/, prerendered by `npm run build` in web/.
+WEB_DIST = ROOT / "web" / "dist"
+SOURCE = WEB_DIST / "index.html"
 OUT = ROOT / "_site"
 ASSETS = OUT / "assets"
 
@@ -277,7 +279,7 @@ def make_touch_icon() -> bytes:
 
 def main() -> None:
     if not SOURCE.exists():
-        raise FileNotFoundError(SOURCE)
+        raise FileNotFoundError(f"{SOURCE} is missing: run `npm ci && npm run build` in web/ first")
 
     source_html = SOURCE.read_text(encoding="utf-8")
     polished_html = polish_html(source_html)
@@ -287,6 +289,8 @@ def main() -> None:
     ASSETS.mkdir(parents=True)
 
     (OUT / "index.html").write_text(polished_html, encoding="utf-8")
+    # React bundles (hashed JS, CSS and fonts) live beside the page under app/.
+    shutil.copytree(WEB_DIST / "app", OUT / "app")
 
     cv_source = ROOT / "assets" / "Ghobikan-Aravindan-CV.pdf"
     if not cv_source.is_file():

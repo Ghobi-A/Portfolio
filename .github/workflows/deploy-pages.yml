@@ -26,13 +26,23 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v5
 
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build the React app (type-check, client build, prerender)
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+
       - name: Build polished static site
         run: |
           python scripts/build_site.py
           python scripts/test_site.py
-          node --check assets/js/main.js
-          node --check assets/js/motion.js
-          node --check assets/js/privacy-chart.js
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

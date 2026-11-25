@@ -16,7 +16,26 @@ Personal portfolio for an applied data scientist building evaluated machine-lear
 
 ## Build and deployment
 
-The homepage is the **Noir Lab** design (23 November 2026: black, fuchsia, Inter Tight): semantic content in `index.html`, styling in `assets/css/lab.css`, behaviour in `assets/js/main.js`, and choreography in `assets/js/motion.js`. GSAP 3.15 (ScrollTrigger, SplitText, CustomEase) is vendored in `assets/vendor/gsap/` and Lenis 1.3 smooth scrolling in `assets/vendor/lenis/`. The hero's Three.js slat field (`assets/js/lab-scene.js`) is lazy-loaded after first paint and built from `tools/motion/lab-scene.src.js` (`npm ci && npm run build`); all build outputs are committed, so Pages needs no npm step. The case-study subpages under `projects/` keep `assets/css/site.css`. The interactive privacy figure lives in `assets/js/privacy-chart.js` and `assets/css/privacy-chart.css`. Inter Tight (homepage) and Source Serif 4 (subpages) are self-hosted with their open-font licences in `assets/fonts/`; no remote font or script is loaded. Before deployment, `scripts/build_site.py` creates `_site` and adds:
+The homepage is a **React 19 + TypeScript app in `web/`**, built with Vite and **prerendered to static HTML**, then hydrated. The page is complete before JavaScript runs (readable without it, indexable), and GitHub Pages still serves plain static files.
+
+| Layer | Library | Used for |
+| --- | --- | --- |
+| UI | React 19 | Components; state for the bench and featured previews |
+| Component motion | Motion (`motion/react`) | Bench tab underline (shared layout), panel entrances, preview wipes (`AnimatePresence`), spring cursor and tilt |
+| Effects | React Bits (`web/src/reactbits/`, MIT + Commons Clause) | `ScrollVelocity` marquee, `DecryptedText` labels, `Magnet` actions |
+| 3D | React Three Fiber + three.js | The hero's slat-field shader (a lazy chunk, never on the critical path) |
+| Scroll | GSAP (ScrollTrigger, SplitText, CustomEase) via `@gsap/react`; Lenis via `lenis/react` | Scroll choreography and smooth scrolling on one ticker |
+
+Project content lives in `web/src/content/`, converted verbatim from the former static page. Case-study disclosures, method inspectors and evidence charts are enhanced after hydration by `web/src/lib/evidence.ts` and `web/src/lib/privacyChart.ts`. Subpages under `projects/` are unchanged and keep `assets/css/site.css`. Inter Tight is bundled with its licence in `web/src/assets/fonts/`; Source Serif 4 for the subpages stays in `assets/fonts/`. No remote font or script is loaded.
+
+Build:
+
+```bash
+(cd web && npm ci && npm run build)   # type-check, client build, SSR build, prerender -> web/dist
+python scripts/build_site.py          # metadata, social assets, subpages -> _site
+```
+
+`npm run dev` in `web/` starts a live-reloading dev server. `scripts/build_site.py` reads `web/dist/index.html`, copies the bundles from `web/dist/app/`, creates `_site` and adds:
 
 - Open Graph and Twitter/X social-preview metadata
 - a generated 1200×630 branded preview image
@@ -24,18 +43,16 @@ The homepage is the **Noir Lab** design (23 November 2026: black, fuchsia, Inter
 - canonical URL, JSON-LD structured data, robots and sitemap files
 - safer external links (landmarks, native disclosures and the skip link are now authored in source)
 
-GitHub Pages deploys `_site` automatically whenever `main` changes. The workflow lives in `.github/workflows/deploy-pages.yml`.
+GitHub Pages deploys `_site` automatically whenever `main` changes. The workflow lives in `.github/workflows/deploy-pages.yml`: a build job (Node app build, Python build and tests, upload) and a separate deploy job.
 
 PRs run the same build and structural checks without deploying. The `METADATA:START` / `METADATA:END` region is the build's only HTML template contract. Layout changes outside it require no build-script string patches. Generated output is ignored by Git.
 
 ## Validation and evidence
 
 ```bash
+(cd web && npm ci && npm run build)
 python scripts/build_site.py
 python scripts/test_site.py
-node --check assets/js/main.js
-node --check assets/js/motion.js
-node --check assets/js/privacy-chart.js
 python scripts/check_links.py  # optional external HTTP checks
 ```
 
@@ -54,11 +71,12 @@ It checks 320, 375, 390, 768, 1024, 1440 and 1920px widths, keyboard controls, d
 Run:
 
 ```bash
+(cd web && npm ci && npm run build)
 python scripts/build_site.py
 python -m http.server 8000 --directory _site
 ```
 
-Then open `http://localhost:8000`.
+Then open `http://localhost:8000`. For development with live reload, run `npm run dev` in `web/`.
 
 ## Visual system
 

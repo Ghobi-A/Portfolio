@@ -9,7 +9,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
-from build_site import ROOT, OUT, SITE_URL, polish_html
+from build_site import ROOT, OUT, SITE_URL, SOURCE, polish_html
 
 
 class Page(HTMLParser):
@@ -43,7 +43,10 @@ class Page(HTMLParser):
 class PortfolioTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.source = (ROOT / 'index.html').read_text(encoding='utf-8')
+        cls.source = SOURCE.read_text(encoding='utf-8')  # prerendered React page (web/dist)
+        cls.web = ROOT / 'web'
+        cls.css = '\n'.join(p.read_text(encoding='utf-8') for p in sorted((OUT / 'app').glob('*.css')))
+        cls.entry = [p for p in (OUT / 'app').glob('index-*.js')]
         cls.html = (OUT / 'index.html').read_text(encoding='utf-8')
         cls.page = Page(cls.html)
         cls.text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', cls.html))
@@ -115,15 +118,15 @@ class PortfolioTests(unittest.TestCase):
             self.assertIn(target, intro)
 
     def test_lab_bench_uses_measured_values(self):
-        lab = self.html.split('data-lab ', 1)[1].split('<nav class="collection-index"', 1)[0]
+        lab = self.html.split('data-lab=', 1)[1].split('<nav class="collection-index"', 1)[0]
         text = re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', ' ', lab))
         for value in ('.933', '.909–.957', 'ε 2', 'ε 6', '1,338', '0.65', '0.30', '2.5×', '2.1–3.3', 'Expected counts', 'not a transaction-volume claim'):
             self.assertIn(value, text)
         for tab in ('tab-research', 'tab-applications', 'tab-systems'):
             self.assertIn(tab, self.ids)
-        main = (OUT / 'assets/js/main.js').read_text(encoding='utf-8')
-        for value in ('0.933', '0.944', '0.945', '0.909', '0.927', '0.928', '0.957', '0.960', '0.961'):
-            self.assertIn(value, main)
+        bench = (self.web / 'src/lib/bench.ts').read_text(encoding='utf-8')
+        for value in ('0.933', '0.944', '0.945', '0.909', '0.927', '0.928', '0.957', 'high: 0.96,', '0.961', 'REFERENCE_AUC = 0.953'):
+            self.assertIn(value, bench)
 
     def test_nlp_metrics_keep_development_limits(self):
         kh = self.html.split('id="file-kh4"', 1)[1].split('id="GA-RA-07"', 1)[0]
@@ -183,8 +186,8 @@ class PortfolioTests(unittest.TestCase):
         for svg in self.page.elements('svg'):
             self.assertTrue(svg.get('aria-hidden') == 'true' or svg.get('aria-labelledby'))
         for script in self.page.elements('script'):
-            if script.get('src'):
-                self.assertIn('defer', script)
+            if script.get('src'):  # never parser-blocking: deferred or a module script
+                self.assertTrue('defer' in script or script.get('type') == 'module', script)
 
     def test_assets_work_under_pages_prefix(self):
         for _, attrs in self.page.tags:
@@ -216,59 +219,65 @@ class PortfolioTests(unittest.TestCase):
                 self.assertTrue({'noopener', 'noreferrer'} <= set(attrs.get('rel', '').split()))
 
     def test_interactive_dossier_uses_authored_evidence(self):
-        main = (OUT / 'assets/js/main.js').read_text(encoding='utf-8')
+        evidence = (self.web / 'src/lib/evidence.ts').read_text(encoding='utf-8')
         for feature in ('row.cells', 'partition-readout', 'evidenceinspect', 'requestAnimationFrame(updateReadingPosition)', 'ResizeObserver'):
-            self.assertIn(feature, main)
+            self.assertIn(feature, evidence)
         self.assertIn('id="partition-benchmark"', self.html)
-        self.assertLess(self.source.index("classList.add('nav-enhanced')"), self.source.index('<main id="top">'))
-        self.assertNotIn('classList.add("nav-enhanced")', main)
+        # The prerendered menu button stays hidden until React hydrates and can operate it.
+        self.assertRegex(self.html, r'<button[^>]*class="menu-button"[^>]*hidden')
+        header = (self.web / 'src/components/Header.tsx').read_text(encoding='utf-8')
+        self.assertIn('classList.add("nav-enhanced")', header)
 
     def test_content_guardrails_and_motion_fallback(self):
         self.assertNotIn('Blackhorse', self.html)
         self.assertNotIn('crestbound-duelists.streamlit.app', self.html)
         for text in ('single-runner measurements', 'Implemented / demo-only forecasts', 'synthetic bootstrap', 'not membership-inference'):
             self.assertIn(text, self.text)
-        css = (OUT / 'assets/css/lab.css').read_text(encoding='utf-8')
+        css = self.css
         self.assertRegex(css, r'prefers-reduced-motion:\s*reduce')
         # Content remains visible while the optional scripts load or if they fail.
         # Decorative ::before/::after overlays (no content) may also start transparent.
         unscoped = re.sub(r'[^{}]*::(?:before|after)\s*\{[^}]*\}', '', css)
         self.assertNotRegex(unscoped, r'(?<!-)opacity:\s*0\s*[;}]')
         self.assertNotIn('motion-intro', self.source)
-        motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
-        self.assertIn('prefers-reduced-motion: reduce', motion)
+        choreography = (self.web / 'src/components/Choreography.tsx').read_text(encoding='utf-8')
+        self.assertIn('prefers-reduced-motion: no-preference', choreography)
+        self.assertIn('gsap.matchMedia', choreography)
 
-    def test_motion_libraries_are_vendored_and_ordered(self):
+    def test_react_app_is_prerendered_and_bundled_locally(self):
+        # The page is complete before JavaScript runs: React hydrates prerendered HTML.
+        self.assertIn('<div id="root"><a class="skip-link"', self.html)
+        self.assertNotIn('<!--app-html-->', self.html)
         sources = [attrs['src'] for attrs in self.page.elements('script') if attrs.get('src')]
+        self.assertTrue(sources)
         for src in sources:
             self.assertFalse(urlparse(src).scheme, f'Remote script: {src}')
-        names = [urlparse(src).path.rsplit('/', 1)[1] for src in sources]
-        for library in ('gsap.min.js', 'CustomEase.min.js', 'ScrollTrigger.min.js', 'SplitText.min.js'):
-            self.assertLess(names.index(library), names.index('motion.js'))
-            self.assertTrue((OUT / 'assets/vendor/gsap' / library).is_file())
-        self.assertLess(names.index('lenis.min.js'), names.index('motion.js'))
-        self.assertTrue((OUT / 'assets/vendor/lenis/LICENSE').is_file())
-        self.assertTrue((OUT / 'assets/vendor/gsap/LICENSE.md').is_file())
-        # Three.js is never parsed on the critical path: motion.js imports it lazily.
-        self.assertNotIn('lab-scene.js', ' '.join(sources))
-        field = (OUT / 'assets/js/lab-scene.js').read_text(encoding='utf-8')
-        self.assertIn('export', field)
-        self.assertIn('three.js', field.split('*/', 1)[0])
-        motion = (OUT / 'assets/js/motion.js').read_text(encoding='utf-8')
-        self.assertIn('import(fieldScript)', motion)
-        self.assertIn('has-field', motion)
-        self.assertIn('lab-scene.js', motion)
+        for link in self.page.elements('link'):
+            if link.get('rel') == 'stylesheet':
+                self.assertFalse(urlparse(link['href']).scheme, f'Remote stylesheet: {link["href"]}')
+        # Three.js / React Three Fiber are never on the critical path: a lazy chunk only.
+        self.assertEqual(len(self.entry), 1)
+        entry = self.entry[0].read_text(encoding='utf-8')
+        self.assertNotIn('WebGLRenderer', entry)
+        self.assertTrue(any('WebGLRenderer' in p.read_text(encoding='utf-8') for p in (OUT / 'app').glob('SlatField-*.js')))
+        # Dependencies are pinned to exact versions.
+        package = json.loads((self.web / 'package.json').read_text(encoding='utf-8'))
+        for name, version in {**package['dependencies'], **package['devDependencies']}.items():
+            self.assertRegex(version, r'^\d+\.\d+\.\d+$', name)
+        for library in ('react', 'motion', '@react-three/fiber', 'gsap', 'lenis', 'three'):
+            self.assertIn(library, package['dependencies'])
+        # React Bits components keep their licence beside them.
+        self.assertIn('Commons Clause', (self.web / 'src/reactbits/LICENSE.md').read_text(encoding='utf-8'))
         # The capability check runs before paint so the field's space is reserved (no layout shift).
         head = self.source.split('</head>', 1)[0]
         for guard in ("classList.add('has-field')", 'saveData', "getContext('webgl2')"):
             self.assertIn(guard, head)
         self.assertEqual(self.html.count('<div class="instrument" aria-hidden="true">'), 1)
         self.assertEqual(self.html.count('class="lab-scene signal-field"'), 1)
-        # The loop only runs while visible, on screen and without reduced motion (checked in source;
-        # the bundle is minified).
-        source = (ROOT / 'tools/motion/lab-scene.src.js').read_text(encoding='utf-8')
-        for guard in ('reduced.matches', 'IntersectionObserver', 'document.hidden', 'running = false'):
-            self.assertIn(guard, source)
+        # The field only renders while visible, on screen and without reduced motion.
+        field = (self.web / 'src/components/SlatField.tsx').read_text(encoding='utf-8')
+        for guard in ('IntersectionObserver', 'document.hidden', 'frameloop', '"demand"', '"never"'):
+            self.assertIn(guard, field)
 
 
 if __name__ == '__main__':

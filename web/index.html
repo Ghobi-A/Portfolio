@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- METADATA:START -->
+    <title>Ghobikan Aravindan — Applied Data Scientist, London</title>
+    <meta name="description" content="Applied data science by Ghobikan Aravindan, London. Python, SQL, NLP and data engineering: from messy signals to evaluated, usable systems." />
+    <meta name="theme-color" content="#0A0A0B" />
+    <!-- METADATA:END -->
+    <script>
+      /* Reserve the slat field only on devices that can render it. */
+      (() => {
+        if (navigator.connection?.saveData || (navigator.deviceMemory ?? 8) < 2) return;
+        try {
+          const context = document.createElement('canvas').getContext('webgl2');
+          if (!context) return;
+          context.getExtension('WEBGL_lose_context')?.loseContext();
+          document.documentElement.classList.add('has-field');
+        } catch {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"><!--app-html--></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

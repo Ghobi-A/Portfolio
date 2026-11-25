@@ -286,3 +286,16 @@ These are the three pieces the owner's research recommended next. GSAP owns all 
   - A fuchsia cursor companion becomes a labelled ring ("View", "Play", "Pulse"). The system cursor stays visible.
   - The preview tilts up to 7° toward the pointer, and its glow follows.
 - **Hero layers.** The name's lines rise faster than the brief as you scroll (parallax at different rates).
+
+## React port — 25 November 2026
+
+The homepage moved to React so the owner can build with Motion, React Bits and React Three Fiber. The design, content and evidence rules are unchanged.
+
+- **Prerendered, then hydrated.** `web/scripts/prerender.mjs` renders `<App />` into `dist/index.html`. Interactive-only UI switches on after hydration (`useHydrated`): the tabs, a single visible bench panel and the cursor. The server HTML and the first client render always match, and visitors without JavaScript get every panel, project and case study.
+- **Who owns what.**
+  - GSAP owns anything tied to scroll position (`web/src/components/Choreography.tsx`).
+  - Motion owns component state: tabs, panels, previews, cursor and tilt.
+  - React Bits supplies the marquee, the decoding labels and the magnetic actions.
+  - The slat field is an R3F `<Canvas>`. Its `frameloop` is `never` off screen and `demand` under reduced motion, and its uniforms ease with `MathUtils.damp`.
+- **React Bits caveat.** `DecryptedText` and `BlurText` start hidden or scrambled until JavaScript runs, so they are used only on decorative labels. `BlurText` is not used; the GSAP blur reveal hides text only on the client.
+- **ScrollTrigger re-measures** whenever the body height changes. Hydration collapses the bench from three panels to one, which otherwise left stale trigger positions and invisible project rows on phones.
