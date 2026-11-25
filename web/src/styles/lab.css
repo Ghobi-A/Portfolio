@@ -797,3 +797,35 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 }
 
 .pbi-disclaimer { color: var(--ink); font-weight: 600; }
+
+/* Trend-line probe: a marker that rides the privacy curve between measurements. */
+.chart-probe { position: absolute; left: 0; top: 0; z-index: 3; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; border: 2px solid var(--pink); background: var(--bg); box-shadow: 0 0 0 4px rgba(255, 61, 154, .18); pointer-events: none; visibility: hidden; transition: transform .08s linear; }
+.has-chart-hover.is-hovering .chart-probe { visibility: visible; }
+.has-chart-hover:not(.is-probing) .chart-probe { background: var(--pink); }
+.chart-tip em { display: block; max-width: 30ch; margin-top: 4px; color: var(--dim); font-size: 11.5px; font-style: normal; line-height: 1.4; }
+.has-chart-hover svg { touch-action: pan-y; }
+.frontier.has-chart-hover .chart-cross { transition: none; }
+
+/* Smooth cross-page transitions to and from the case studies (supported browsers). */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: page-out .28s var(--out) both; }
+::view-transition-new(root) { animation: page-in .45s var(--out) both; }
+@keyframes page-out { to { opacity: .001; transform: translateY(-10px); } }
+@keyframes page-in { from { opacity: .001; transform: translateY(14px); } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-old(root), ::view-transition-new(root) { animation: none; } }
+
+/* ---- Readability pass: secondary copy brighter, larger, held to a comfortable measure. */
+.audio-lab > div > p:not(.eyebrow):not(.problem), .semantic-lab .audio-lab > div > p:not(.problem):not(.protocol-status) { color: #cfcdc8; font-size: 17.5px; line-height: 1.66; max-width: 60ch; }
+.semantic-design > p { color: #cfcdc8; font-size: 16.5px; line-height: 1.65; max-width: 62ch; }
+.audio-scope li p, .semantic-conditions dd, .simulation-branches p, .audit-grid p { color: #c9c7c2; font-size: 15px; line-height: 1.6; }
+.capability-grid p { font-size: 15.5px; line-height: 1.6; color: rgba(255, 255, 255, .9); }
+.evidence-panel figcaption, figcaption { color: var(--muted); font-size: 14px; line-height: 1.62; max-width: 72ch; }
+.inspection-note { font-size: 15.5px; line-height: 1.6; max-width: 62ch; }
+.panel-note { font-size: 13.5px; line-height: 1.55; color: #8f8e94; }
+.problem { max-width: 32ch; }
+.about-copy p { max-width: 56ch; }
+.contact-invitation p { max-width: 34ch; }
+.tags li { font-size: 13px; }
+@media (max-width: 760px) {
+  .audio-lab > div > p:not(.eyebrow):not(.problem) { font-size: 16.5px; }
+}

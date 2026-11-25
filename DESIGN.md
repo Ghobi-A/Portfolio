@@ -337,3 +337,17 @@ The homepage moved to React so the owner can build with Motion, React Bits and R
   - Scope notes are larger with a fuchsia rule; tables are larger, zebra-striped and right-aligned for figures.
   - Each summary states its length ("6 sections · ≈1 min read"), and a "Close case study" button at the end glides back to the summary.
   - Long-form project copy is brighter and slightly larger.
+
+### Trend-line probe, subpages in Noir Lab, page transitions — 25 November 2026
+
+- **Trend-line probe (privacy chart).**
+  - Pointing anywhere along the chart moves a marker along the drawn guide. The readout gives the guide's AUC at that ε and the band around it.
+  - Those values are labelled *interpolated*, not measured, alongside the nearest real measurement. The same monotone cubic as the drawn curve is evaluated in (ln ε, AUC) space; it was verified to sit within ~1px of the rendered path, on both axis scales.
+  - Within 14px of a measured point the readout snaps to its exact values. Outside ε 0.49–6 it says nothing is extrapolated.
+  - Touch can drag along the chart (`touch-action: pan-y`).
+- **Subpages share the homepage design.**
+  - `assets/css/noir.css` and `assets/js/subpage.js` style the restaurant case study, the local-AI case study, the operations dashboard and its methodology note, with the same header, black ground, Inter Tight type and long-form reading rules.
+  - Motion: a fuchsia reading-progress rule, and blocks that fade up out of a soft blur as they enter (none under reduced motion; full content without JavaScript).
+  - Dashboard bars are focusable, with a live value readout, and grow in on each page switch.
+- **Cross-page transitions.** `@view-transition { navigation: auto }` fades and lifts between the homepage and the subpages where supported.
+- **Readability.** Secondary copy (Audio Lab, Semantic Drift, method cards, captions, bench notes) is brighter and larger and held to 56–62ch.
