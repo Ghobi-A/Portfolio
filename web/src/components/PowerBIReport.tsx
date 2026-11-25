@@ -66,7 +66,11 @@ export default function PowerBIReport() {
                   {REPORT_PAGES.map((page, index) => <li key={page}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>{page}</li>)}
                 </ol>
                 {hydrated && url ? (
-                  <button type="button" className="button primary pbi-load" onClick={() => setLoad("loading")}>
+                  <button type="button" className="button primary pbi-load" onClick={() => {
+                    setLoad("loading");
+                    // At column width Power BI fits its page at ~30% zoom; open it across the project instead.
+                    if (window.matchMedia("(min-width: 1081px)").matches) setExpanded(true);
+                  }}>
                     Load the interactive report <span aria-hidden="true">→</span>
                   </button>
                 ) : url ? (

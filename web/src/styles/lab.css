@@ -772,7 +772,9 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 .pbi.is-expanded .pbi-stage { aspect-ratio: 16 / 9.6; }
 .pbi-stage iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #f3f5f2; }
 .pbi-stage.is-loading iframe { visibility: hidden; }
-.pbi-preview { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 16px; padding: clamp(18px, 2.4vw, 30px); }
+/* The preview sizes to its content; the frame takes the report's shape once loading starts. */
+.pbi-stage.is-idle { aspect-ratio: auto; min-height: 0; }
+.pbi-preview { position: relative; display: flex; flex-direction: column; gap: 16px; padding: clamp(18px, 2.4vw, 30px); }
 .pbi-kicker { margin: 0; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--pink); }
 .pbi-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 0; }
 .pbi-cards div { padding: 12px 14px; border: 1px solid var(--line-2); border-radius: 3px; background: var(--panel); }
@@ -781,7 +783,7 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 .pbi-pages { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
 .pbi-pages li { display: inline-flex; gap: 8px; padding: 6px 12px; border: 1px solid var(--line-2); border-radius: 999px; font-size: 13px; color: var(--muted); }
 .pbi-pages li span { color: var(--pink); font-weight: 700; font-size: 11px; letter-spacing: .1em; }
-.pbi-load { align-self: flex-start; margin-top: auto; }
+.pbi-load { align-self: flex-start; margin-top: 6px; }
 .pbi-note { margin: 0; font-size: 12.5px; color: var(--dim); }
 .pbi-loading { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; color: var(--muted); font-size: 14px; }
 .pbi-loading span { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line-2); border-top-color: var(--pink); animation: pbi-spin .9s linear infinite; }
@@ -790,5 +792,6 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 @media (max-width: 1080px) { .pbi-expand { display: none; } }
 @media (max-width: 760px) {
   .pbi-stage { aspect-ratio: auto; min-height: 520px; }
+  .pbi-stage.is-idle { min-height: 0; }
   .pbi-cards { grid-template-columns: 1fr 1fr; }
 }
