@@ -696,3 +696,60 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 .distort .distort-canvas { visibility: hidden; }
 .distort.is-ready .distort-canvas { visibility: visible; }
 .paper-study .distort > img { height: 190px; object-fit: cover; filter: grayscale(1) contrast(1.1) brightness(.8); }
+
+/* ===================================== interactive charts (hover, tap, focus) ==== */
+.bar-compare .bar-row { cursor: default; border-radius: 4px; margin-inline: -6px; padding: 4px 6px; outline-offset: 2px; transition: background-color .25s var(--out), opacity .3s var(--out); }
+.bar-compare.is-probing .bar-row:not(.is-active) { opacity: .45; }
+.bar-compare .bar-row.is-active { background: rgba(255, 61, 154, .07); }
+.bar-compare .bar-row.is-active b { color: var(--pink); }
+.bar-compare .bar-row .bar-track i { transition: filter .25s var(--out); }
+.bar-compare .bar-row.is-active .bar-track i { filter: brightness(1.25); }
+.bar-readout { min-height: 2.9em; margin: 2px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 14px; line-height: 1.45; color: var(--ink); font-variant-numeric: tabular-nums; }
+.bar-readout > span { display: inline-block; }
+
+.has-chart-hover { position: relative; }
+.chart-cross { position: absolute; left: 0; top: 0; width: 0; border-left: 1px dashed var(--pink); pointer-events: none; visibility: hidden; transition: transform .14s var(--out); z-index: 2; }
+.chart-tip { position: absolute; left: 0; top: 0; z-index: 3; display: grid; gap: 2px; min-width: 170px; padding: 10px 12px; border: 1px solid var(--pink); border-radius: 4px; background: rgba(10, 10, 11, .94); color: var(--muted); font-size: 12.5px; line-height: 1.4; font-variant-numeric: tabular-nums; pointer-events: none; visibility: hidden; transition: transform .14s var(--out); box-shadow: 0 18px 40px -20px rgba(0, 0, 0, .8); }
+.chart-tip b { color: var(--pink); font-size: 12px; letter-spacing: .06em; font-weight: 700; }
+.chart-tip strong { color: var(--ink); font-size: 15px; font-weight: 600; }
+.has-chart-hover.is-hovering .chart-cross, .has-chart-hover.is-hovering .chart-tip { visibility: visible; }
+.has-chart-hover svg { cursor: crosshair; }
+.privacy-chart .privacy-measure.is-hovered .privacy-dot { stroke: var(--pink); stroke-width: 4; }
+.privacy-chart .privacy-measure.is-hovered .privacy-whisker { stroke-width: 3; }
+.partition-marker.is-hovered .partition-comparison { stroke: var(--pink); stroke-opacity: .8; }
+
+/* ======================================= extended explanations: readable ==== */
+.case-content { padding: 14px 0 36px; }
+.case-grid { display: block; counter-reset: case; margin: 10px 0 34px; }
+.case-grid > section { counter-increment: case; display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 66ch); gap: 8px clamp(24px, 4vw, 56px); padding: 24px 0; border-top: 1px solid var(--line); }
+.case-grid > section:last-child { border-bottom: 1px solid var(--line); }
+.case-grid h4 { display: flex; align-items: baseline; gap: 12px; margin: 5px 0 0; color: var(--ink); }
+.case-grid h4::before { content: counter(case, decimal-leading-zero); color: var(--pink); font-variant-numeric: tabular-nums; }
+.case-grid p { margin: 0; font-size: 18px; line-height: 1.72; color: #d8d6d1; letter-spacing: -.004em; text-wrap: pretty; }
+.evidence-strip { padding: clamp(18px, 2.4vw, 28px); }
+.evidence-strip p, .audit-grid p, .method-rail span, .diagram-note { font-size: 15px; line-height: 1.6; color: #c9c7c2; }
+.scope-note { max-width: 80ch; padding: 22px 26px; font-size: 16.5px; line-height: 1.68; color: #d2d0cb; border-style: solid; border-color: var(--line-2); border-left: 2px solid var(--pink); background: var(--bg-2); }
+.scope-note p { margin: 0 0 .85em; }
+.scope-note p:last-child { margin-bottom: 0; }
+.data-table { font-size: 16px; }
+.data-table th, .data-table td { padding: 13px 14px; }
+.data-table tbody tr:nth-child(odd) { background: rgba(242, 240, 236, .025); }
+.data-table td, .data-table thead th:not(:first-child) { text-align: right; }
+.data-table caption { font-size: 12px; margin-bottom: 12px; }
+.case-meta { margin-left: auto; margin-right: 18px; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--dim); white-space: nowrap; }
+.case-study > summary:hover .case-meta { color: var(--muted); }
+.case-close { display: inline-flex; align-items: center; gap: 10px; min-height: 46px; margin-top: 26px; padding: 10px 18px; border: 1px solid var(--line-2); border-radius: 999px; background: none; color: var(--ink); font-size: 15px; font-weight: 500; cursor: pointer; transition: border-color .2s, color .2s; }
+.case-close:hover { border-color: var(--pink); color: var(--pink); }
+
+/* Long-form project copy reads brighter and a touch larger. */
+.project-copy > p:not(.problem):not(.evidence-note):not(.study-context):not(.spec-line):not(.verbs) { color: #cfcdc8; font-size: 17.5px; line-height: 1.66; }
+.evidence-note { font-size: 14.5px; line-height: 1.6; color: #9d9ca2; }
+
+@media (max-width: 760px) {
+  .case-grid > section { grid-template-columns: minmax(0, 1fr); padding: 20px 0; }
+  .case-grid p { font-size: 17px; line-height: 1.68; }
+  .case-meta { display: none; }
+  .scope-note { padding: 18px 18px; font-size: 16px; }
+  .data-table { font-size: 15px; }
+  .data-table th, .data-table td { padding: 11px 8px; }
+}

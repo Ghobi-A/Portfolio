@@ -139,7 +139,7 @@ export default function SlatField(props: SlatState & { reduced: boolean; surface
     <div ref={host} className="slat-canvas">
       <Canvas
         frameloop={frameloop}
-        dpr={[1, compact ? 1.5 : 2]}
+        dpr={[1, compact ? 1.25 : 1.5]}
         gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => { gl.setClearColor(0x000000, 0); props.onReady?.(); }}
         aria-hidden="true"

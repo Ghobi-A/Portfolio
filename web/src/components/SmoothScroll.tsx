@@ -62,7 +62,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
 
   if (reduced) return <>{children}</>;
   return (
-    <ReactLenis root ref={lenisRef} options={{ lerp: 0.075, wheelMultiplier: 0.95, smoothWheel: true, autoRaf: false }}>
+    <ReactLenis root ref={lenisRef} options={{ lerp: 0.09, wheelMultiplier: 1, smoothWheel: true, autoRaf: false }}>
       <LenisBridge />
       {children}
     </ReactLenis>

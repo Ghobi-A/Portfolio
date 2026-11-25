@@ -28,6 +28,8 @@ export default function Choreography() {
     const hero = document.querySelector<HTMLElement>("[data-lab]");
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const lenisActive = () => !!(window as unknown as { portfolioMotion?: { lenis?: unknown } }).portfolioMotion?.lenis;
+    // Blur is costly to paint: keep it light on desktop and drop it on phones.
+    const blur = (px: number) => (matchMedia("(min-width: 761px)").matches ? `blur(${px}px)` : "blur(0px)");
     const splits = new Set<SplitText>();
     const split = (element: Element, type: string, { noMask = false } = {}) => {
       const mask = type.includes("chars") ? "lines" : type.includes("words") ? "words" : "lines";
@@ -55,7 +57,7 @@ export default function Choreography() {
         .from(names[0].chars, { yPercent: 105, duration: 1.15, ease: "lab-expo", stagger: 0.035 }, 0.15)
         .from(names[1].chars, { yPercent: 105, duration: 1.15, ease: "lab-expo", stagger: { each: 0.035, from: "end" } }, 0.3)
         .from(hero.querySelectorAll(".hero-thesis .spec-line, .hero-thesis .verbs em"), { y: 14, opacity: 0, stagger: 0.06, clearProps: "all" }, 0.75)
-        .from(hero.querySelector(".stage-thesis"), { y: 26, opacity: 0, filter: "blur(10px)", duration: 0.9, clearProps: "all" }, 0.85)
+        .from(hero.querySelector(".stage-thesis"), { y: 26, opacity: 0, filter: blur(6), duration: 0.9, clearProps: "all" }, 0.85)
         .from(hero.querySelectorAll(".stage-description, .intro-actions > *"), { y: 16, opacity: 0, stagger: 0.06, clearProps: "all" }, 1.05)
         .from(hero.querySelector(".instrument"), { clipPath: "inset(0 0 100% 0)", duration: 1.2, ease: "lab-expo", clearProps: "clipPath" }, 0.7)
         .from(hero.querySelector(".lab"), { y: 40, opacity: 0, duration: 1, ease: "lab-expo", clearProps: "all" }, 0.9);
@@ -103,7 +105,7 @@ export default function Choreography() {
       });
       gsap.utils.toArray<HTMLElement>(".section-heading h2, .semantic-lab h2, .about h2, .research-question").forEach((heading) => {
         const instance = split(heading, "words", { noMask: true });
-        gsap.from(instance.words, { opacity: 0, yPercent: 35, filter: "blur(12px)", duration: 1.2, stagger: 0.06, scrollTrigger: { trigger: heading, ...once }, onComplete: () => revert(instance) });
+        gsap.from(instance.words, { opacity: 0, yPercent: 35, filter: blur(7), duration: 1.2, stagger: 0.06, scrollTrigger: { trigger: heading, ...once }, onComplete: () => revert(instance) });
       });
       gsap.utils.toArray<HTMLElement>(".project-number").forEach((number) => {
         gsap.from(number, { yPercent: 70, opacity: 0, duration: 1.1, ease: "lab-expo", scrollTrigger: { trigger: number, ...once } });
@@ -118,7 +120,7 @@ export default function Choreography() {
       ].join(",")).filter((paragraph) => !paragraph.matches(scrubbed) && !paragraph.closest(".case-study"));
       [...new Set(prose)].forEach((paragraph) => {
         const instance = split(paragraph, "lines", { noMask: true });
-        gsap.from(instance.lines, { opacity: 0, y: 22, filter: "blur(8px)", duration: 1.1, stagger: 0.09, scrollTrigger: { trigger: paragraph, start: "top 90%", once: true }, onComplete: () => revert(instance) });
+        gsap.from(instance.lines, { opacity: 0, y: 22, filter: blur(4), duration: 1.1, stagger: 0.09, scrollTrigger: { trigger: paragraph, start: "top 90%", once: true }, onComplete: () => revert(instance) });
       });
       gsap.utils.toArray<HTMLElement>(".project-copy, .audio-lab > div:first-child, .about-copy, .semantic-design, .contact-invitation").forEach((block) => {
         const items = [...block.querySelectorAll(":scope > .metrics, :scope > .tags, :scope > .text-links, :scope > .actions, :scope > .education, :scope > .source-link, :scope > dl, :scope > ol, :scope > h4, :scope > .semantic-legend, :scope > .paper-study, :scope > a")];
@@ -194,7 +196,7 @@ export default function Choreography() {
         const text = statement.querySelector<HTMLElement>(".statement-text")!;
         const words = split(text, "words", { noMask: true });
         gsap.timeline({ scrollTrigger: { trigger: statement, start: "top top", end: "+=150%", scrub: 0.6, pin: true, anticipatePin: 1 } })
-          .fromTo(words.words, { opacity: 0.08, filter: "blur(8px)", yPercent: 30 }, { opacity: 1, filter: "blur(0px)", yPercent: 0, stagger: 0.12, ease: "none" })
+          .fromTo(words.words, { opacity: 0.08, filter: blur(6), yPercent: 30 }, { opacity: 1, filter: "blur(0px)", yPercent: 0, stagger: 0.12, ease: "none" })
           .fromTo(text.querySelectorAll("em"), { color: "#f2f0ec" }, { color: "#ff3d9a", stagger: 0.25, duration: 0.6, ease: "none" }, ">-0.6")
           .fromTo(statement.querySelector(".statement-rule i"), { scaleX: 0 }, { scaleX: 1, ease: "none", duration: 1 }, 0)
           .fromTo(statement.querySelectorAll(".statement-kicker span"), { opacity: 0.2 }, { opacity: 1, stagger: 0.3, ease: "none" }, 0);
@@ -261,7 +263,13 @@ export default function Choreography() {
       if (Math.abs(document.body.scrollHeight - lastHeight) < 2) return;
       lastHeight = document.body.scrollHeight;
       clearTimeout(refresh);
-      refresh = window.setTimeout(() => ScrollTrigger.refresh(), 120);
+      // Never re-measure mid-scroll (that is what makes pinned sections jump): wait for rest.
+      const settle = () => {
+        const smooth = (window as unknown as { portfolioMotion?: { lenis?: { isScrolling?: unknown } } }).portfolioMotion?.lenis;
+        if (smooth?.isScrolling) refresh = window.setTimeout(settle, 200);
+        else ScrollTrigger.refresh();
+      };
+      refresh = window.setTimeout(settle, 160);
     });
     resizer.observe(document.body);
     return () => {

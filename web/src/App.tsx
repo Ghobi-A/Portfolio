@@ -14,6 +14,8 @@ import WorkHeading from "./components/WorkHeading";
 import ContactBody from "./content/ContactBody";
 import Projects from "./content/Projects";
 import Sections from "./content/Sections";
+import { initCaseStudies } from "./lib/caseStudies";
+import { initChartHover } from "./lib/chartHover";
 import { initEvidence } from "./lib/evidence";
 import { initPrivacyCharts } from "./lib/privacyChart";
 
@@ -23,6 +25,8 @@ export default function App() {
   useEffect(() => {
     const stopCharts = initPrivacyCharts();
     const stopEvidence = initEvidence();
+    initChartHover();
+    initCaseStudies();
     return () => { stopEvidence(); stopCharts(); };
   }, []);
 

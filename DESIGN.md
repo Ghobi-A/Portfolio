@@ -316,3 +316,24 @@ The homepage moved to React so the owner can build with Motion, React Bits and R
   - The project images (Crestbound, the text study) gain a pointer ripple, lens and fuchsia-tinted RGB split, with grayscale lifting to colour under the cursor.
   - It mounts lazily on first hover, renders on demand only while active, and the `<img>` stays as content and fallback.
   - Touch, reduced motion and no-WebGL keep the plain image.
+
+### Interactive charts, smoother scroll, readable case studies — 25 November 2026
+
+- **Charts you can interrogate.**
+  - Privacy and partition SVGs: hover or tap shows a dashed fuchsia crosshair that snaps to the nearest *measured* point (never an interpolated position), with a tooltip of that point's exact values (`web/src/lib/chartHover.ts`).
+    - Privacy: AUC, 95% t interval and gap to non-private HGB.
+    - Partitions: Spark vs local and their ratio.
+  - Throughput and epoch bars are a React component (`BarCompare`). Hovering, tapping or tabbing to a bar dims the other and states the exact comparison. The ratios are computed from the plotted values and reproduce the headline 2.28× and 4.58× and the 1.6% epoch difference.
+  - Keyboard users keep the charts' own selectable points and live status text.
+- **Smoother.**
+  - Lenis glides a little tighter (lerp 0.09).
+  - Blur reveals are lighter (4–7px) and off on phones, where blur is costly to paint.
+  - Canvases are capped at 1.5× pixel ratio.
+  - ScrollTrigger never re-measures mid-scroll; it waits until Lenis is at rest, so pinned sections don't jump.
+  - Case studies open over 480ms and fade their blocks in, in reading order.
+- **Readable extended explanations.**
+  - Case-study sections are a numbered single column: the label sits left and the text is held to 66ch.
+  - Text is 18px at a 1.72 line height in near-white instead of small muted grey.
+  - Scope notes are larger with a fuchsia rule; tables are larger, zebra-striped and right-aligned for figures.
+  - Each summary states its length ("6 sections · ≈1 min read"), and a "Close case study" button at the end glides back to the summary.
+  - Long-form project copy is brighter and slightly larger.

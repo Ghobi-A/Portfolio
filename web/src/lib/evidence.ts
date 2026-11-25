@@ -49,7 +49,7 @@ export function initEvidence(): () => void {
       details.style.overflow = "hidden";
       const animation = details.animate(
         [{ height: `${start}px` }, { height: `${end}px` }],
-        { duration: 240, easing: "cubic-bezier(.2,.65,.3,1)" },
+        { duration: 480, easing: "cubic-bezier(.22,1,.36,1)" },
       );
       animation.targetOpen = target;
       animations.set(details, animation);

@@ -105,7 +105,7 @@ function Plane({ src, surface, onReady }: { src: string; surface: React.RefObjec
 
 export default function DistortCanvas({ src, surface, onReady }: { src: string; surface: React.RefObject<HTMLElement | null>; onReady: () => void }) {
   return (
-    <Canvas className="distort-canvas" frameloop="demand" dpr={[1, 2]} gl={{ antialias: false, alpha: false }}
+    <Canvas className="distort-canvas" frameloop="demand" dpr={[1, 1.5]} gl={{ antialias: false, alpha: false }}
       style={{ position: "absolute", inset: 0, pointerEvents: "none" }} aria-hidden="true">
       <Plane src={src} surface={surface} onReady={onReady} />
     </Canvas>
