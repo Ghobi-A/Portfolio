@@ -5,12 +5,14 @@ import {
 } from "../lib/bench";
 import { useHydrated, useReduced } from "../lib/hooks";
 import DecryptedText from "../reactbits/DecryptedText";
+import RotatingText from "../reactbits/RotatingText";
 import Magnet from "../reactbits/Magnet";
 import SpecLine from "./SpecLine";
 
 // Three.js only loads in the browser, after first paint.
 const SlatField = lazy(() => import("./SlatField"));
 
+const THESIS = "systems you can interrogate.";
 const EMAIL = "mailto:ghobikan15@hotmail.co.uk";
 const ease = [0.23, 1, 0.32, 1] as const;
 
@@ -93,7 +95,15 @@ export default function Hero() {
         <div className="hero-thesis">
           <SpecLine a="Signal" b="System" />
           <p className="verbs"><em>Collect</em> <em>Evaluate</em> <em>Ship</em></p>
-          <p className="stage-thesis">From messy signals to systems you can interrogate.</p>
+          <p className="stage-thesis">From messy signals to{" "}
+            {hydrated && !reduced ? (
+              // React Bits RotatingText: plays through once and stops on the canonical line,
+              // which is also what the prerendered page and reduced motion show.
+              <RotatingText texts={[THESIS, "models you can audit.", "evidence you can inspect.", "products people use.", THESIS]}
+                loop={false} rotationInterval={2100} effect="blur" staggerDuration={0.014} animatePresenceInitial={false}
+                mainClassName="thesis-rotate" />
+            ) : <span className="thesis-rotate">{THESIS}</span>}
+          </p>
           <p className="stage-description">I use Python and SQL to investigate operational data, evaluate machine-learning models and build usable data products.</p>
           <div className="actions intro-actions">
             {[["#projects", "Explore selected work"], ["assets/Ghobikan-Aravindan-CV.pdf", "Download CV"], [EMAIL, "Let’s talk"]].map(([href, label]) => (

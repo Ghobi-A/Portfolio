@@ -9,6 +9,7 @@ import Header from "./components/Header";
 import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
 import SmoothScroll from "./components/SmoothScroll";
+import Statement from "./components/Statement";
 import WorkHeading from "./components/WorkHeading";
 import ContactBody from "./content/ContactBody";
 import Projects from "./content/Projects";
@@ -32,6 +33,7 @@ export default function App() {
       <main id="top">
         <Hero />
         <Marquee />
+        <Statement />
         <div className="work-layout">
           <CollectionRail />
           <section id="projects" className="section" aria-labelledby="work-title">

@@ -299,3 +299,20 @@ The homepage moved to React so the owner can build with Motion, React Bits and R
   - The slat field is an R3F `<Canvas>`. Its `frameloop` is `never` off screen and `demand` under reduced motion, and its uniforms ease with `MathUtils.damp`.
 - **React Bits caveat.** `DecryptedText` and `BlurText` start hidden or scrambled until JavaScript runs, so they are used only on decorative labels. `BlurText` is not used; the GSAP blur reveal hides text only on the client.
 - **ScrollTrigger re-measures** whenever the body height changes. Hydration collapses the bench from three panels to one, which otherwise left stale trigger positions and invisible project rows on phones.
+
+### Kinetic text, pinned statement and image distortion — 25 November 2026
+
+- **Rotating thesis** (React Bits `RotatingText`):
+  - The thesis plays "models you can audit", "evidence you can inspect" and "products people use" once, then stops on the canonical "systems you can interrogate."
+  - The prerendered page and reduced motion show only the canonical line. It never loops, so no motion runs past about 8 seconds.
+- **Variable-weight type** (React Bits `VariableProximity`):
+  - On "Work" and "Let's talk.", letters follow the cursor along Inter Tight's weight axis: "Work" thins and turns fuchsia, "talk." thickens.
+  - A slow idle wave runs when the pointer is away.
+  - The component's remote Google Fonts import was removed.
+- **Pinned statement** (GSAP ScrollTrigger `pin`, scrubbed):
+  - The About section's own description pins for 150% of the viewport. Its words come into focus out of a blur, then *collected*, *legitimately* and *use* light up as a fuchsia rule fills.
+  - It is plain text without motion.
+- **Image distortion** (React Three Fiber):
+  - The project images (Crestbound, the text study) gain a pointer ripple, lens and fuchsia-tinted RGB split, with grayscale lifting to colour under the cursor.
+  - It mounts lazily on first hover, renders on demand only while active, and the `<img>` stays as content and fallback.
+  - Touch, reduced motion and no-WebGL keep the plain image.

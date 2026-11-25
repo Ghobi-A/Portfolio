@@ -49,13 +49,13 @@ export default function Choreography() {
       && (performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined)?.type !== "back_forward";
     if (playIntro && hero) {
       const names = [...hero.querySelectorAll(".name-line")].map((line) => split(line, "chars"));
-      const thesis = split(hero.querySelector(".stage-thesis")!, "words");
-      gsap.timeline({ onComplete: () => { names.forEach(revert); revert(thesis); } })
+      // The thesis holds React Bits RotatingText, so it moves as one block (never split).
+      gsap.timeline({ onComplete: () => { names.forEach(revert); } })
         .from(hero.querySelectorAll(".hero-meta p"), { y: 12, opacity: 0, duration: 0.6, stagger: 0.06, clearProps: "all" }, 0)
         .from(names[0].chars, { yPercent: 105, duration: 1.15, ease: "lab-expo", stagger: 0.035 }, 0.15)
         .from(names[1].chars, { yPercent: 105, duration: 1.15, ease: "lab-expo", stagger: { each: 0.035, from: "end" } }, 0.3)
         .from(hero.querySelectorAll(".hero-thesis .spec-line, .hero-thesis .verbs em"), { y: 14, opacity: 0, stagger: 0.06, clearProps: "all" }, 0.75)
-        .from(thesis.words, { yPercent: 100, duration: 0.8, ease: "lab-expo", stagger: 0.03 }, 0.85)
+        .from(hero.querySelector(".stage-thesis"), { y: 26, opacity: 0, filter: "blur(10px)", duration: 0.9, clearProps: "all" }, 0.85)
         .from(hero.querySelectorAll(".stage-description, .intro-actions > *"), { y: 16, opacity: 0, stagger: 0.06, clearProps: "all" }, 1.05)
         .from(hero.querySelector(".instrument"), { clipPath: "inset(0 0 100% 0)", duration: 1.2, ease: "lab-expo", clearProps: "clipPath" }, 0.7)
         .from(hero.querySelector(".lab"), { y: 40, opacity: 0, duration: 1, ease: "lab-expo", clearProps: "all" }, 0.9);
@@ -143,7 +143,8 @@ export default function Choreography() {
       });
       // Images expand from an inset frame and settle their zoom.
       gsap.utils.toArray<HTMLElement>(".gameplay-shot, .paper-study, .evidence-panel > a > img").forEach((frame) => {
-        const image = frame.matches("img") ? null : frame.querySelector("img");
+        // Scale the distortion wrapper when present so its canvas moves with the image.
+        const image = frame.matches("img") ? null : frame.querySelector(".distort") ?? frame.querySelector("img");
         gsap.fromTo(frame, { clipPath: "inset(14% 10% 14% 10% round 18px)" }, { clipPath: "inset(0% 0% 0% 0% round 10px)", ease: "none", scrollTrigger: { trigger: frame, start: "top 95%", end: "top 45%", scrub: 0.5 } });
         if (image) gsap.fromTo(image, { scale: 1.18 }, { scale: 1, ease: "none", scrollTrigger: { trigger: frame, start: "top bottom", end: "bottom top", scrub: true } });
       });
@@ -180,10 +181,23 @@ export default function Choreography() {
       gsap.utils.toArray<HTMLElement>(".capability-grid a").forEach((card, index) => {
         gsap.from(card, { y: 50, opacity: 0, duration: 0.9, delay: index * 0.08, clearProps: "transform,opacity", scrollTrigger: { trigger: ".capability-grid", start: "top 85%", once: true } });
       });
+      // "Let's talk." letters (React Bits VariableProximity spans) rise from behind the heading's mask.
       const contact = document.querySelector(".contact h2");
       if (contact) {
-        const instance = split(contact, "chars");
-        gsap.from(instance.chars, { yPercent: 110, rotate: 6, duration: 1.1, ease: "lab-expo", stagger: 0.035, scrollTrigger: { trigger: contact, start: "top 85%", once: true }, onComplete: () => revert(instance) });
+        const letters = contact.querySelectorAll(".variable-proximity [data-word] > span[aria-hidden='true']");
+        gsap.from(letters, { yPercent: 110, rotate: 6, duration: 1.1, ease: "lab-expo", stagger: 0.035, scrollTrigger: { trigger: contact, start: "top 85%", once: true }, clearProps: "transform,rotate" });
+      }
+
+      // ---- Pinned statement: words come into focus as you scroll, then the key words light up.
+      const statement = document.querySelector<HTMLElement>(".statement");
+      if (statement) {
+        const text = statement.querySelector<HTMLElement>(".statement-text")!;
+        const words = split(text, "words", { noMask: true });
+        gsap.timeline({ scrollTrigger: { trigger: statement, start: "top top", end: "+=150%", scrub: 0.6, pin: true, anticipatePin: 1 } })
+          .fromTo(words.words, { opacity: 0.08, filter: "blur(8px)", yPercent: 30 }, { opacity: 1, filter: "blur(0px)", yPercent: 0, stagger: 0.12, ease: "none" })
+          .fromTo(text.querySelectorAll("em"), { color: "#f2f0ec" }, { color: "#ff3d9a", stagger: 0.25, duration: 0.6, ease: "none" }, ">-0.6")
+          .fromTo(statement.querySelector(".statement-rule i"), { scaleX: 0 }, { scaleX: 1, ease: "none", duration: 1 }, 0)
+          .fromTo(statement.querySelectorAll(".statement-kicker span"), { opacity: 0.2 }, { opacity: 1, stagger: 0.3, ease: "none" }, 0);
       }
       gsap.utils.toArray<HTMLElement>(".tags").forEach((list) => {
         gsap.from(list.children, { x: -10, opacity: 0, duration: 0.5, stagger: 0.04, clearProps: "all", scrollTrigger: { trigger: list, start: "top 92%", once: true } });

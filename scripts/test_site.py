@@ -259,7 +259,9 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual(len(self.entry), 1)
         entry = self.entry[0].read_text(encoding='utf-8')
         self.assertNotIn('WebGLRenderer', entry)
-        self.assertTrue(any('WebGLRenderer' in p.read_text(encoding='utf-8') for p in (OUT / 'app').glob('SlatField-*.js')))
+        lazy = [p for p in (OUT / 'app').glob('*.js') if p not in self.entry]
+        self.assertTrue(any('WebGLRenderer' in p.read_text(encoding='utf-8') for p in lazy))
+        self.assertIn('import(', entry)  # the canvases are dynamic imports
         # Dependencies are pinned to exact versions.
         package = json.loads((self.web / 'package.json').read_text(encoding='utf-8'))
         for name, version in {**package['dependencies'], **package['devDependencies']}.items():
