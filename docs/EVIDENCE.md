@@ -8,7 +8,7 @@ The owner enabled a public Power BI "Publish to web" embed for the UK Asia Grill
 - **Reconciliation.** The six Executive-overview cards match the observed SQL snapshot already published here: 53 orders, £1.03K gross order value, £19.47 average order value, £373.77 confirmed card value, 22.6% cancellation rate and 7.5% payment failure rate. DAX measures beyond those cards were not independently reconciled.
 - **No personal or payment data.** No customer names, contact details, addresses or payment identifiers were found on any page. This rests on a text pattern scan and a visual review.
 - **Order references are visible.** The Kitchen operations page has a "Kitchen exceptions" table that lists **four original order references** with their raw preparation minutes. The date, order-type and status slicers also allow narrowing to individual days. Both go further than the browser dashboard's aggregate-only publication rule.
-- **Homepage embed.** The homepage figure is click-to-load, so no third-party request is made until a visitor asks. The owner was asked to confirm the order references may stay public before the homepage embed was published.
+- **Homepage embed.** The homepage figure is click-to-load, so no third-party request is made until a visitor asks. The owner reviewed the four order references and chose to keep them public. Both pages carry a disclaimer: a demonstration excerpt mixing test and live orders, with no customer personal details.
 
 ## Local restaurant AI integration — 25 October 2026
 

@@ -795,3 +795,5 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
   .pbi-stage.is-idle { min-height: 0; }
   .pbi-cards { grid-template-columns: 1fr 1fr; }
 }
+
+.pbi-disclaimer { color: var(--ink); font-weight: 600; }

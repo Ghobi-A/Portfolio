@@ -102,7 +102,7 @@ export default function PowerBIReport() {
       )}
 
       <figcaption>
-        The report&rsquo;s six Executive-overview cards match the observed SQL snapshot (53 mixed-status orders, snapshot 19 October 2026). Gross order value is not audited revenue; DAX measures beyond those cards are not independently reconciled. The browser dashboard is a separate implementation with its own labelled scale scenario.
+        <strong className="pbi-disclaimer">Demonstration excerpt:</strong> 53 records mixing test and live orders, with no customer personal details; order references appear only as anonymous codes. The report&rsquo;s six Executive-overview cards match the observed SQL snapshot (snapshot 19 October 2026). Gross order value is not audited revenue; DAX measures beyond those cards are not independently reconciled. The browser dashboard is a separate implementation with its own labelled scale scenario.
       </figcaption>
     </motion.figure>
   );
