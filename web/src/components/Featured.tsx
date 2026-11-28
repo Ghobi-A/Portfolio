@@ -6,6 +6,7 @@ const ease = [0.16, 1, 0.3, 1] as const;
 
 const PROJECTS = [
   { id: "dp", href: "#file-dp", code: "DP—05", title: "Privacy–Utility Audit", kind: "Research" },
+  { id: "ea", href: "#file-edgeauth", code: "EA—09", title: "EdgeAuth Verification", kind: "Computer vision" },
   { id: "kh", href: "#file-kh4", code: "KH—01", title: "Demand Intelligence", kind: "NLP" },
   { id: "ra", href: "#GA-RA-07", code: "RA—07", title: "Restaurant Operations", kind: "SQL & BI" },
   { id: "di", href: "#file-di", code: "DI—02", title: "Image ML Pipeline", kind: "Data engineering" },
@@ -48,6 +49,14 @@ const PANELS: Record<Id, ReactNode> = {
         <text x="70.5" y="119" textAnchor="middle">ε 0.49</text><text x="176" y="119" textAnchor="middle">ε 2</text><text x="258.4" y="119" textAnchor="middle">ε 6</text>
       </motion.svg>
       <Note>Five seeds · 1,338 public records · 95% t intervals</Note>
+    </>
+  ),
+  ea: (
+    <>
+      <Kicker>EA—09 / Owner lock-out at a fixed FAR</Kicker>
+      <Figure value="1.53%" note="SFace FP32 false rejection on LFW at target FAR 0.1%, down from 8.67% with the 2022 dlib pipeline" />
+      <Bars rows={[["dlib (2022 prototype)", "8.67%", "86.7%", true], ["SFace FP32", "1.53%", "15.3%"], ["SFace INT8", "1.73%", "17.3%"]]} />
+      <Note>Axis 0–10% · 22,396 verification pairs · person-level 95% intervals · Raspberry Pi validation pending</Note>
     </>
   ),
   kh: (
@@ -156,7 +165,7 @@ export default function Featured() {
             </motion.div>
           </AnimatePresence>
         </motion.div>
-        <p className="preview-hint"><span>{String(index + 1).padStart(2, "0")}</span> / 06 · hover, tab or tap a title</p>
+        <p className="preview-hint"><span>{String(index + 1).padStart(2, "0")}</span> / {String(PROJECTS.length).padStart(2, "0")} · hover, tab or tap a title</p>
       </div>
     </div>
   );

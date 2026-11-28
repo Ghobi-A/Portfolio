@@ -51,7 +51,7 @@ const fmtEps = (eps: number) => (eps < 1 ? eps.toFixed(2) : eps < 10 ? eps.toFix
 
 interface Reading { x: number; y: number; html: string; element?: Element | null; probe?: boolean }
 
-function attach(figure: HTMLElement, svg: () => SVGSVGElement | null, read: (clientX: number, plot: SVGSVGElement) => Reading | null) {
+function attach(figure: HTMLElement, svg: () => SVGSVGElement | null, read: (clientX: number, plot: SVGSVGElement, clientY: number) => Reading | null) {
   figure.classList.add("has-chart-hover");
   const layer = (name: string) => {
     const node = document.createElement("div");
@@ -71,10 +71,10 @@ function attach(figure: HTMLElement, svg: () => SVGSVGElement | null, read: (cli
     marked?.classList.remove("is-hovered");
     marked = null;
   };
-  const show = (clientX: number) => {
+  const show = (clientX: number, clientY: number) => {
     const plot = svg();
     if (!plot) return;
-    const reading = read(clientX, plot);
+    const reading = read(clientX, plot, clientY);
     if (!reading) { hide(); return; }
     const frame = figure.getBoundingClientRect();
     const box = plot.getBoundingClientRect();
@@ -99,11 +99,11 @@ function attach(figure: HTMLElement, svg: () => SVGSVGElement | null, read: (cli
 
   figure.addEventListener("pointermove", (event) => {
     const plot = svg();
-    if (plot && plot.contains(event.target as Node)) show(event.clientX); else hide();
+    if (plot && plot.contains(event.target as Node)) show(event.clientX, event.clientY); else hide();
   }, { passive: true });
   figure.addEventListener("pointerdown", (event) => {
     const plot = svg();
-    if (event.pointerType !== "mouse" && plot?.contains(event.target as Node)) show(event.clientX);
+    if (event.pointerType !== "mouse" && plot?.contains(event.target as Node)) show(event.clientX, event.clientY);
   });
   figure.addEventListener("pointerleave", hide);
   addEventListener("scroll", () => { if (figure.classList.contains("is-hovering")) hide(); }, { passive: true });
@@ -154,6 +154,35 @@ export function initChartHover(): void {
       return {
         x: point.x, y: point.y, element: null, probe: true,
         html: `<b>Trend line · ε ${fmtEps(eps)}</b><span>ROC-AUC on the line <strong>≈${three(auc)}</strong></span><span>band ≈${three(band[0])}–${three(band[1])}</span><em>Interpolated between measured ε ${BUDGETS[left].epsilon} and ε ${BUDGETS[left + 1].epsilon}, not a measurement. Nearest measured: ε ${near.epsilon} = ${three(near.auc)}.</em>`,
+      };
+    });
+  });
+
+  // EdgeAuth: false rejection at target FAR 0.1% for three pipelines (values from the figure's table).
+  document.querySelectorAll<SVGSVGElement>("svg[data-frr-chart]").forEach((plot) => {
+    const figure = plot.closest<HTMLElement>("figure");
+    if (!figure) return;
+    const rows = [...figure.querySelectorAll<HTMLTableRowElement>("tbody tr")].map((row) => [...row.cells].map((cell) => cell.textContent?.trim() ?? ""));
+    const rate = (text: string) => parseFloat(text.replace("%", ""));
+    attach(figure, () => plot, (_clientX, _svg, clientY) => {
+      const dots = [...plot.querySelectorAll("circle")];
+      if (!dots.length || rows.length !== dots.length) return null;
+      let best = 0;
+      let distance = Infinity;
+      dots.forEach((dot, index) => {
+        const box = dot.getBoundingClientRect();
+        const d = Math.abs(box.top + box.height / 2 - clientY);
+        if (d < distance) { distance = d; best = index; }
+      });
+      const box = dots[best].getBoundingClientRect();
+      const [name, frr, ci] = rows[best];
+      const base = rate(rows[0][1]);
+      const compare = best === 0
+        ? `${(base / rate(rows[1][1])).toFixed(1)}× SFace FP32's rate`
+        : `${(base / rate(frr)).toFixed(1)}× fewer owner lock-outs than dlib`;
+      return {
+        x: box.left + box.width / 2, y: box.top + box.height / 2, element: dots[best],
+        html: `<b>${name}</b><span>false rejection <strong>${frr}</strong></span><span>95% person-level CI ${ci}</span><span>${compare}</span><em>LFW · target FAR 0.1% · conditional on this benchmark.</em>`,
       };
     });
   });

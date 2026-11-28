@@ -829,3 +829,10 @@ a:hover > .roll > span, a:focus-visible > .roll > span { transform: translateY(-
 @media (max-width: 760px) {
   .audio-lab > div > p:not(.eyebrow):not(.problem) { font-size: 16.5px; }
 }
+
+/* EdgeAuth false-rejection chart in the site's palette. */
+.ea-frr rect { fill: var(--pink); opacity: .22; }
+.ea-frr path:not(.chart-grid path) { stroke: var(--ink); }
+.ea-frr circle { fill: var(--pink); stroke: var(--bg); stroke-width: 2; transition: r .2s var(--out); }
+.ea-frr circle.is-hovered { r: 6; stroke: var(--ink); }
+.ea-frr .plot-label text { font-size: 13px; }

@@ -2,6 +2,7 @@ import Roll from "./Roll";
 
 export const RAIL = [
   ["#file-dp", "DP—05", "Privacy audit"],
+  ["#file-edgeauth", "EA—09", "EdgeAuth"],
   ["#file-kh4", "KH—01", "Demand intelligence"],
   ["#GA-RA-07", "RA—07", "Restaurant operations"],
   ["#file-di", "DI—02", "Image ML"],

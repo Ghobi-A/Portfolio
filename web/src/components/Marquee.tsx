@@ -1,7 +1,7 @@
 import ScrollVelocity from "../reactbits/ScrollVelocity";
 import { useReduced } from "../lib/hooks";
 
-const METHODS = ["Differential privacy", "NLP ranking", "PySpark", "Power BI & DAX", "PostgreSQL", "Monte Carlo", "TensorFlow", "Calibration"];
+const METHODS = ["Differential privacy", "Face verification", "NLP ranking", "PySpark", "Power BI & DAX", "PostgreSQL", "Monte Carlo", "TensorFlow", "Calibration"];
 const VERBS = ["Measure", "Audit", "Rank", "Reconcile", "Benchmark", "Simulate", "Ship", "Caveat"];
 
 const Row = ({ items }: { items: string[] }) => <>{items.map((item) => <span key={item} className="marquee-item">{item}</span>)}</>;

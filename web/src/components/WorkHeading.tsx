@@ -15,7 +15,7 @@ export default function WorkHeading() {
       <div className="work-intro">
         <SpecLine a="Claim" b="Evidence" />
         <p className="verbs"><em>Measure</em> <em>Caveat</em> <em>Link</em></p>
-        <p>Five projects, each with its evidence open. Every figure links to the repository it came from, and limits sit beside results, not in the footnotes.</p>
+        <p>Six projects, each with its evidence open. Every figure links to the repository it came from, and limits sit beside results, not in the footnotes.</p>
       </div>
     </div>
   );
