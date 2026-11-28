@@ -105,7 +105,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual(person['name'], 'Ghobikan Aravindan')
         self.assertEqual(person['address']['addressLocality'], 'London')
         projects = json.loads(scripts[1])['itemListElement']
-        self.assertEqual(len(projects), 8)
+        self.assertEqual(len(projects), 9)
         for project in projects:
             self.assertIn(project['item']['url'].split('#')[1], self.ids)
 
@@ -190,12 +190,12 @@ class PortfolioTests(unittest.TestCase):
             for attr in ('aria-controls', 'aria-labelledby', 'aria-describedby'):
                 for reference in attrs.get(attr, '').split():
                     self.assertIn(reference, self.ids)
-        for case in ('GA-RA-07', 'GA-KH-01', 'GA-DI-02', 'GA-CD-03', 'GA-UA-04', 'GA-DP-05', 'GA-CA-06'):
+        for case in ('GA-EA-09', 'GA-RA-07', 'GA-KH-01', 'GA-DI-02', 'GA-CD-03', 'GA-UA-04', 'GA-DP-05', 'GA-CA-06'):
             self.assertIn(case, self.ids)
 
     def test_no_js_disclosures_and_semantic_visuals(self):
-        self.assertEqual(len(self.page.elements('details')), 7)
-        self.assertEqual(len(self.page.elements('summary')), 7)
+        self.assertEqual(len(self.page.elements('details')), 8)
+        self.assertEqual(len(self.page.elements('summary')), 8)
         self.assertNotIn('onclick=', self.html)
         for svg in self.page.elements('svg'):
             self.assertTrue(svg.get('aria-hidden') == 'true' or svg.get('aria-labelledby'))
@@ -231,6 +231,14 @@ class PortfolioTests(unittest.TestCase):
             if attrs.get('href', '').startswith('http'):
                 self.assertEqual(attrs.get('target'), '_blank')
                 self.assertTrue({'noopener', 'noreferrer'} <= set(attrs.get('rel', '').split()))
+
+    def test_edgeauth_evidence(self):
+        self.assertIn('file-edgeauth', self.ids)
+        self.assertIn('GA-EA-09', self.ids)
+        self.assertLess(self.html.index('id="file-dp"'), self.html.index('id="file-edgeauth"'))
+        self.assertLess(self.html.index('id="file-edgeauth"'), self.html.index('id="file-kh4"'))
+        for claim in ('8.67%', '1.53%', '139×', '22,396', 'research_paper.md', 'Pi validation pending'):
+            self.assertIn(claim, self.html)
 
     def test_interactive_dossier_uses_authored_evidence(self):
         evidence = (self.web / 'src/lib/evidence.ts').read_text(encoding='utf-8')

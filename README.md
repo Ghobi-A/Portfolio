@@ -6,6 +6,7 @@ Personal portfolio for an applied data scientist building evaluated machine-lear
 
 ## Featured work
 
+- EdgeAuth — Biometric Verification (audited study; Pi benchmark pending)
 - Behavioural Demand Intelligence
 - Distributed Image ML Pipeline
 - Crestbound Duelists — RPG Balance Lab

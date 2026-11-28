@@ -143,6 +143,7 @@ def polish_html(source: str) -> str:
 """
     projects = [
         ('GA-DP-05', 'Privacy–Utility and Fairness Audit'),
+        ('GA-EA-09', 'EdgeAuth — Biometric Verification'),
         ('GA-KH-01', 'Behavioural Demand Intelligence'),
         ('GA-RA-07', 'UK Asia Grill — Restaurant Revenue & Operations Analytics'),
         ('GA-DI-02', 'Distributed Image ML Pipeline'),

@@ -1,5 +1,9 @@
 # Project evidence ledger
 
+## EdgeAuth — 28 November 2026
+
+Source: [merged PR #3](https://github.com/Ghobi-A/Facial-Recognition-Smart-Lock/pull/3), merge `60938198f9f9ff43e49fd2c7fd584d03f1aac77b`, audited benchmark `fc16bed16f3e921702bb01476bcd73506c3268e1`. [Research paper](https://github.com/Ghobi-A/Facial-Recognition-Smart-Lock/blob/main/reports/research_paper.md), [tables](https://github.com/Ghobi-A/Facial-Recognition-Smart-Lock/blob/main/reports/tables.md) and [audit](https://github.com/Ghobi-A/Facial-Recognition-Smart-Lock/blob/main/reports/audit/AUDIT.md). The LFW figure displays attempt-level FRR at target FAR 0.1% and conditional 95% person-level bootstrap intervals. Ratios refer to same-group impostor comparisons under one calibrated policy, using estimated LFW ethnicity labels. CFP protocols share identities; the 5,781 count counts CFP once and is not deduplicated across unrelated datasets. The audit reports byte-identical clean-clone reproduction of all four result JSONs and tables. No Raspberry Pi numbers, operational PAD performance or independent ethnicity replication are claimed. No facial images or individual-level results are published on the portfolio. Research paper is an independent working paper, not peer reviewed.
+
 ## Published Power BI report — 25 November 2026
 
 The owner enabled a public Power BI "Publish to web" embed for the UK Asia Grill case study on 20 October 2026 (commit `efc62a0`). It is configured in `projects/restaurant-analytics/powerbi-embed.js` and, on the homepage, `web/src/lib/powerbi.ts`. The report was loaded and read on 25 November 2026.
